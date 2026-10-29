@@ -1,0 +1,42 @@
+# Met la version en ligne à jour. Ne se lance jamais tout seul :
+# onglet Actions → « Mettre l'app en ligne » → Run workflow.
+name: Mettre l'app en ligne
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+        working-directory: app
+      - run: npm run build:en-ligne
+        working-directory: app
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/site
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@v4

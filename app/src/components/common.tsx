@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DOCS, type Source } from "../lib/data";
+import { DOCS, EN_LIGNE, type Source } from "../lib/data";
 import { plageComplete, setObservation, setPlage, toggleFait, useStore } from "../lib/store";
 import { paramById } from "../lib/data";
 import { EnregistrerVersion } from "./Enregistreur";
@@ -24,10 +24,14 @@ export function Badge({ kind, children, title }: { kind: BadgeKind; children?: R
 /** « Manuel · Guide p. 10 » avec lien vers la bonne page du PDF dans docs/. */
 export function SourceRef({ src, compact }: { src: Source; compact?: boolean }) {
   const d = DOCS[src.doc];
-  const href = `${d.fichier}#page=${src.page + d.pdfOffset}`;
+  const href = EN_LIGNE
+    ? (d.korgPage ? `${d.korg}#page=${src.page + d.pdfOffset}` : d.korg)
+    : `${d.fichier}#page=${src.page + d.pdfOffset}`;
+  const aide = EN_LIGNE
+    ? (d.korgPage ? `Ouvrir ${d.court}, page ${src.page} (site officiel de Korg)` : `Ouvrir ${d.court} sur le site officiel de Korg, puis aller à la page ${src.page} de la partie française`)
+    : `Ouvrir ${d.court}, page ${src.page} (le PDF doit être dans docs/ à côté de l'app)`;
   return (
-    <a className="badge badge-manuel src" href={href} target="_blank" rel="noreferrer"
-       title={`Ouvrir ${d.court}, page ${src.page} (le PDF doit être dans docs/ à côté de l'app)`}>
+    <a className="badge badge-manuel src" href={href} target="_blank" rel="noreferrer" title={aide}>
       {compact ? "" : "Manuel · "}{d.court} p. {src.page}
     </a>
   );

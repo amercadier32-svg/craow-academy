@@ -76,10 +76,17 @@ export const allControls: PlacedControl[] = [
 ];
 export const controlById = new Map(allControls.map((c) => [c.id, c]));
 
-export const DOCS: Record<DocId, { court: string; fichier: string; pdfOffset: number }> = {
+/** Version en ligne (GitHub Pages) : les PDF ne sont pas publiés, les liens ouvrent ceux du site officiel de Korg. */
+export const EN_LIGNE = import.meta.env.MODE === "en-ligne";
+
+export const DOCS: Record<DocId, { court: string; fichier: string; pdfOffset: number; korg: string; korgPage: boolean }> = {
   // Le mode d'emploi est un scan multilingue : page PDF = page imprimée + 16 (section française).
-  OM: { court: "Mode d'emploi", fichier: "docs/281ffa.pdf", pdfOffset: 16 },
-  PG: { court: "Guide des paramètres", fichier: "docs/electribe_PG_F4.pdf", pdfOffset: 0 },
+  // Celui du site Korg est découpé autrement : on l'ouvre au début (la page imprimée reste indiquée).
+  OM: { court: "Mode d'emploi", fichier: "docs/281ffa.pdf", pdfOffset: 16, korgPage: false,
+        korg: "https://cdn.korg.com/us/support/download/files/0b4a3c5f3361280358cd6c9c7f9e8b6f.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27electribe2_2s_OM_EFGSCJ3.pdf&response-content-type=application%2Fpdf%3B" },
+  // Même fichier que celui du site Korg (electribe_PG_F4.pdf) : mêmes pages.
+  PG: { court: "Guide des paramètres", fichier: "docs/electribe_PG_F4.pdf", pdfOffset: 0, korgPage: true,
+        korg: "https://cdn.korg.com/us/support/download/files/74cd4151056424067777fec072b6eb71.pdf?response-content-disposition=inline%3Bfilename%2A%3DUTF-8%27%27electribe_PG_F4.pdf&response-content-type=application%2Fpdf%3B" },
 };
 
 export interface Procedure {

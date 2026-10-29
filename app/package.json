@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build && node scripts/assembler.mjs",
+    "build:en-ligne": "tsc --noEmit && vite build --mode en-ligne && node scripts/assembler.mjs en-ligne",
     "check": "node scripts/check-params.mjs",
     "controle": "node scripts/controle.mjs",
     "rapport": "node scripts/rapport-params.mjs"
