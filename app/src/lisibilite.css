@@ -1,0 +1,40 @@
+/* ============================================================================================
+   Lisibilité (octobre 2026) : chargé en dernier.
+   1. Police pixel (Jersey 10) seulement pour les titres et les boutons ; police lisible ailleurs.
+   2. Sur téléphone : boutons et champs d'au moins 44 px de haut.
+   3. Contrastes corrigés (texte au moins 4,5 fois plus clair ou plus sombre que son fond).
+   ============================================================================================ */
+:root { --txt: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+/* 1. Textes qui n'étaient pas des titres ni des boutons : police lisible */
+body :is(.rc-role, .st, .rg-hint, .hero-sub, .fav-type, .fm-res, .drl-niv-prog, .repere, .home-search-barre input,
+.rec-temps, .rec-compteurs b, .cz-pct, .rg-sep, .mcard-txt span, .gros-btn-txt span, .ms-temps) {
+  font-family: var(--txt); font-size-adjust: none; letter-spacing: normal;
+}
+body .rc-role { font-size: 0.8rem; }
+body .st { font-size: 0.72rem; }
+body .rg-hint, body .hero-sub { font-size: 1rem; }
+body .rec-temps { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 1.5rem; }
+
+/* 3. Contrastes */
+body .px-btn.green, body .ms-format.on { background: #1f7a3a; }
+body .px-btn.green:hover { background: #26843f; }
+:root { --manuel: #7db8ff; }
+body .fx-blk.on { background: #3d6aa8; }
+body .ms-bm-live { color: #8a93a3; }
+body .vu-sat { color: #c07a7e; }
+
+/* 2. Cibles tactiles : 44 px minimum sur téléphone (sauf les pads et grilles de pas, serrés comme sur l'E2,
+      et la carte de la machine, placée comme sur la photo). */
+@media (pointer: coarse), (max-width: 760px) {
+  :is(button, summary, select, .e2-ui-btn, .px-btn, .chipbtn, .rg-tab, .rg-crumb, .rg-clear, .fm-clear, .burger, .top-brand, a.rc-name, a.maplink,
+      .mp-lien, .mm-lien, .sel-st, .chip-t, .ca, .done, .etoile, .close, input[type="text"], input[type="search"], input[type="number"]
+  ):not(:is(.e2, .cz, .rc-pads, .seqp-pads, .gpads, .steps, .seqp-steps, .seqp-notes, .ec-notes, .gnotes) *) {
+    min-height: 44px;
+  }
+  :is(a.e2-ui-btn, .top-brand, .rg-tab, a.rc-name, a.maplink, .mp-lien, .mm-lien):not(:is(.e2, .cz) *) { display: inline-flex; align-items: center; }
+  :is(.etoile, .close, .btn-jeter, .rc-trash, .home-search-x, .vu-raz, .vu-sat, .ms-q, .burger):not(:is(.e2, .cz) *) { min-width: 44px; }
+  label:has(> input[type="checkbox"]), label:has(> input[type="radio"]) { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
+  input[type="checkbox"], input[type="radio"] { width: 22px; height: 22px; }
+  .etoile { font-size: 1.5rem; }
+}

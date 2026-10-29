@@ -1,0 +1,73 @@
+/* ===== Petit spectre en direct ===== */
+.mini-spectre { display: grid; gap: 6px; margin: 8px 0; }
+.mini-spectre-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.mini-spectre-cv { width: 100%; height: 110px; display: block; border: 2px solid var(--edge); image-rendering: pixelated; }
+.mini-note { font-family: var(--px); font-size: 1.1rem; color: #7fe0ff; }
+.mini-note small { font-family: inherit; color: var(--muted); font-size: 0.8rem; }
+
+/* ===== Page Visualiseur ===== */
+.visu-page { max-width: 1280px; margin: 0 auto; padding-bottom: 40px; }
+.visu-page .page-title { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.visu-demarrer { display: grid; justify-items: center; gap: 10px; padding: 24px; background: var(--panel); border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); text-align: center; }
+.visu-outils { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 8px 0; }
+.visu-outils .fm { min-width: 0; }
+.visu-curseur, .visu-ref { display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; color: var(--muted); }
+.visu-curseur b { color: var(--text); min-width: 4.5ch; font-variant-numeric: tabular-nums; }
+.visu-ref select { padding: 5px 6px; background: #121318; color: var(--text); border: 2px solid var(--edge); font: inherit; max-width: 220px; }
+.px-btn.on-fige { background: #3f6dae; box-shadow: inset 0 2px 0 #ffffff33, 0 0 12px #7fe0ff88, 0 3px 0 var(--edge); }
+.visu-fige { margin: 4px 0; padding: 6px 10px; background: #7fe0ff14; border-left: 4px solid #7fe0ff; }
+.visu-aide-ref { margin: 0 0 6px; }
+.visu-grille { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); }
+.visu-grille .v-spectre, .visu-grille .v-spectrogramme { grid-column: 1 / -1; }
+.visu-grille.n1 { grid-template-columns: 1fr; }
+@media (max-width: 520px) { .visu-grille { grid-template-columns: 1fr; } }
+.visu-panneau { background: var(--panel); border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); padding: 8px 10px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.visu-panneau header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.visu-panneau header > b { font-family: var(--px); font-weight: 400; font-size: 1.2rem; font-size-adjust: ex-height 0.56; }
+.visu-cv { width: 100%; height: auto; aspect-ratio: 960 / 360; display: block; border: 2px solid var(--edge); }
+.v-stereo .visu-cv { aspect-ratio: 1; max-width: 300px; justify-self: center; }
+.visu-vu { padding: 18px 4px; }
+.visu-txt { margin: 0; }
+.visu-note { font-family: var(--px); font-size: 1.3rem; color: #7fe0ff; }
+.visu-note small { font-family: inherit; color: var(--muted); font-size: 0.85rem; margin-left: 4px; }
+.visu-legende { font-size: 0.8rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.visu-legende i { width: 22px; border-top: 2px dashed #fff; }
+
+/* ===== Mode vidéo ===== */
+.visu-video { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; }
+.visu-video.sans-souris { cursor: none; }
+.visu-video-cadre { position: relative; }
+.visu-video-cv { width: 100%; height: 100%; display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+.visu-video-msg { position: absolute; inset: auto 0 40% 0; text-align: center; color: #fff; font-family: var(--px); font-size: 1.3rem; }
+.visu-video-aide { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); margin: 0; padding: 4px 12px; background: #000a; color: #fff; font-family: var(--px); border: 2px solid #ffffff33; }
+.visu-video-aide button { background: none; border: 0; color: #7fe0ff; font: inherit; cursor: pointer; }
+.visu-video-reglages {
+  position: fixed; right: 16px; top: 16px; width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto;
+  background: #16181e; border: 3px solid var(--edge); box-shadow: 0 0 0 2px #ffffff10, 0 6px 0 var(--edge); padding: 12px 14px; display: grid; gap: 8px; color: var(--text);
+}
+.visu-video-reglages h3 { margin: 0; }
+.vv-ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.9rem; }
+.vv-ligne > span:first-child { min-width: 56px; color: var(--muted); }
+.vv-ligne input[type="text"], .vv-ligne input[type="number"] { padding: 4px 6px; background: #0c0d11; color: var(--text); border: 2px solid var(--edge); font: inherit; width: 150px; }
+.vv-ligne input[type="number"] { width: 70px; }
+.vv-theme i { display: inline-block; width: 18px; height: 10px; margin-right: 5px; background: linear-gradient(90deg, var(--t1) 33%, var(--t2) 33% 66%, var(--t3) 66%); border: 1px solid #000; }
+.vv-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ● REC dans le Visualiseur */
+.visu-rec { margin: 10px 0 14px; padding: 10px 12px; background: var(--panel, #15161b); border: 2px solid var(--edge, #2a2d36); }
+.visu-rec.rec { border-color: #ff3b3b; box-shadow: 0 0 0 2px #ff3b3b44; }
+.visu-rec > h3 { margin: 0 0 6px; font-size: 1rem; }
+.visu-rec > h3 > span { color: #ff3b3b; }
+.visu-rec-voyant { position: fixed; z-index: 60; top: calc(var(--top-h, 70px) + 8px); right: 12px; display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px; background: #b5242b; color: #fff; font-family: var(--px); font-size: 1.15rem; border: 3px solid #fff; box-shadow: 0 4px 0 #0008; }
+.visu-rec-voyant i { width: 14px; height: 14px; border-radius: 50%; background: #fff; animation: vu-clign-rec 1s steps(2) infinite; }
+.visu-rec-voyant small { font-size: 0.8rem; opacity: 0.85; }
+.visu-rec-voyant em { font-style: normal; background: #ffd84d; color: #000; padding: 0 6px; font-size: 0.85rem; }
+@keyframes vu-clign-rec { 50% { opacity: 0.15; } }
+/* mode vidéo : petit voyant discret dans le coin */
+.visu-video-rec { position: fixed; top: 10px; left: 10px; z-index: 5; margin: 0; padding: 2px 8px; display: flex; align-items: center; gap: 6px;
+  background: #000a; color: #ff6a6a; font-family: var(--px); font-size: 0.95rem; border: 1px solid #ff3b3b66; }
+.visu-video-rec i { width: 9px; height: 9px; border-radius: 50%; background: #ff3b3b; animation: vu-clign-rec 1s steps(2) infinite; }
+.visu-video-rec.bientot { color: #ffd84d; border-color: #ffd84d88; }
+.visu-video-rec.fin { color: #fff; background: #b5242bcc; }
+.visu-video-rec.garde { color: #4fd18b; border-color: #4fd18b66; top: auto; bottom: 10px; }

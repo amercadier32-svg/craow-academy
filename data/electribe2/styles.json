@@ -1,0 +1,286 @@
+{
+  "version": 1,
+  "source": "Pratique / interprétation : ces fiches ne viennent pas du manuel de l'Electribe 2. Ce sont des repères généraux, prudents ; chaque morceau et chaque sound system fait à sa façon. Les numéros d'oscillateurs, d'effets et de gammes viennent des listes du manuel (data/).",
+  "styles": [
+    {
+      "id": "tribe",
+      "nom": "Tribe",
+      "couleur": "#ffb36b",
+      "bpm": { "min": 165, "max": 180, "defaut": 170 },
+      "caractere": [
+        "Une tekno de free party portée par les percussions : toms, congas et charlestons qui galopent.",
+        "La mélodie reste souvent simple et répétée ; c'est le mélange des rythmes qui fait monter la transe."
+      ],
+      "kick": "Plutôt rond et grave, avec un peu de queue entre les temps ; il porte la danse sans écraser les percussions.",
+      "basse": "Souvent courte et roulante entre les kicks, ou un sub tenu ; elle suit le kick plus qu'elle ne chante.",
+      "melodie": "Des motifs courts en pentatonique ou en gamme « orientale », répétés longtemps, parfois joués par les toms eux-mêmes.",
+      "gammes": [
+        { "n": 16, "pourquoi": "5 notes seulement : tout sonne juste, parfait pour les toms et les motifs répétés." },
+        { "n": 4, "pourquoi": "Couleur sombre et orientale, fréquente dans les mélodies tribe." },
+        { "n": 20, "pourquoi": "Encore plus orientale, à doser." },
+        { "n": 7, "pourquoi": "Le mineur de base, passe-partout." }
+      ],
+      "effets": {
+        "ifx": [21, 1, 9],
+        "mfx": [5, 2],
+        "texte": "Petits échos rythmiques sur les percussions, kick et basse plutôt secs, une réverbe de pièce pour placer les percussions dans l'espace."
+      },
+      "structure": "Souvent : intro avec quelques percussions, arrivée du kick et de la basse, montée où les percussions s'empilent, break sans kick, retour plein. Les changements tombent souvent toutes les 8 ou 16 mesures.",
+      "differences": [
+        { "avec": "acid-tribe", "texte": "En tribe, ce sont les percussions qui mènent et la mélodie reste en retrait. En acid tribe, une ligne acide au filtre très résonant passe au premier plan et les percussions se simplifient pour lui laisser la place." }
+      ],
+      "generateur": {
+        "parents": ["tekno"],
+        "mots": ["en transe", "de teuf", "au galop", "de forêt", "de camion"],
+        "kick": {
+          "osc": [15, 17, 1, 2, 4, 34, 35, 45], "decay": [65, 100], "level": [100, 115],
+          "ifx": [{ "n": 1, "edit": [30, 60] }, { "n": 2, "edit": [40, 65] }, { "n": 9, "edit": [45, 75] }, { "n": 7, "edit": [30, 60] }],
+          "filtre": { "p": 0.25, "lpf": ["MS20 LPF", "electribe LPF"], "cutoff": [70, 100], "reso": [0, 20] },
+          "mfx": { "p": 0.2, "types": [5] },
+          "relances": ["x...x...x...x.xx", "x...x...x.x.x.xx", "x...x...x..xx.x.", "x..xx...x...x.xx"],
+          "variations": ["x...x...x...x...", "x...x...x...x..x", "x...x...x..xx..."]
+        }
+      }
+    },
+    {
+      "id": "acid-tribe",
+      "nom": "Acid tribe",
+      "couleur": "#d4f25a",
+      "bpm": { "min": 170, "max": 185, "defaut": 175 },
+      "caractere": [
+        "La base tribe (kick rond, percussions qui galopent) avec une ligne acide au premier plan.",
+        "Le filtre résonant qui siffle et bouge, façon 303, devient le moteur du morceau ; souvent un peu plus rapide et plus nerveux que la tribe."
+      ],
+      "kick": "Rond comme en tribe mais souvent un peu plus court, pour laisser respirer la ligne acide dans le grave.",
+      "basse": "La ligne acide sert souvent de basse et de mélodie à la fois ; s'il y a un sub, il reste très simple.",
+      "melodie": "Une ligne acide : Acid LPF, beaucoup de résonance, glissés (Glide) et accents ; on la fait évoluer en tournant Cutoff et EG Int pendant le morceau.",
+      "gammes": [
+        { "n": 7, "pourquoi": "Le mineur de base : les lignes acides y sonnent sombres sans être trop tendues." },
+        { "n": 4, "pourquoi": "Le demi-ton du phrygien rend la ligne acide plus menaçante." },
+        { "n": 16, "pourquoi": "Pentatonique : facile, chaque note tombe juste avec les percussions tribe." },
+        { "n": 12, "pourquoi": "Mineur blues : une note « sale » en plus qui donne du caractère." }
+      ],
+      "effets": {
+        "ifx": [3, 2, 21],
+        "mfx": [2, 4],
+        "texte": "Distorsion ou Overdrive sur la ligne acide, petits échos sur les percussions, un delay à bande en master pour les relances."
+      },
+      "structure": "Souvent comme en tribe, mais la ligne acide raconte l'histoire : elle entre fermée, s'ouvre petit à petit sur 16 ou 32 mesures, puis se referme avant le break.",
+      "differences": [
+        { "avec": "tribe", "texte": "La tribe met les percussions au centre. L'acid tribe garde l'esprit tribe mais c'est la ligne acide (filtre qui siffle) qui mène ; les percussions sont plus sobres et le tempo souvent un peu plus haut." }
+      ],
+      "generateur": {
+        "parents": ["tribe", "tekno"],
+        "mots": ["qui siffle", "en spirale", "au filtre", "qui gicle", "en tourbillon"],
+        "kick": {
+          "osc": [15, 17, 1, 2, 34, 45, 4, 19], "decay": [55, 85], "level": [100, 115],
+          "ifx": [{ "n": 1, "edit": [40, 70] }, { "n": 2, "edit": [45, 75] }, { "n": 9, "edit": [40, 70] }],
+          "filtre": { "p": 0.3, "lpf": ["MS20 LPF", "electribe LPF"], "cutoff": [75, 105], "reso": [0, 25] },
+          "mfx": { "p": 0.15, "types": [2, 5] },
+          "relances": ["x...x...x...x.xx", "x...x...x.x.x.x.", "x...x...x..xx.xx", "x...x...x...xxxx"],
+          "variations": ["x...x...x...x...", "x...x...x...x..x", "x...x...x..x...."]
+        }
+      }
+    },
+    {
+      "id": "mentale",
+      "nom": "Mentale",
+      "couleur": "#d9a6ff",
+      "bpm": { "min": 170, "max": 190, "defaut": 175 },
+      "caractere": [
+        "Sombre, hypnotique et répétitive : peu d'éléments, qui évoluent lentement.",
+        "Des sons qui frottent et des textures inquiétantes ; c'est la répétition qui installe l'état de transe."
+      ],
+      "kick": "Lourd et régulier, parfois saturé ; il change très peu d'un bout à l'autre du morceau.",
+      "basse": "Elle gronde ou siffle (reese, acid) et crée la tension plus que la mélodie.",
+      "melodie": "Peu de notes, qui frottent : gammes tendues, leads acides ou nappes sombres qui bougent lentement.",
+      "gammes": [
+        { "n": 4, "pourquoi": "Phrygien : le demi-ton au-dessus de la KEY donne la tension typique." },
+        { "n": 9, "pourquoi": "Mineur harmonique : dramatique, oriental." },
+        { "n": 8, "pourquoi": "Locrien : la plus instable, tout sonne inquiétant." },
+        { "n": 21, "pourquoi": "Espagnole : phrygien avec une note en plus, très tendue." }
+      ],
+      "effets": {
+        "ifx": [5, 31, 3],
+        "mfx": [4, 23],
+        "texte": "Bit Crusher et distorsion pour abîmer les sons, phaser qui tourne lentement, grande réverbe sombre en master."
+      },
+      "structure": "Souvent de longues plages hypnotiques : un élément entre ou sort toutes les 16 ou 32 mesures, transitions longues (bruit filtré qui monte, impact grave).",
+      "differences": [
+        { "avec": "tekno", "texte": "La tekno cherche l'efficacité et le groove ; la mentale cherche l'hypnose : moins d'éléments, plus sombres, qui bougent très lentement." }
+      ],
+      "generateur": {
+        "parents": ["hardtek", "tekno"],
+        "mots": ["de cave", "en vrille", "sous acide", "du chaos", "en apnée"],
+        "kick": {
+          "osc": [27, 30, 5, 9, 8, 28, 32, 7], "decay": [55, 90], "level": [95, 110],
+          "ifx": [{ "n": 3, "edit": [55, 90] }, { "n": 4, "edit": [40, 70] }, { "n": 5, "edit": [40, 70] }, { "n": 2, "edit": [60, 90] }],
+          "filtre": { "p": 0.4, "lpf": ["electribe LPF", "MS20 LPF", "OB LPF"], "cutoff": [80, 110], "reso": [10, 40] },
+          "mfx": { "p": 0.1, "types": [24, 23] },
+          "relances": ["x...x...x.x.xxxx", "x...x...xxxxxxxx", "x...x...x..xx.xx", "x.x.x.x.xxxxxxxx"],
+          "variations": ["x...x...x...x...", "x...x...x...x..x", "x...x...x...x.x."]
+        }
+      }
+    },
+    {
+      "id": "hardtek",
+      "nom": "Hardtek",
+      "couleur": "#ff7a8a",
+      "bpm": { "min": 180, "max": 200, "defaut": 185 },
+      "caractere": [
+        "Plus rapide et plus dure que la tekno : un kick très saturé et une énergie frontale.",
+        "Basses roulantes agressives, stabs et sons distordus ; on cherche la puissance plus que la finesse."
+      ],
+      "kick": "Très saturé, avec une attaque dure et souvent une queue distordue ; il prend beaucoup de place.",
+      "basse": "Roulante et agressive entre les kicks (souvent distordue), ou un reese qui gronde.",
+      "melodie": "Des stabs et des riffs courts, souvent distordus, qui reviennent comme des slogans ; parfois une ligne acide.",
+      "gammes": [
+        { "n": 7, "pourquoi": "Le mineur de base : efficace pour les riffs et les stabs." },
+        { "n": 4, "pourquoi": "Phrygien : plus menaçant." },
+        { "n": 9, "pourquoi": "Mineur harmonique : riffs dramatiques." }
+      ],
+      "effets": {
+        "ifx": [3, 2, 8, 22],
+        "mfx": [19, 24],
+        "texte": "Distorsion et Overdrive partout, Limiter pour garder le kick sous contrôle, Roller pour les roulements ; en master, un passe-haut pour les montées."
+      },
+      "structure": "Souvent : intro courte, kick très tôt, break avec roulement de caisse claire qui accélère, retour du kick à pleine puissance. Les sections changent souvent toutes les 8 ou 16 mesures.",
+      "differences": [
+        { "avec": "tekno", "texte": "La hardtek est en général plus rapide (vers 180 à 200 BPM au lieu de 165 à 180), son kick est beaucoup plus saturé et ses basses plus agressives. La tekno reste plus sèche et plus groovy, avec un kick qui cogne sans forcément distordre." }
+      ],
+      "generateur": {
+        "parents": ["tekno", "mentale"],
+        "mots": ["qui tabasse", "en surchauffe", "à fond", "au marteau", "qui déboule"],
+        "kick": {
+          "osc": [27, 5, 6, 30, 9, 8, 28, 32], "decay": [60, 95], "level": [95, 110],
+          "ifx": [{ "n": 3, "edit": [60, 95] }, { "n": 2, "edit": [70, 100] }, { "n": 8, "edit": [60, 90] }],
+          "filtre": { "p": 0.35, "lpf": ["electribe LPF", "MS20 LPF"], "cutoff": [85, 115], "reso": [10, 35] },
+          "mfx": { "p": 0.1, "types": [24, 19] },
+          "relances": ["x...x...x.x.xxxx", "x...x...x...xxxx", "x...x...xxxxxxxx", "x.x.x.x.x.x.xxxx"],
+          "variations": ["x...x...x...x...", "x...x...x...x..x", "x...x...x...x.x."]
+        }
+      }
+    },
+    {
+      "id": "tekno",
+      "nom": "Tekno",
+      "couleur": "#8cc4ff",
+      "bpm": { "min": 165, "max": 180, "defaut": 170 },
+      "caractere": [
+        "La tekno de free party « classique » : un kick qui cogne, une basse qui roule, des boucles efficaces.",
+        "Une énergie régulière et dansante ; les relances viennent des filtres, des coupures et des roulements."
+      ],
+      "kick": "Court et dur, sec, sur chaque temps ; il laisse la place à la basse roulante.",
+      "basse": "Roulante : trois notes entre chaque kick, avec un filtre qui claque.",
+      "melodie": "Leads acides, stabs et motifs hypnotiques simples, souvent en mineur.",
+      "gammes": [
+        { "n": 7, "pourquoi": "Le mineur naturel, la base la plus courante." },
+        { "n": 16, "pourquoi": "Pentatonique mineure : simple et efficace." },
+        { "n": 3, "pourquoi": "Dorien : un mineur un peu plus lumineux." }
+      ],
+      "effets": {
+        "ifx": [1, 2, 14],
+        "mfx": [18, 4],
+        "texte": "Punch et Overdrive pour le kick et la basse, filtres qui s'ouvrent pour les montées, réverbe pour les relances."
+      },
+      "structure": "Souvent : kick et basse dès le début, éléments ajoutés toutes les 8 ou 16 mesures, coupure ou break, retour avec une nouvelle couche.",
+      "differences": [
+        { "avec": "hardtek", "texte": "La tekno est en général un peu plus lente et plus sèche que la hardtek : le kick cogne sans être forcément très distordu et le groove compte autant que la puissance." },
+        { "avec": "raggatek", "texte": "La raggatek garde le kick tekno mais ajoute des éléments ragga : skank à contretemps, voix, basse plus chantante." },
+        { "avec": "dub-tekno", "texte": "La dub tekno garde le kick tekno mais laisse plus d'espace : moins de notes, beaucoup d'échos et de réverbe." }
+      ],
+      "generateur": {
+        "parents": ["hardtek"],
+        "mots": ["en boucle", "d'usine", "de hangar", "au métronome", "en béton"],
+        "kick": {
+          "osc": [6, 12, 10, 11, 19, 20, 21, 22, 24, 25, 26], "decay": [35, 65], "level": [100, 115],
+          "ifx": [{ "n": 1, "edit": [45, 75] }, { "n": 2, "edit": [40, 70] }, { "n": 8, "edit": [50, 80] }],
+          "filtre": { "p": 0.3, "lpf": ["electribe LPF", "MS20 LPF"], "cutoff": [85, 110], "reso": [0, 25] },
+          "mfx": { "p": 0.15, "types": [4, 5] },
+          "relances": ["x...x...x...x.x.", "x...x...x...x..x", "x...x...x.x.x.x.", "x...x...x...xxxx"],
+          "variations": ["x...x...x...x...", "x...x...x...x..x"]
+        }
+      }
+    },
+    {
+      "id": "raggatek",
+      "nom": "Raggatek",
+      "couleur": "#ffe066",
+      "bpm": { "min": 170, "max": 185, "defaut": 175 },
+      "caractere": [
+        "De la tekno mélangée à des éléments ragga et dancehall : voix, skank à contretemps, basse qui chante.",
+        "Le kick reste tekno ; l'ambiance est souvent plus chaloupée et plus festive."
+      ],
+      "kick": "Un kick tekno qui cogne, assez court pour laisser passer la basse et le skank.",
+      "basse": "Plus mélodique qu'en tekno : elle chante quelques notes, un peu comme une basse reggae accélérée.",
+      "melodie": "Un skank (accord court sur les contretemps), des stabs, des voix. Sur l'E2 Synth il n'y a pas d'échantillonneur : les voix passent par les oscillateurs Vox ou par Audio In.",
+      "gammes": [
+        { "n": 3, "pourquoi": "Dorien : un mineur plus lumineux, proche de beaucoup de morceaux reggae." },
+        { "n": 7, "pourquoi": "Le mineur de base." },
+        { "n": 16, "pourquoi": "Pentatonique mineure : simple pour les voix et la basse." }
+      ],
+      "effets": {
+        "ifx": [20, 27, 12],
+        "mfx": [2, 6],
+        "texte": "Delay en croches sur le skank et les voix, Radio EQ pour un son de « voix de sound system », delay à bande en master pour les relances."
+      },
+      "structure": "Souvent : intro avec une voix ou un skank, kick et basse, couplets où la voix revient, break dub (tout coupe sauf l'écho), retour du kick.",
+      "differences": [
+        { "avec": "tekno", "texte": "La raggatek garde le kick et le tempo tekno mais emprunte au ragga : skank sur les contretemps, voix, basse qui chante. La tekno reste plus sèche et plus mécanique." },
+        { "avec": "dub-tekno", "texte": "La raggatek met en avant les voix et le skank ; la dub tekno met en avant l'espace (échos, réverbes) avec moins d'éléments." }
+      ],
+      "generateur": {
+        "parents": ["tekno", "tribe"],
+        "mots": ["qui skanke", "en sound system", "au soleil", "qui chaloupe", "en contretemps"],
+        "kick": {
+          "osc": [12, 10, 11, 19, 24, 25, 6, 35], "decay": [40, 70], "level": [100, 115],
+          "ifx": [{ "n": 1, "edit": [40, 70] }, { "n": 2, "edit": [35, 60] }, { "n": 9, "edit": [40, 70] }],
+          "filtre": { "p": 0.25, "lpf": ["electribe LPF", "MS20 LPF"], "cutoff": [80, 110], "reso": [0, 20] },
+          "mfx": { "p": 0.2, "types": [2, 5] },
+          "relances": ["x...x...x...x.x.", "x...x...x..x..x.", "x...x...x...x..x", "x...x..xx...x.x."],
+          "variations": ["x...x...x...x...", "x...x...x..x....", "x...x...x...x..x"]
+        }
+      }
+    },
+    {
+      "id": "dub-tekno",
+      "nom": "Dub tekno",
+      "couleur": "#6fe3b8",
+      "bpm": { "min": 160, "max": 175, "defaut": 165 },
+      "caractere": [
+        "De la tekno qui emprunte au dub : échos, réverbes, basse ronde et profonde.",
+        "Moins de notes et plus d'espace ; ce sont les delays et les coupures qui créent le mouvement."
+      ],
+      "kick": "Rond et profond, plutôt propre ; il laisse beaucoup de place aux échos.",
+      "basse": "Un sub rond ou une basse dub lente, peu de notes, très présente dans le grave.",
+      "melodie": "Des accords courts (skank ou stab) noyés dans le delay, quelques notes qui résonnent longtemps.",
+      "gammes": [
+        { "n": 7, "pourquoi": "Le mineur de base : sombre et profond." },
+        { "n": 3, "pourquoi": "Dorien : la couleur de beaucoup de morceaux dub." },
+        { "n": 16, "pourquoi": "Pentatonique mineure : peu de notes, laisse l'espace aux échos." }
+      ],
+      "effets": {
+        "ifx": [19, 20, 12],
+        "mfx": [2, 3, 6],
+        "texte": "Delays en 3/16 ou en croches sur les percussions et les accords, delay à bande et grandes réverbes en master, que l'on « lance » au pad tactile sur un seul coup."
+      },
+      "structure": "Souvent : longue intro où les éléments arrivent un à un, coupures où seul l'écho reste, retours progressifs. Les changements sont plus lents qu'en tekno.",
+      "differences": [
+        { "avec": "tekno", "texte": "La dub tekno garde le kick tekno mais enlève des notes pour laisser de la place aux échos et aux réverbes ; le tempo est souvent un peu plus bas et le mouvement vient des effets plus que des notes." },
+        { "avec": "raggatek", "texte": "La raggatek met en avant les voix et le skank ; la dub tekno met en avant l'espace et les échos." }
+      ],
+      "generateur": {
+        "parents": ["tekno", "tribe"],
+        "mots": ["en écho", "dans la brume", "qui résonne", "au fond du delay", "en apesanteur"],
+        "kick": {
+          "osc": [15, 17, 12, 19, 25, 35, 45, 1], "decay": [50, 85], "level": [100, 115],
+          "ifx": [{ "n": 1, "edit": [30, 55] }, { "n": 9, "edit": [45, 75] }, { "n": 7, "edit": [30, 55] }],
+          "filtre": { "p": 0.35, "lpf": ["MS20 LPF", "electribe LPF"], "cutoff": [65, 95], "reso": [0, 20] },
+          "mfx": { "p": 0.35, "types": [2, 3, 6] },
+          "relances": ["x...x...x...x...", "x...x...x...x..x", "x...x...x.......", "x...x...x...x.x."],
+          "variations": ["x...x...x...x...", "x...x...x...x..x"]
+        }
+      }
+    }
+  ]
+}

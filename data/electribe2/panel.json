@@ -1,0 +1,1293 @@
+{
+  "meta": {
+    "description": "Panneau supérieur (13 sections numérotées comme dans le mode d'emploi p. 22-24) et connecteurs (p. 25).",
+    "documents": {
+      "OM": {
+        "fichier": "docs/281ffa.pdf",
+        "titre": "Mode d'emploi electribe / electribe sampler (section française)",
+        "pages": "Numéros imprimés en bas de page (section FR : p. 20 à 38). Page PDF = page imprimée + 16.",
+        "couvreSynth": true
+      },
+      "PG": {
+        "fichier": "docs/electribe_PG_F4.pdf",
+        "titre": "Guide des paramètres de l'electribe (Synth)",
+        "pages": "Numéro imprimé = page PDF.",
+        "couvreSynth": true
+      },
+      "PGS": {
+        "fichier": "docs/electribe_sampler_PG_F3.pdf",
+        "titre": "Guide des paramètres de l'electribe SAMPLER",
+        "couvreSynth": false,
+        "remarque": "Non utilisé : guide du modèle Sampler (la rouge), remplacé par le guide Synth."
+      }
+    },
+    "statutsSynth": {
+      "confirmé": "Vient du mode d'emploi commun ou du guide des paramètres Synth.",
+      "absent du manuel": "Aucun des PDF fournis ne donne cette information."
+    },
+    "extraitLe": "2026-10-28"
+  },
+  "sections": [
+    {
+      "num": 1,
+      "id": "power",
+      "nom": "Interrupteur",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "power",
+          "nom": "Bouton d'alimentation",
+          "type": "bouton",
+          "fonction": "Allume / éteint (maintenir jusqu'à l'écran de démarrage ou l'extinction).",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "id": "volume",
+      "nom": "Volume",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "volume",
+          "nom": "Volume",
+          "type": "potard",
+          "fonction": "Volume des sorties ligne et casque.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "id": "inputlevel",
+      "nom": "Input Level",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "inputlevel",
+          "nom": "Input Level",
+          "type": "potard",
+          "fonction": "Niveau de l'entrée Audio In.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "id": "display",
+      "nom": "Écran",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "display",
+          "nom": "Écran",
+          "type": "écran",
+          "fonction": "Affiche motifs, parties et valeurs de paramètres.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "id": "transport",
+      "nom": "Transport",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "rec",
+          "nom": "Rec (●)",
+          "type": "bouton",
+          "fonction": "Lance l'enregistrement (notes, phrases ou mouvements de potards). Un nouvel appui arrête l'enregistrement, la lecture continue.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "stop",
+          "nom": "Stop (■)",
+          "type": "bouton",
+          "fonction": "Arrête la lecture.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "play",
+          "nom": "Lecture/Pause (▶/❚❚)",
+          "type": "bouton",
+          "fonction": "Lance ou met en pause la lecture.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "shift": [
+            {
+              "combo": "Shift + Lecture/Pause",
+              "effet": "Relance depuis le début du motif.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "tap",
+          "nom": "Tap",
+          "type": "bouton",
+          "fonction": "Tape le tempo en rythme pour régler le BPM.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "pat.bpm"
+          ],
+          "shift": [
+            {
+              "combo": "Shift + Tap",
+              "effet": "Ouvre la page de réglage du tempo.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "id": "touchpad",
+      "nom": "Pad tactile",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "touchpad",
+          "nom": "Pad tactile",
+          "type": "pad XY",
+          "fonction": "Joue en Gate Arp ou Touch Scale, ou pilote l'effet master (X/Y).",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "mfx.x",
+            "mfx.y"
+          ]
+        },
+        {
+          "id": "gatearp",
+          "nom": "Gate Arp",
+          "type": "bouton",
+          "fonction": "Active le Gate Arpeggiator (X = vitesse, Y = longueur des notes, p. 29).",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "pat.gatearp"
+          ],
+          "shift": [
+            {
+              "combo": "Shift + Gate Arp",
+              "effet": "Ouvre la page GATE ARP.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "touchscale",
+          "nom": "Touch Scale",
+          "type": "bouton",
+          "fonction": "Joue des notes de la gamme en frottant / tapotant le pad tactile.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "pat.scale",
+            "pat.key",
+            "glob.touchrange"
+          ],
+          "shift": [
+            {
+              "combo": "Shift + Touch Scale",
+              "effet": "Ouvre la page SCALE.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "masterfx",
+          "nom": "Master Fx",
+          "type": "bouton",
+          "fonction": "Active le contrôle de l'effet master par le pad tactile.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "mfx.on",
+            "pat.mfxtype"
+          ],
+          "shift": [
+            {
+              "combo": "Shift + Master Fx",
+              "effet": "Ouvre la page MFX TYPE.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "mfxhold",
+          "nom": "MFX Hold",
+          "type": "bouton",
+          "fonction": "Garde l'effet master actif après avoir levé le doigt ; mémorisé dans le motif.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "mfx.hold"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "id": "common",
+      "nom": "Section commune",
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "controles": [
+        {
+          "id": "value",
+          "nom": "Molette de valeur (Value)",
+          "type": "potard",
+          "fonction": "Change la valeur du paramètre affiché.",
+          "source": {
+            "doc": "OM",
+            "page": 22
+          },
+          "synth": "confirmé",
+          "shift": [
+            {
+              "combo": "Shift + Value",
+              "effet": "Change la valeur par petits ou gros pas (selon le paramètre).",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Value (écran motif)",
+              "effet": "Change de motif par pas de 10.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "cursor",
+          "nom": "Curseurs < >",
+          "type": "bouton",
+          "fonction": "Choisit le paramètre à éditer.",
+          "source": {
+            "doc": "OM",
+            "page": 23
+          },
+          "synth": "confirmé",
+          "shift": [
+            {
+              "combo": "Shift + <",
+              "effet": "Annule la dernière manipulation (Undo, système v2.00 ou plus).",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "menu",
+          "nom": "Menu/Enter",
+          "type": "bouton",
+          "fonction": "Ouvre les menus (motif, partie, Global, Utility) et valide.",
+          "source": {
+            "doc": "OM",
+            "page": 23
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "exit",
+          "nom": "Exit",
+          "type": "bouton",
+          "fonction": "Deux appuis : retour à l'écran de sélection de motif.",
+          "source": {
+            "doc": "OM",
+            "page": 23
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "shift",
+          "nom": "Shift",
+          "type": "bouton",
+          "fonction": "Donne une seconde fonction aux autres boutons et potards.",
+          "source": {
+            "doc": "OM",
+            "page": 23
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "write",
+          "nom": "Write",
+          "type": "bouton",
+          "fonction": "Sauvegarde le motif (et les réglages Global depuis leur page).",
+          "source": {
+            "doc": "OM",
+            "page": 23
+          },
+          "synth": "confirmé",
+          "shift": [
+            {
+              "combo": "Shift + Write",
+              "effet": "Renommer et sauvegarder le motif (Pattern Rename).",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "id": "edit",
+      "nom": "Section d'édition (son de la partie)",
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "sousSections": [
+        {
+          "id": "oscillator",
+          "nom": "Oscillator",
+          "controles": [
+            {
+              "id": "osc",
+              "nom": "Oscillator",
+              "type": "potard",
+              "fonction": "Choisit la forme d'onde.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "osc.type"
+              ],
+              "shift": [
+                {
+                  "combo": "Shift + Oscillator",
+                  "effet": "Défile par catégorie.",
+                  "source": {
+                    "doc": "PG",
+                    "page": 10
+                  },
+                  "synth": "confirmé"
+                }
+              ]
+            },
+            {
+              "id": "pitch",
+              "nom": "Pitch/Glide",
+              "type": "potard",
+              "fonction": "Hauteur.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "osc.pitch",
+                "osc.glide"
+              ],
+              "shift": [
+                {
+                  "combo": "Shift + Pitch/Glide",
+                  "effet": "Règle le Glide (page Glide).",
+                  "source": {
+                    "doc": "OM",
+                    "page": 23
+                  },
+                  "synth": "confirmé"
+                }
+              ]
+            },
+            {
+              "id": "oscedit",
+              "nom": "Edit",
+              "type": "potard",
+              "fonction": "Caractère du son ; dépend de l'oscillateur.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "osc.edit"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "filter",
+          "nom": "Filter",
+          "controles": [
+            {
+              "id": "lpf",
+              "nom": "LPF",
+              "type": "bouton",
+              "fonction": "Filtre passe-bas ; appuis répétés = autre type.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "filter.lpf"
+              ]
+            },
+            {
+              "id": "hpf",
+              "nom": "HPF",
+              "type": "bouton",
+              "fonction": "Filtre passe-haut ; appuis répétés = autre type.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "filter.hpf"
+              ]
+            },
+            {
+              "id": "bpf",
+              "nom": "BPF",
+              "type": "bouton",
+              "fonction": "Filtre passe-bande ; appuis répétés = autre type.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "filter.bpf"
+              ]
+            },
+            {
+              "id": "cutoff",
+              "nom": "Filter",
+              "type": "potard",
+              "fonction": "Fréquence de coupure.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "filter.cutoff"
+              ]
+            },
+            {
+              "id": "resonance",
+              "nom": "Resonance",
+              "type": "potard",
+              "fonction": "Résonance.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "filter.resonance"
+              ]
+            },
+            {
+              "id": "egint",
+              "nom": "EG Int",
+              "type": "potard",
+              "fonction": "Mouvement de la coupure par l'enveloppe.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "filter.egint"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "modulation",
+          "nom": "Modulation",
+          "controles": [
+            {
+              "id": "modtype",
+              "nom": "Modulation",
+              "type": "potard",
+              "fonction": "Type de modulation (LFO ou enveloppe vers une destination).",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "mod.type"
+              ],
+              "shift": [
+                {
+                  "combo": "Shift + Modulation",
+                  "effet": "Change la forme d'onde, garde la destination.",
+                  "source": {
+                    "doc": "PG",
+                    "page": 10
+                  },
+                  "synth": "confirmé"
+                }
+              ]
+            },
+            {
+              "id": "depth",
+              "nom": "Depth",
+              "type": "potard",
+              "fonction": "Intensité.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "mod.depth"
+              ]
+            },
+            {
+              "id": "speed",
+              "nom": "Speed",
+              "type": "potard",
+              "fonction": "Vitesse.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "mod.speed"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ampeg",
+          "nom": "Amp/EG",
+          "controles": [
+            {
+              "id": "level",
+              "nom": "Level",
+              "type": "potard",
+              "fonction": "Volume de la partie.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "amp.level"
+              ]
+            },
+            {
+              "id": "pan",
+              "nom": "Pan",
+              "type": "potard",
+              "fonction": "Position stéréo.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "amp.pan"
+              ]
+            },
+            {
+              "id": "attack",
+              "nom": "Attack",
+              "type": "potard",
+              "fonction": "Montée du son.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "amp.attack"
+              ]
+            },
+            {
+              "id": "decay",
+              "nom": "Decay/Release",
+              "type": "potard",
+              "fonction": "Chute du son.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "amp.decay"
+              ]
+            },
+            {
+              "id": "mfxsend",
+              "nom": "MFX Send",
+              "type": "bouton",
+              "fonction": "Envoi vers l'effet master.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "mfx.send"
+              ]
+            },
+            {
+              "id": "ampeg",
+              "nom": "Amp EG",
+              "type": "bouton",
+              "fonction": "Active l'enveloppe de volume.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "amp.eg"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "insertfx",
+          "nom": "Insert Fx",
+          "controles": [
+            {
+              "id": "ifxtype",
+              "nom": "Insert Fx",
+              "type": "potard",
+              "fonction": "Type d'effet d'insertion.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "ifx.type"
+              ]
+            },
+            {
+              "id": "ifxedit",
+              "nom": "Edit",
+              "type": "potard",
+              "fonction": "Intensité de l'effet.",
+              "source": {
+                "doc": "OM",
+                "page": 23
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "ifx.edit"
+              ]
+            },
+            {
+              "id": "ifxon",
+              "nom": "IFX On",
+              "type": "bouton",
+              "fonction": "Active / coupe l'effet d'insertion.",
+              "source": {
+                "doc": "OM",
+                "page": 24
+              },
+              "synth": "confirmé",
+              "parametres": [
+                "ifx.on"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": 9,
+      "id": "steps",
+      "nom": "Boutons Step (1-4)",
+      "source": {
+        "doc": "OM",
+        "page": 24
+      },
+      "controles": [
+        {
+          "id": "step",
+          "nom": "Step 1-4",
+          "type": "bouton",
+          "fonction": "Montrent / changent le bloc de 16 pas édité, ou l'octave en mode Keyboard. En Pattern Set : choisissent le groupe.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "pat.length",
+            "step.number"
+          ]
+        }
+      ]
+    },
+    {
+      "num": 10,
+      "id": "partedit",
+      "nom": "Édition de partie",
+      "source": {
+        "doc": "OM",
+        "page": 24
+      },
+      "controles": [
+        {
+          "id": "partsel",
+          "nom": "<Part, Part>",
+          "type": "bouton",
+          "fonction": "Choisit la partie (1 à 16) ; son pad s'allume en bleu.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "partmute",
+          "nom": "Part Mute",
+          "type": "bouton",
+          "fonction": "Allumé : un pad coupe / rétablit sa partie.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé",
+          "shift": [
+            {
+              "combo": "Shift + Part Mute",
+              "effet": "Rétablit toutes les parties coupées.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "parterase",
+          "nom": "Part Erase",
+          "type": "bouton",
+          "fonction": "Pendant la lecture, tenir le pad d'une partie efface ses notes.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé"
+        }
+      ]
+    },
+    {
+      "num": 11,
+      "id": "padmode",
+      "nom": "Mode des pads",
+      "source": {
+        "doc": "OM",
+        "page": 24
+      },
+      "controles": [
+        {
+          "id": "trigger",
+          "nom": "Trigger",
+          "type": "bouton",
+          "fonction": "Les pads jouent les parties (mode réglé par TRIGGER MODE).",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "glob.triggermode"
+          ]
+        },
+        {
+          "id": "sequencer",
+          "nom": "Sequencer",
+          "type": "bouton",
+          "fonction": "Les pads = les 16 pas : appui = pas allumé / éteint.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "keyboard",
+          "nom": "Keyboard",
+          "type": "bouton",
+          "fonction": "Les pads = un clavier dans la gamme du motif.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "pat.key",
+            "pat.scale"
+          ]
+        },
+        {
+          "id": "chord",
+          "nom": "Chord",
+          "type": "bouton",
+          "fonction": "Les pads jouent des accords.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé",
+          "parametres": [
+            "pat.chordset"
+          ],
+          "shift": [
+            {
+              "combo": "Shift + Chord",
+              "effet": "Ouvre la page Chord Set.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ]
+        },
+        {
+          "id": "stepjump",
+          "nom": "Step Jump",
+          "type": "bouton",
+          "fonction": "En lecture, un pad saute au pas 1-16 correspondant ; plusieurs pads = pas joués dans l'ordre d'appui.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé"
+        },
+        {
+          "id": "patternset",
+          "nom": "Pattern Set",
+          "type": "bouton",
+          "fonction": "Un pad lance le motif qui lui est attribué. Tenir Pattern Set + pad = attribuer le motif courant.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé"
+        }
+      ]
+    },
+    {
+      "num": 12,
+      "id": "pads",
+      "nom": "Pads de déclenchement (16)",
+      "source": {
+        "doc": "OM",
+        "page": 24
+      },
+      "controles": [
+        {
+          "id": "pads",
+          "nom": "Pads 1-16",
+          "type": "pad",
+          "fonction": "Fonction définie par la section Mode des pads.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé",
+          "shift": [
+            {
+              "combo": "Shift + Pad 1",
+              "effet": "Ouvre la page SWING.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 2",
+              "effet": "Ouvre la page LENGTH.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 3",
+              "effet": "Ouvre la page CLEAR MFX MOTION.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 4",
+              "effet": "Ouvre la page KEY.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 5",
+              "effet": "Ouvre la page SCALE.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 6",
+              "effet": "Ouvre la page GATE ARP.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 7",
+              "effet": "Ouvre la page LAST STEP.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 8",
+              "effet": "Ouvre la page GROOVE TYPE.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 9",
+              "effet": "Ouvre la page GROOVE TYPE.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 10",
+              "effet": "Ouvre la page MOTION SEQ.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 11",
+              "effet": "Ouvre la page TRG. PAD VELOCITY.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 12",
+              "effet": "Ouvre la page STEP EDIT.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 13",
+              "effet": "Ouvre la page COPY PART.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 14",
+              "effet": "Ouvre la page CLEAR SEQUENCE.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 15",
+              "effet": "Ouvre la page CLEAR MOTION.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            },
+            {
+              "combo": "Shift + Pad 16",
+              "effet": "Ouvre la page METRONOME.",
+              "source": {
+                "doc": "PG",
+                "page": 10
+              },
+              "synth": "confirmé"
+            }
+          ],
+          "notes": [
+            "Le guide indique GROOVE TYPE pour les pads 8 et 9 : sans doute une coquille (GROOVE DEPTH ?), à vérifier sur la machine."
+          ]
+        }
+      ]
+    },
+    {
+      "num": 13,
+      "id": "led",
+      "nom": "Diode arrière",
+      "source": {
+        "doc": "OM",
+        "page": 24
+      },
+      "controles": [
+        {
+          "id": "led",
+          "nom": "Diode",
+          "type": "voyant",
+          "fonction": "S'allume selon le motif en cours de lecture.",
+          "source": {
+            "doc": "OM",
+            "page": 24
+          },
+          "synth": "confirmé"
+        }
+      ]
+    }
+  ],
+  "connecteurs": [
+    {
+      "id": "audioout",
+      "nom": "Audio Out L/R",
+      "type": "jack 6,35",
+      "fonction": "Sorties audio. Seulement L branché = sortie mono.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "audioin",
+      "nom": "Audio In",
+      "type": "mini-jack stéréo",
+      "fonction": "Entrée audio externe ; mixable avec AUDIO IN THRU.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé",
+      "parametres": [
+        "glob.audiointhru"
+      ]
+    },
+    {
+      "id": "syncout",
+      "nom": "Sync Out",
+      "type": "mini-jack",
+      "fonction": "Impulsion 5 V / 15 ms à chaque pas, pour volca ou séquenceurs analogiques. Polarité réglable.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé",
+      "parametres": [
+        "glob.syncpolarity",
+        "glob.syncunit"
+      ]
+    },
+    {
+      "id": "syncin",
+      "nom": "Sync In",
+      "type": "mini-jack",
+      "fonction": "Avance les pas au rythme d'impulsions externes si CLOCK MODE = Auto ou Ext. Sync.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé",
+      "parametres": [
+        "glob.clockmode",
+        "glob.syncpolarity"
+      ]
+    },
+    {
+      "id": "midi",
+      "nom": "MIDI IN/OUT",
+      "type": "mini-jack + câbles de conversion fournis",
+      "fonction": "Connexion MIDI.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé",
+      "parametres": [
+        "glob.midich"
+      ]
+    },
+    {
+      "id": "phones",
+      "nom": "Casque",
+      "type": "mini-jack stéréo",
+      "fonction": "Sortie casque.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "dc",
+      "nom": "DC 9V",
+      "type": "alimentation",
+      "fonction": "Adaptateur secteur fourni uniquement.",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "usb",
+      "nom": "USB",
+      "type": "micro-USB B",
+      "fonction": "Connexion ordinateur (MIDI USB).",
+      "source": {
+        "doc": "OM",
+        "page": 25
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "sd",
+      "nom": "Carte SD",
+      "type": "fente",
+      "fonction": "Sauvegarde / chargement. SD 512 Mo–2 Go, SDHC ≤ 32 Go ; pas de SDXC.",
+      "source": {
+        "doc": "OM",
+        "page": 26
+      },
+      "synth": "confirmé"
+    }
+  ]
+}

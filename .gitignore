@@ -1,0 +1,38 @@
+# Dépendances et build
+node_modules/
+app/node_modules/
+app/dist/
+dist/
+*.tsbuildinfo
+
+# App assemblée (se reconstruit avec « cd app && npm run build »)
+E2-Academy.html
+E2-Academy-apercu-recettes.html
+
+# Manuels Korg et photos : jamais publiés (liens vers le site officiel de Korg)
+docs/
+*.pdf
+
+# Données personnelles et sauvegardes
+sauvegardes/
+livraison-*/
+captures/
+apercus/
+*.zip
+*.tgz
+*.tar.gz
+export*.json
+*releves*.json
+!data/electribe2/releves.json
+mes-donnees*.json
+*.webm
+*.wav
+*.mp3
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Notes personnelles : uniquement sur le PC
+README.md

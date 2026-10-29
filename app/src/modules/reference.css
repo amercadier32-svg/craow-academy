@@ -1,0 +1,106 @@
+/* Module Analyser une référence (29/10/2026) */
+.ref-page { max-width: 1100px; margin: 0 auto; }
+.ref-page .page-title { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.ref-intro { max-width: 800px; margin: 0 auto 14px; text-align: center; color: var(--muted); }
+.ref-intro b { color: var(--text); }
+.ref-h { margin: 16px 0 6px; font-family: var(--px); font-size: 1.2rem; font-weight: 400; color: var(--text); }
+.ref-btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+.ref-ok { margin: 8px 0; padding: 8px 10px; border-left: 4px solid #4fd18b; background: #4fd18b14; }
+.ref-calcul { color: #ffd84d; }
+.ref-approx { display: inline-block; font-size: 0.72rem; color: #ffb020; border: 1px dashed #ffb02088; padding: 0 5px; margin-top: 2px; width: fit-content; }
+
+/* 1. Charger */
+.ref-charger { display: grid; gap: 10px; }
+.ref-depot { position: relative; display: grid; justify-items: center; gap: 6px; padding: 22px 14px; text-align: center; cursor: pointer;
+  background: repeating-linear-gradient(45deg, #9b6bff0d 0 10px, transparent 10px 20px), #15161b; border: 3px dashed #9b6bff; }
+.ref-depot.petit { padding: 12px; grid-auto-flow: column; justify-content: center; }
+.ref-depot.survol, .ref-depot:hover { background-color: #9b6bff1f; }
+.ref-depot input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.ref-recharge { margin: 0; padding: 8px 10px; border: 2px solid #ffd84d; background: #ffd84d12; }
+.ref-fichier { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; justify-content: space-between; }
+.ref-fichier .ss-champ { min-width: 240px; flex: 1; max-width: 420px; }
+
+/* 2. Morceau */
+.ref-chiffres { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.ref-chiffre { display: grid; gap: 4px; align-content: start; padding: 10px 12px; background: #15161b; border: 2px solid var(--edge); box-shadow: 0 3px 0 var(--edge); }
+.ref-chiffre > span:first-child { font-size: 0.8rem; color: var(--muted); }
+.ref-chiffre > b { font-family: var(--px); font-weight: 400; font-size: 1.8rem; line-height: 1; color: #fff; }
+.ref-chiffre .chipbtn { width: fit-content; }
+.ref-gammes { display: flex; flex-wrap: wrap; gap: 4px; }
+.ref-gammes a { text-decoration: none; }
+.ref-conf { position: relative; display: block; height: 16px; font-size: 0.72rem; line-height: 16px; padding-left: 6px; color: #fff; background: #23262d; border: 1px solid var(--edge); overflow: hidden; }
+.ref-conf i { position: absolute; inset: 0 auto 0 0; z-index: 0; }
+.ref-conf.c-bonne i { background: #4fd18b88; } .ref-conf.c-moyenne i { background: #ffb02088; } .ref-conf.c-faible i { background: #ff6a3d88; }
+.ref-conf { isolation: isolate; } .ref-conf i { z-index: -1; }
+.ref-onde { display: block; width: 100%; background: #0d0e12; border: 2px solid var(--edge); touch-action: none; cursor: crosshair; margin: 0 0 6px; }
+.ref-onde.zoom { border-color: #ffd84d55; }
+.ref-zone-barre, .ref-zones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; }
+.ref-zone-info { font-family: ui-monospace, monospace; font-size: 0.85rem; color: #ffd84d; }
+.ref-zone-nom { font: inherit; color: var(--text); background: #0d0e12; border: 2px solid var(--edge); padding: 6px 8px; min-width: 0; flex: 1; max-width: 320px; }
+.ref-zones-liste { list-style: none; margin: 6px 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.ref-zones-liste li { display: flex; gap: 4px; align-items: center; padding: 2px; border: 2px solid transparent; }
+.ref-zones-liste li.on { border-color: #ffd84d; }
+.ref-mesures-zone { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.9rem; color: var(--muted); }
+.ref-mesures-zone b { color: var(--text); }
+.ref-spectre, .ref-env { margin: 0; }
+.ref-spectre svg, .ref-env svg { display: block; width: 100%; height: auto; background: #0d0e12; border: 2px solid var(--edge); }
+.ref-ax { fill: #a3abba; font: 11px ui-monospace, monospace; }
+.ref-ax.big { fill: #ffffff55; font-size: 12px; letter-spacing: 0.08em; }
+.ref-ax.hz { fill: #ffd84d99; }
+.ref-page .ms-legende { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+.ref-page .ms-legende span { display: inline-flex; align-items: center; gap: 5px; }
+.ref-page .ms-legende i { width: 16px; height: 4px; border: 0 solid; display: inline-block; }
+.ref-page .ms-legende i.pt { height: 0; border-top: 3px dashed; background: none; }
+
+/* 3. Son */
+.ref-son { display: grid; gap: 4px; }
+.ref-parts { display: grid; gap: 6px; }
+.ref-part { display: grid; grid-template-columns: minmax(130px, 190px) 1fr auto; gap: 8px; align-items: center; font-size: 0.88rem; }
+.ref-part-barre { position: relative; height: 16px; background: #23262d; border: 1px solid var(--edge); }
+.ref-part-barre i { position: absolute; left: 0; top: 0; bottom: 0; }
+.ref-part-barre i.moi { top: auto; height: 5px; background: #4fd18b; }
+.ref-part b { font-weight: 600; min-width: 4.5em; text-align: right; }
+
+/* 4. Recettes */
+.ref-recettes { display: grid; gap: 8px; }
+.ref-rc-liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.ref-rc { display: grid; gap: 6px; align-content: start; height: 100%; box-sizing: border-box; padding: 10px 12px 12px; background: var(--panel); border: 2px solid var(--edge); box-shadow: 0 5px 0 var(--edge), inset 0 5px 0 #9b6bff; }
+.ref-rc.gardee { box-shadow: 0 5px 0 var(--edge), inset 0 5px 0 #4fd18b; }
+.ref-rc h4 { margin: 2px 0 0; font-size: 1.05rem; line-height: 1.2; }
+.ref-rc p { margin: 0; }
+.ref-rc-tete { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-top: 4px; }
+.badge-ref { font-size: 0.75rem; color: #111; background: #b99bff; padding: 1px 6px; border: 2px solid var(--edge); }
+.badge-gen.badge-ref { background: #b99bff; color: #111; }
+.ref-depart { font-family: var(--px); font-size: 1.05rem; color: #ffd84d; }
+.ref-reglages { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: 0.85rem; }
+.ref-reglages li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; padding: 2px 0; border-bottom: 1px dashed #ffffff14; }
+.ref-reglages li span { color: var(--muted); min-width: 9em; }
+.ref-reglages li b { font-family: ui-monospace, monospace; color: #fff; }
+
+/* 5. Comparer */
+.ref-comparer { display: grid; gap: 8px; }
+.ref-ab { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; background: #4fd18b10; border: 2px solid #4fd18b; }
+.ref-ab-titre { font-family: var(--px); font-size: 1.15rem; margin-right: 4px; }
+.ref-phrase { display: flex; gap: 10px; align-items: center; padding: 10px 12px; background: #15161b; border: 3px solid #9b6bff; box-shadow: 0 4px 0 var(--edge); }
+.ref-phrase p { margin: 0; font-size: 1.05rem; }
+.ref-table { border-collapse: collapse; width: 100%; max-width: 640px; font-size: 0.9rem; }
+.ref-table th, .ref-table td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #ffffff14; }
+.ref-table thead th { color: var(--muted); font-weight: 400; }
+.ref-table tbody th { color: var(--muted); font-weight: 400; }
+
+/* Enregistrer et Mes analyses */
+.ref-garder { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.ref-garder > p, .ref-garder > .ref-btns { grid-column: 1 / -1; margin: 0; }
+.ref-mes-liste { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.ref-mes-liste li { display: grid; gap: 4px; padding: 10px 12px; background: var(--panel); border: 2px solid var(--edge); box-shadow: 0 4px 0 var(--edge), inset 4px 0 0 #9b6bff; }
+.ref-mes-liste li.on { border-color: #9b6bff; }
+.ref-mes-liste li p { margin: 0; }
+.ref-mes-tete { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.ref-mes-liste a { text-decoration: none; }
+
+@media (max-width: 600px) {
+  .ref-part { grid-template-columns: 1fr auto; }
+  .ref-part-barre { grid-column: 1 / -1; grid-row: 2; }
+  .ref-chiffre > b { font-size: 1.5rem; }
+}
+.ref-page a.e2-ui-btn, .ref-page a.chipbtn, .drl-session a.chipbtn { text-decoration: none; }

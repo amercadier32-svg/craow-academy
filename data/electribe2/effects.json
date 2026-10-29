@@ -1,0 +1,1012 @@
+{
+  "meta": {
+    "description": "Effets d'insertion (IFX, un par partie), effets master (MFX, un par motif), types de modulation et filtres. Listes du guide des paramètres Synth p. 14-16.",
+    "documents": {
+      "OM": {
+        "fichier": "docs/281ffa.pdf",
+        "titre": "Mode d'emploi electribe / electribe sampler (section française)",
+        "pages": "Numéros imprimés en bas de page (section FR : p. 20 à 38). Page PDF = page imprimée + 16.",
+        "couvreSynth": true
+      },
+      "PG": {
+        "fichier": "docs/electribe_PG_F4.pdf",
+        "titre": "Guide des paramètres de l'electribe (Synth)",
+        "pages": "Numéro imprimé = page PDF.",
+        "couvreSynth": true
+      },
+      "PGS": {
+        "fichier": "docs/electribe_sampler_PG_F3.pdf",
+        "titre": "Guide des paramètres de l'electribe SAMPLER",
+        "couvreSynth": false,
+        "remarque": "Non utilisé : guide du modèle Sampler (la rouge), remplacé par le guide Synth."
+      }
+    },
+    "statutsSynth": {
+      "confirmé": "Vient du mode d'emploi commun ou du guide des paramètres Synth.",
+      "absent du manuel": "Aucun des PDF fournis ne donne cette information."
+    },
+    "extraitLe": "2026-10-28"
+  },
+  "ifx": {
+    "description": "Effet d'insertion : un par partie. Choisi avec le potard Insert Fx, dosé avec Edit, activé avec IFX On.",
+    "descriptionSource": {
+      "doc": "OM",
+      "page": 23
+    },
+    "source": {
+      "doc": "PG",
+      "page": 16
+    },
+    "synth": "confirmé",
+    "types": [
+      {
+        "n": 1,
+        "nom": "Punch"
+      },
+      {
+        "n": 2,
+        "nom": "Overdrive"
+      },
+      {
+        "n": 3,
+        "nom": "Distortion"
+      },
+      {
+        "n": 4,
+        "nom": "Decimator"
+      },
+      {
+        "n": 5,
+        "nom": "Bit Crusher"
+      },
+      {
+        "n": 6,
+        "nom": "Ring Modulator"
+      },
+      {
+        "n": 7,
+        "nom": "Sustainer"
+      },
+      {
+        "n": 8,
+        "nom": "Limiter"
+      },
+      {
+        "n": 9,
+        "nom": "Low EQ"
+      },
+      {
+        "n": 10,
+        "nom": "Mid EQ"
+      },
+      {
+        "n": 11,
+        "nom": "High EQ"
+      },
+      {
+        "n": 12,
+        "nom": "Radio EQ"
+      },
+      {
+        "n": 13,
+        "nom": "Exciter"
+      },
+      {
+        "n": 14,
+        "nom": "Low Pass Filter"
+      },
+      {
+        "n": 15,
+        "nom": "High Pass Filter"
+      },
+      {
+        "n": 16,
+        "nom": "Band Plus Filter"
+      },
+      {
+        "n": 17,
+        "nom": "Talk Filter"
+      },
+      {
+        "n": 18,
+        "nom": "Delay 1/4"
+      },
+      {
+        "n": 19,
+        "nom": "Delay 3/16"
+      },
+      {
+        "n": 20,
+        "nom": "Delay 1/8"
+      },
+      {
+        "n": 21,
+        "nom": "Delay 1/16"
+      },
+      {
+        "n": 22,
+        "nom": "Roller 1/32"
+      },
+      {
+        "n": 23,
+        "nom": "One Delay"
+      },
+      {
+        "n": 24,
+        "nom": "Short Delay"
+      },
+      {
+        "n": 25,
+        "nom": "Ring Delay 1"
+      },
+      {
+        "n": 26,
+        "nom": "Ring Delay 2"
+      },
+      {
+        "n": 27,
+        "nom": "Chorus"
+      },
+      {
+        "n": 28,
+        "nom": "Flanger LFO"
+      },
+      {
+        "n": 29,
+        "nom": "Flanger +"
+      },
+      {
+        "n": 30,
+        "nom": "Flanger -"
+      },
+      {
+        "n": 31,
+        "nom": "Phaser LFO 1"
+      },
+      {
+        "n": 32,
+        "nom": "Phaser LFO 2"
+      },
+      {
+        "n": 33,
+        "nom": "Phaser Manual"
+      },
+      {
+        "n": 34,
+        "nom": "Tremolo"
+      },
+      {
+        "n": 35,
+        "nom": "Off Beater"
+      },
+      {
+        "n": 36,
+        "nom": "Pumper"
+      },
+      {
+        "n": 37,
+        "nom": "Repeater"
+      },
+      {
+        "n": 38,
+        "nom": "Slicer"
+      }
+    ]
+  },
+  "mfx": {
+    "description": "Effet master : un par motif. Chaque partie y est envoyée ou non (MFX Send) ; il se joue avec le pad tactile (X/Y) quand Master Fx est allumé.",
+    "descriptionSource": {
+      "doc": "OM",
+      "page": 29
+    },
+    "source": {
+      "doc": "PG",
+      "page": 16
+    },
+    "synth": "confirmé",
+    "types": [
+      {
+        "n": 1,
+        "nom": "Mod Delay",
+        "motionSeq": true
+      },
+      {
+        "n": 2,
+        "nom": "Tape Delay",
+        "motionSeq": true
+      },
+      {
+        "n": 3,
+        "nom": "High Pass Delay",
+        "motionSeq": true
+      },
+      {
+        "n": 4,
+        "nom": "Hall Reverb",
+        "motionSeq": true
+      },
+      {
+        "n": 5,
+        "nom": "Room Reverb",
+        "motionSeq": true
+      },
+      {
+        "n": 6,
+        "nom": "Wet Reverb",
+        "motionSeq": true
+      },
+      {
+        "n": 7,
+        "nom": "Looper",
+        "motionSeq": true
+      },
+      {
+        "n": 8,
+        "nom": "Pitch Looper",
+        "motionSeq": true
+      },
+      {
+        "n": 9,
+        "nom": "Step Shifter",
+        "motionSeq": true
+      },
+      {
+        "n": 10,
+        "nom": "Slicer",
+        "motionSeq": true
+      },
+      {
+        "n": 11,
+        "nom": "Jag Filter",
+        "motionSeq": true
+      },
+      {
+        "n": 12,
+        "nom": "Grain Shifter",
+        "motionSeq": true
+      },
+      {
+        "n": 13,
+        "nom": "Vinyl Break",
+        "motionSeq": true
+      },
+      {
+        "n": 14,
+        "nom": "Seq Reverse",
+        "motionSeq": false,
+        "pilotesLeSequenceur": true
+      },
+      {
+        "n": 15,
+        "nom": "Seq Doubler",
+        "motionSeq": false,
+        "pilotesLeSequenceur": true
+      },
+      {
+        "n": 16,
+        "nom": "Odd Stepper",
+        "motionSeq": false,
+        "pilotesLeSequenceur": true
+      },
+      {
+        "n": 17,
+        "nom": "Even Stepper",
+        "motionSeq": false,
+        "pilotesLeSequenceur": true
+      },
+      {
+        "n": 18,
+        "nom": "Low Pass Filter",
+        "motionSeq": true
+      },
+      {
+        "n": 19,
+        "nom": "High Pass Filter",
+        "motionSeq": true
+      },
+      {
+        "n": 20,
+        "nom": "Band Plus Filter",
+        "motionSeq": true
+      },
+      {
+        "n": 21,
+        "nom": "Touch Wah",
+        "motionSeq": true
+      },
+      {
+        "n": 22,
+        "nom": "Tube EQ",
+        "motionSeq": true
+      },
+      {
+        "n": 23,
+        "nom": "Decimator",
+        "motionSeq": true
+      },
+      {
+        "n": 24,
+        "nom": "Distortion",
+        "motionSeq": true
+      },
+      {
+        "n": 25,
+        "nom": "Compressor",
+        "motionSeq": true
+      },
+      {
+        "n": 26,
+        "nom": "Limiter",
+        "motionSeq": true
+      },
+      {
+        "n": 27,
+        "nom": "Chorus",
+        "motionSeq": true
+      },
+      {
+        "n": 28,
+        "nom": "XY Flanger",
+        "motionSeq": true
+      },
+      {
+        "n": 29,
+        "nom": "LFO Flanger",
+        "motionSeq": true
+      },
+      {
+        "n": 30,
+        "nom": "XY Phaser",
+        "motionSeq": true
+      },
+      {
+        "n": 31,
+        "nom": "LFO Phaser",
+        "motionSeq": true
+      },
+      {
+        "n": 32,
+        "nom": "Auto Pan",
+        "motionSeq": true
+      }
+    ],
+    "notes": [
+      "Les types marqués motionSeq=false ne peuvent pas être enregistrés en Motion Sequence (PG p. 18).",
+      "Ces 4 types pilotent le séquenceur et peuvent influencer SWING (PG p. 3)."
+    ]
+  },
+  "modulation": {
+    "description": "Le potard Modulation choisit une paire source → destination ; Depth = intensité, Speed = vitesse.",
+    "descriptionSource": {
+      "doc": "OM",
+      "page": 23
+    },
+    "source": {
+      "doc": "PG",
+      "page": 14
+    },
+    "synth": "confirmé",
+    "notesColonnes": {
+      "bpmSync": "La vitesse suit le tempo.",
+      "keySync": "Le LFO repart à zéro à chaque note."
+    },
+    "types": [
+      {
+        "n": 1,
+        "nom": "EG+ Filter",
+        "source": "Enveloppe AD positive",
+        "destination": "Coupure du filtre",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 2,
+        "nom": "EG+ Pitch",
+        "source": "Enveloppe AD positive",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 3,
+        "nom": "EG+ OSC",
+        "source": "Enveloppe AD positive",
+        "destination": "OSC Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 4,
+        "nom": "EG+ Level",
+        "source": "Enveloppe AD positive",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 5,
+        "nom": "EG+ Pan",
+        "source": "Enveloppe AD positive",
+        "destination": "Pan",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 6,
+        "nom": "EG+ IFX",
+        "source": "Enveloppe AD positive",
+        "destination": "IFX Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 7,
+        "nom": "EG+ BPM Filter",
+        "source": "Enveloppe AD positive",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 8,
+        "nom": "EG+ BPM Pitch",
+        "source": "Enveloppe AD positive",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 9,
+        "nom": "EG+ BPM OSC",
+        "source": "Enveloppe AD positive",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 10,
+        "nom": "EG+ BPM Level",
+        "source": "Enveloppe AD positive",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 11,
+        "nom": "EG+ BPM Pan",
+        "source": "Enveloppe AD positive",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 12,
+        "nom": "EG+ BPM IFX",
+        "source": "Enveloppe AD positive",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 13,
+        "nom": "EG- Filter",
+        "source": "Enveloppe AD négative",
+        "destination": "Coupure du filtre",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 14,
+        "nom": "EG- Pitch",
+        "source": "Enveloppe AD négative",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 15,
+        "nom": "EG- OSC",
+        "source": "Enveloppe AD négative",
+        "destination": "OSC Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 16,
+        "nom": "EG- Level",
+        "source": "Enveloppe AD négative",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 17,
+        "nom": "EG- Pan",
+        "source": "Enveloppe AD négative",
+        "destination": "Pan",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 18,
+        "nom": "EG- IFX",
+        "source": "Enveloppe AD négative",
+        "destination": "IFX Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 19,
+        "nom": "EG- BPM Filter",
+        "source": "Enveloppe AD négative",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 20,
+        "nom": "EG- BPM Pitch",
+        "source": "Enveloppe AD négative",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 21,
+        "nom": "EG- BPM OSC",
+        "source": "Enveloppe AD négative",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 22,
+        "nom": "EG- BPM Level",
+        "source": "Enveloppe AD négative",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 23,
+        "nom": "EG- BPM Pan",
+        "source": "Enveloppe AD négative",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 24,
+        "nom": "EG- BPM IFX",
+        "source": "Enveloppe AD négative",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 25,
+        "nom": "LFOTri Filter",
+        "source": "LFO triangle",
+        "destination": "Coupure du filtre",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 26,
+        "nom": "LFOTri Pitch",
+        "source": "LFO triangle",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 27,
+        "nom": "LFOTri OSC",
+        "source": "LFO triangle",
+        "destination": "OSC Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 28,
+        "nom": "LFOTri Level",
+        "source": "LFO triangle",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 29,
+        "nom": "LFOTri Pan",
+        "source": "LFO triangle",
+        "destination": "Pan",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 30,
+        "nom": "LFOTri IFX",
+        "source": "LFO triangle",
+        "destination": "IFX Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 31,
+        "nom": "LFOTriB Filter",
+        "source": "LFO triangle",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 32,
+        "nom": "LFOTriB Pitch",
+        "source": "LFO triangle",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 33,
+        "nom": "LFOTriB OSC",
+        "source": "LFO triangle",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 34,
+        "nom": "LFOTriB Level",
+        "source": "LFO triangle",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 35,
+        "nom": "LFOTriB Pan",
+        "source": "LFO triangle",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 36,
+        "nom": "LFOTriB IFX",
+        "source": "LFO triangle",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 37,
+        "nom": "SawUpB Filter",
+        "source": "LFO dent de scie montante",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 38,
+        "nom": "SawUpB Pitch",
+        "source": "LFO dent de scie montante",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 39,
+        "nom": "SawUpB OSC",
+        "source": "LFO dent de scie montante",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 40,
+        "nom": "SawUpB Level",
+        "source": "LFO dent de scie montante",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 41,
+        "nom": "SawUpB Pan",
+        "source": "LFO dent de scie montante",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 42,
+        "nom": "SawUpB IFX",
+        "source": "LFO dent de scie montante",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 43,
+        "nom": "SawDwnB Filter",
+        "source": "LFO dent de scie descendante",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 44,
+        "nom": "SawDwnB Pitch",
+        "source": "LFO dent de scie descendante",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 45,
+        "nom": "SawDwnB OSC",
+        "source": "LFO dent de scie descendante",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 46,
+        "nom": "SawDwnB Level",
+        "source": "LFO dent de scie descendante",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 47,
+        "nom": "SawDwnB Pan",
+        "source": "LFO dent de scie descendante",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 48,
+        "nom": "SawDwnB IFX",
+        "source": "LFO dent de scie descendante",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 49,
+        "nom": "SquUpB Filter",
+        "source": "LFO carré (montant)",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 50,
+        "nom": "SquUpB Pitch",
+        "source": "LFO carré (montant)",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 51,
+        "nom": "SquUpB OSC",
+        "source": "LFO carré (montant)",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 52,
+        "nom": "SquUpB Level",
+        "source": "LFO carré (montant)",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 53,
+        "nom": "SquUpB Pan",
+        "source": "LFO carré (montant)",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 54,
+        "nom": "SquUpB IFX",
+        "source": "LFO carré (montant)",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 55,
+        "nom": "SquDwnB Filter",
+        "source": "LFO carré (descendant)",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 56,
+        "nom": "SquDwnB Pitch",
+        "source": "LFO carré (descendant)",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 57,
+        "nom": "SquDwnB OSC",
+        "source": "LFO carré (descendant)",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 58,
+        "nom": "SquDwnB Level",
+        "source": "LFO carré (descendant)",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 59,
+        "nom": "SquDwnB Pan",
+        "source": "LFO carré (descendant)",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 60,
+        "nom": "SquDwnB IFX",
+        "source": "LFO carré (descendant)",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": true
+      },
+      {
+        "n": 61,
+        "nom": "S&HBPM Filter",
+        "source": "LFO sample & hold (aléatoire par paliers)",
+        "destination": "Coupure du filtre",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 62,
+        "nom": "S&HBPM Pitch",
+        "source": "LFO sample & hold (aléatoire par paliers)",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 63,
+        "nom": "S&HBPM OSC",
+        "source": "LFO sample & hold (aléatoire par paliers)",
+        "destination": "OSC Edit",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 64,
+        "nom": "S&HBPM Level",
+        "source": "LFO sample & hold (aléatoire par paliers)",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 65,
+        "nom": "S&HBPM Pan",
+        "source": "LFO sample & hold (aléatoire par paliers)",
+        "destination": "Pan",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 66,
+        "nom": "S&HBPM IFX",
+        "source": "LFO sample & hold (aléatoire par paliers)",
+        "destination": "IFX Edit",
+        "bpmSync": true,
+        "keySync": false
+      },
+      {
+        "n": 67,
+        "nom": "Random Filter",
+        "source": "LFO aléatoire",
+        "destination": "Coupure du filtre",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 68,
+        "nom": "Random Pitch",
+        "source": "LFO aléatoire",
+        "destination": "Hauteur de l'oscillateur",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 69,
+        "nom": "Random OSC",
+        "source": "LFO aléatoire",
+        "destination": "OSC Edit",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 70,
+        "nom": "Random Level",
+        "source": "LFO aléatoire",
+        "destination": "Volume (Amp Level)",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 71,
+        "nom": "Random Pan",
+        "source": "LFO aléatoire",
+        "destination": "Pan",
+        "bpmSync": false,
+        "keySync": false
+      },
+      {
+        "n": 72,
+        "nom": "Random IFX",
+        "source": "LFO aléatoire",
+        "destination": "IFX Edit",
+        "bpmSync": false,
+        "keySync": false
+      }
+    ]
+  },
+  "filtres": {
+    "description": "Trois boutons LPF / HPF / BPF ; des appuis successifs changent de type de filtre.",
+    "descriptionSource": {
+      "doc": "OM",
+      "page": 23
+    },
+    "source": {
+      "doc": "PG",
+      "page": 15
+    },
+    "synth": "confirmé",
+    "types": {
+      "LPF": [
+        "OFF",
+        "electribe LPF",
+        "MS20 LPF",
+        "MG LPF",
+        "P5 LPF",
+        "OB LPF",
+        "Acid LPF"
+      ],
+      "HPF": [
+        "OFF",
+        "electribe HPF",
+        "MS20 HPF",
+        "P5 HPF",
+        "OB HPF",
+        "Acid HPF"
+      ],
+      "BPF": [
+        "OFF",
+        "electribe BPF",
+        "MS20 BPF",
+        "P5 BPF",
+        "OB BPF",
+        "Acid BPF"
+      ]
+    },
+    "manque": "Le guide ne décrit pas le caractère sonore de chaque type de filtre (seulement les noms)."
+  }
+}

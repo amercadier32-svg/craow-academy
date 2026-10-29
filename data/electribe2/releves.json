@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "description": "Relevés personnels faits sur la machine (plages lues sur l'écran, notes d'écoute). Vide dans le dépôt public : chacun ajoute les siens avec « Exporter mes relevés » puis tools/integrer_releves.py. L'app les affiche avec le badge « Mes observations ».",
+    "misAJour": ""
+  },
+  "plages": {},
+  "observations": {}
+}

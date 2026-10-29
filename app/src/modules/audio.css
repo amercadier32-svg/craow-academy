@@ -1,0 +1,79 @@
+/* ===== Menu ☰ général (Plus) ===== */
+.mp-btn .mp-traits { font-size: 1.15rem; line-height: 1; }
+.mp-panneau { left: auto; right: 0; transform: none; width: min(340px, calc(100vw - 24px)); }
+.mp.open .mp-panneau { display: grid; gap: 6px; }
+.mp-lien { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 2px solid var(--edge); background: #1f2128; color: var(--text); text-decoration: none; }
+.mp-lien:hover { background: #2a2d36; }
+.mp-lien.on { box-shadow: inset 4px 0 0 #ff3b3b; }
+.mp-lien span { display: grid; line-height: 1.15; }
+.mp-lien b { font-family: var(--px); font-weight: 400; font-size: 1.1rem; font-size-adjust: ex-height 0.56; }
+.mp-lien small { color: var(--muted); font-size: 0.78rem; }
+@media (max-width: 1020px) {
+  .nav.open .mp-btn { display: none; }
+  .nav.open .mp-panneau { display: grid; gap: 6px; position: static; width: auto; margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+}
+
+/* ===== Vumètre ===== */
+.vu { display: grid; gap: 4px; margin: 10px 0; }
+.vu-barres { display: flex; align-items: stretch; gap: 6px; }
+.vu-noms { display: grid; font-family: var(--px); font-size: 0.85rem; color: var(--muted); line-height: 1; align-content: space-around; width: 12px; }
+.vu-cv { flex: 1 1 0; width: 0; min-width: 0; height: 34px; image-rendering: pixelated; background: #0c0d11; border: 2px solid var(--edge); padding: 2px; }
+.vu-compact .vu-cv { height: 22px; }
+.vu-sat {
+  font-family: var(--px); font-size: 0.95rem; padding: 0 8px; border: 2px solid var(--edge); background: #2a1416; color: #6b3a3d; cursor: pointer;
+}
+.vu-sat.on { background: #ff3b3b; color: #fff; box-shadow: 0 0 12px #ff3b3b; animation: vu-clign 0.6s steps(2) infinite; }
+@keyframes vu-clign { 50% { background: #b5242b; } }
+.vu-echelle { position: relative; height: 14px; margin: 0 52px 0 18px; font-size: 0.68rem; color: var(--muted); }
+.vu-echelle span { position: absolute; transform: translateX(-50%); }
+.vu-valeurs { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); align-items: center; }
+.vu-valeurs b { color: var(--text); font-variant-numeric: tabular-nums; }
+.vu-raz { background: none; border: 0; color: var(--muted); text-decoration: underline dotted; cursor: pointer; font: inherit; padding: 0; }
+.vu-off .vu-cv { opacity: 0.45; }
+
+/* ===== Page Réglages audio ===== */
+.audio-page { max-width: 1040px; margin: 0 auto; padding-bottom: 40px; }
+.audio-page .page-title { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.audio-intro { text-align: center; margin: -4px 0 16px; }
+.audio-permission { display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; margin-bottom: 14px; background: #ffd84d14; border: 3px solid #ffd84d; box-shadow: 0 4px 0 var(--edge); }
+.audio-permission h3 { margin: 0 0 4px; color: #ffd84d; }
+.audio-permission p { margin: 4px 0; }
+.audio-grille { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 820px) { .audio-grille { grid-template-columns: 1fr; } }
+.audio-carte { background: var(--panel); border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); padding: 12px 14px; margin-bottom: 14px; min-width: 0; }
+.audio-carte h3 { margin: 0 0 10px; }
+.audio-champ { display: grid; gap: 6px; margin-bottom: 14px; font-weight: 600; }
+.audio-champ small { font-weight: 400; }
+.audio-champ select { padding: 8px; background: #121318; color: var(--text); border: 2px solid var(--edge); font: inherit; font-weight: 400; max-width: 100%; }
+.audio-choix { display: flex; flex-wrap: wrap; gap: 6px; }
+.audio-choix.sous { margin-left: 12px; }
+.audio-test-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.audio-etat { color: var(--muted); font-size: 0.9rem; }
+.audio-etat.ouvert { color: #4fd18b; }
+.audio-etat.erreur { color: #ff6a6a; }
+.audio-signal { margin: 6px 0 0; padding: 8px 10px; border-left: 4px solid var(--line); background: #ffffff08; }
+.audio-signal.vert { border-color: #4fd18b; }
+.audio-signal.orange { border-color: #ffb020; }
+.audio-signal.rouge { border-color: #ff3b3b; background: #ff3b3b14; }
+.audio-alerte { margin: 8px 0 0; padding: 8px 12px; border: 2px solid var(--edge); }
+.audio-alerte.rouge { background: #ff3b3b1c; border-color: #ff3b3b; }
+.audio-alerte.orange { background: #ffb0201a; border-color: #ffb020; font-weight: 400; }
+.audio-alerte ul { margin: 6px 0 0; padding-left: 20px; }
+.audio-dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }
+@media (max-width: 820px) { .audio-dl { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .audio-dl { grid-template-columns: 1fr; } }
+.audio-dl > div { background: #15161b; border: 2px solid var(--edge); padding: 8px 10px; display: grid; gap: 2px; align-content: start; }
+.audio-dl > div.gros { grid-column: 1 / -1; }
+.audio-dl dt { color: var(--muted); font-size: 0.82rem; }
+.audio-dl dd { margin: 0; font-family: var(--px); font-size: 1.4rem; font-size-adjust: ex-height 0.56; }
+.audio-dl .gros dd { font-size: 2.2rem; color: #7fe0ff; text-shadow: 0 0 10px #7fe0ff55; }
+.audio-dl small { color: var(--muted); font-size: 0.78rem; }
+.audio-rappel { display: flex; gap: 12px; align-items: center; padding: 10px 14px; margin: 0 0 14px; background: #3fd6d012; border: 3px solid #3fd6d0; box-shadow: 0 4px 0 var(--edge); }
+.audio-rappel p { margin: 0; }
+.audio-rappel-ic { font-size: 1.8rem; }
+.audio-aides { margin: 0; padding: 4px 14px 4px 30px; display: grid; gap: 6px; }
+
+/* Petite barre « entrée audio » réutilisée dans les modules (enregistreur, visualiseur) */
+.audio-mini { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.85rem; color: var(--muted); }
+.audio-mini a { color: var(--muted); }
+.audio-mini b { color: var(--text); }

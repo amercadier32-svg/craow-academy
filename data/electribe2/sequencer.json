@@ -1,0 +1,2512 @@
+{
+  "meta": {
+    "description": "Séquenceur : structure motif / partie / pas et fonctions de jeu.",
+    "documents": {
+      "OM": {
+        "fichier": "docs/281ffa.pdf",
+        "titre": "Mode d'emploi electribe / electribe sampler (section française)",
+        "pages": "Numéros imprimés en bas de page (section FR : p. 20 à 38). Page PDF = page imprimée + 16.",
+        "couvreSynth": true
+      },
+      "PG": {
+        "fichier": "docs/electribe_PG_F4.pdf",
+        "titre": "Guide des paramètres de l'electribe (Synth)",
+        "pages": "Numéro imprimé = page PDF.",
+        "couvreSynth": true
+      },
+      "PGS": {
+        "fichier": "docs/electribe_sampler_PG_F3.pdf",
+        "titre": "Guide des paramètres de l'electribe SAMPLER",
+        "couvreSynth": false,
+        "remarque": "Non utilisé : guide du modèle Sampler (la rouge), remplacé par le guide Synth."
+      }
+    },
+    "statutsSynth": {
+      "confirmé": "Vient du mode d'emploi commun ou du guide des paramètres Synth.",
+      "absent du manuel": "Aucun des PDF fournis ne donne cette information."
+    },
+    "extraitLe": "2026-10-28"
+  },
+  "chiffresCles": [
+    {
+      "id": "patterns",
+      "nom": "250 motifs",
+      "description": "La machine stocke jusqu'à 250 motifs.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 27
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "parts",
+      "nom": "16 parties par motif",
+      "description": "Un motif = 16 parties + 1 effet master.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 27
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "voices",
+      "nom": "24 voix / 4 par partie",
+      "description": "Jusqu'à 24 voix pour tout le motif (selon oscillateurs, filtres, IFX) et 4 par partie.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 38
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "motionmax",
+      "nom": "24 Motion Sequences",
+      "description": "Jusqu'à 24 séquences de mouvements par motif (message « Motion Seq Full »).",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 37
+        }
+      ],
+      "synth": "confirmé"
+    }
+  ],
+  "fonctions": [
+    {
+      "id": "steps",
+      "nom": "Pas et longueur",
+      "description": "Un motif se compose de blocs de 16 pas. LENGTH (1-4) fixe le nombre de blocs : jusqu'à 4 × 16 = 64 pas. Les boutons Step 1-4 montrent et choisissent le bloc édité. En pas à pas, les pads allument / éteignent chaque pas ; une note C4 est posée par défaut.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 24
+        },
+        {
+          "doc": "OM",
+          "page": 30
+        },
+        {
+          "doc": "OM",
+          "page": 32
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        },
+        {
+          "doc": "PG",
+          "page": 5
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.length",
+        "step.number"
+      ],
+      "schema": {
+        "blocs": 4,
+        "pasParBloc": 16,
+        "maxPas": 64,
+        "notation": "bloc.pas (1.01 … 4.16)"
+      }
+    },
+    {
+      "id": "laststep",
+      "nom": "Last Step",
+      "description": "Raccourcit une partie (1-16 pas) pour des mesures impaires et des décalages entre parties.",
+      "sources": [
+        {
+          "doc": "PG",
+          "page": 4
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "part.laststep"
+      ]
+    },
+    {
+      "id": "beat",
+      "nom": "Beat",
+      "description": "Résolution : 16, 32, 8Tri ou 16Tri (triolets : 12 pas par bloc).",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.beat"
+      ]
+    },
+    {
+      "id": "stepedit",
+      "nom": "Step Edit",
+      "description": "Édition détaillée de chaque pas : note (4 max), gate time, vélocité, valeur de motion.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        },
+        {
+          "doc": "PG",
+          "page": 5
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "step.number",
+        "step.note",
+        "step.gate",
+        "step.velocity"
+      ]
+    },
+    {
+      "id": "realtime",
+      "nom": "Enregistrement en temps réel",
+      "description": "Enregistre ce que tu joues sur les pads ou le pad tactile sans arrêter la lecture ; le métronome peut aider.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "glob.metronome"
+      ]
+    },
+    {
+      "id": "motionseq",
+      "nom": "Motion Sequence",
+      "description": "Enregistre les mouvements de potards / boutons d'une partie sur un cycle de motif. Modes Smooth ou Trigger Hold. Contrôles enregistrables : OSC Edit, Pitch, Cutoff, Resonance, EG Int, Speed, Depth, Level, Pan, Attack, Decay/Release, IFX Edit, IFX On, MFX Send, Master Fx On/X/Y.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        },
+        {
+          "doc": "OM",
+          "page": 31
+        },
+        {
+          "doc": "PG",
+          "page": 4
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "part.motionseq",
+        "pat.clearmfxmotion"
+      ]
+    },
+    {
+      "id": "stepjump",
+      "nom": "Step Jump",
+      "description": "Pendant la lecture, un pad saute directement au pas 1-16. Plusieurs pads tenus = pas joués dans l'ordre d'appui. Avec Last Step ou en triolets, les pads au-delà enchaînent sur la mesure suivante.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 24
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        },
+        {
+          "doc": "PG",
+          "page": 4
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "keyboard",
+      "nom": "Mode Keyboard",
+      "description": "Les pads deviennent un clavier dans la gamme KEY/SCALE. Step 1 = octave en dessous, Step 4 = octave au-dessus.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 28
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.key",
+        "pat.scale"
+      ]
+    },
+    {
+      "id": "chord",
+      "nom": "Mode Chord",
+      "description": "Les pads jouent des accords ; régler VOICE ASSIGN sur Poly1 ou Poly2. CHORD SET change la richesse.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 28
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.chordset",
+        "part.voiceassign"
+      ]
+    },
+    {
+      "id": "touchscale",
+      "nom": "Touch Scale",
+      "description": "Jouer en frottant / tapotant le pad tactile dans la gamme du motif ; étendue réglée par TOUCH SCALE RANGE.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 29
+        },
+        {
+          "doc": "PG",
+          "page": 7
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.scale",
+        "pat.key",
+        "glob.touchrange"
+      ]
+    },
+    {
+      "id": "gatearp",
+      "nom": "Gate Arpeggiator",
+      "description": "Répète automatiquement la note au tempo. Pad tactile : X = vitesse, Y = longueur. 50 motifs (GATE ARP).",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 29
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.gatearp"
+      ]
+    },
+    {
+      "id": "groove",
+      "nom": "Groove",
+      "description": "Décale le timing des notes pour « humaniser ». 25 types, intensité 0-127.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        },
+        {
+          "doc": "PG",
+          "page": 4
+        },
+        {
+          "doc": "PG",
+          "page": 16
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "part.groovetype",
+        "part.groovedepth"
+      ],
+      "types": [
+        {
+          "n": 1,
+          "nom": "Conga 1"
+        },
+        {
+          "n": 2,
+          "nom": "Conga 2"
+        },
+        {
+          "n": 3,
+          "nom": "Conga 3"
+        },
+        {
+          "n": 4,
+          "nom": "Bongo 1"
+        },
+        {
+          "n": 5,
+          "nom": "Bongo 2"
+        },
+        {
+          "n": 6,
+          "nom": "Bongo 3"
+        },
+        {
+          "n": 7,
+          "nom": "Cabasa 1"
+        },
+        {
+          "n": 8,
+          "nom": "Cabasa 2"
+        },
+        {
+          "n": 9,
+          "nom": "Claves 1"
+        },
+        {
+          "n": 10,
+          "nom": "Claves 2"
+        },
+        {
+          "n": 11,
+          "nom": "Cowbell 1"
+        },
+        {
+          "n": 12,
+          "nom": "Agogo 1"
+        },
+        {
+          "n": 13,
+          "nom": "Agogo 2"
+        },
+        {
+          "n": 14,
+          "nom": "Tambourine"
+        },
+        {
+          "n": 15,
+          "nom": "Off Beat"
+        },
+        {
+          "n": 16,
+          "nom": "On Beat"
+        },
+        {
+          "n": 17,
+          "nom": "Push 5&13"
+        },
+        {
+          "n": 18,
+          "nom": "Pull 5&13"
+        },
+        {
+          "n": 19,
+          "nom": "Oval Groove"
+        },
+        {
+          "n": 20,
+          "nom": "Laidback"
+        },
+        {
+          "n": 21,
+          "nom": "Rushbeat"
+        },
+        {
+          "n": 22,
+          "nom": "The One"
+        },
+        {
+          "n": 23,
+          "nom": "Synchopation"
+        },
+        {
+          "n": 24,
+          "nom": "Crescendo"
+        },
+        {
+          "n": 25,
+          "nom": "Decrescendo"
+        }
+      ],
+      "typesSource": {
+        "doc": "PG",
+        "page": 16
+      },
+      "typesSynth": "confirmé"
+    },
+    {
+      "id": "swing",
+      "nom": "Swing",
+      "description": "Décale les pas pairs (-50 à +50 %).",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.swing"
+      ]
+    },
+    {
+      "id": "patternset",
+      "nom": "Pattern Set",
+      "description": "Range un motif sous chaque pad pour en changer en direct. 4 groupes (boutons Step 1-4) × 16 pads = 64 emplacements.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 24
+        },
+        {
+          "doc": "OM",
+          "page": 30
+        },
+        {
+          "doc": "PG",
+          "page": 9
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "chain",
+      "nom": "Chaînage",
+      "description": "CHAIN TO + CHAIN REPEAT enchaînent les motifs pour faire un morceau ; nécessite CHAIN MODE = On.",
+      "sources": [
+        {
+          "doc": "PG",
+          "page": 3
+        },
+        {
+          "doc": "PG",
+          "page": 8
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.chainto",
+        "pat.chainrepeat",
+        "glob.chainmode"
+      ]
+    },
+    {
+      "id": "mute",
+      "nom": "Part Mute",
+      "description": "Couper / rétablir une partie en direct avec son pad.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 24
+        },
+        {
+          "doc": "OM",
+          "page": 32
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "erase",
+      "nom": "Part Erase",
+      "description": "Effacer en direct les notes d'une partie en tenant son pad.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 24
+        },
+        {
+          "doc": "OM",
+          "page": 30
+        },
+        {
+          "doc": "OM",
+          "page": 32
+        }
+      ],
+      "synth": "confirmé"
+    },
+    {
+      "id": "alternate",
+      "nom": "Alternate 13-14 / 15-16",
+      "description": "Empêche deux parties de sonner ensemble (charley ouvert / fermé).",
+      "sources": [
+        {
+          "doc": "PG",
+          "page": 3
+        }
+      ],
+      "synth": "confirmé",
+      "parametres": [
+        "pat.alt1314",
+        "pat.alt1516"
+      ]
+    },
+    {
+      "id": "eventrec",
+      "nom": "Event Recorder",
+      "description": "Enregistre une performance live (changements de motifs, potards, pads) sur carte SD, sans toucher aux motifs. CLOCK MODE doit être Internal.",
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        },
+        {
+          "doc": "OM",
+          "page": 34
+        },
+        {
+          "doc": "PG",
+          "page": 9
+        }
+      ],
+      "synth": "confirmé"
+    }
+  ],
+  "motifsUsine": {
+    "source": {
+      "doc": "PG",
+      "page": 17
+    },
+    "synth": "confirmé",
+    "note": "Les 250 motifs d'usine (nom, auteur, BPM). Ceux entre 160 et 175 BPM sont proches de ton tempo.",
+    "liste": [
+      {
+        "n": 1,
+        "nom": "Magician 1",
+        "auteur": "James Sajeva",
+        "bpm": 134.0
+      },
+      {
+        "n": 2,
+        "nom": "Magician 2",
+        "auteur": "James Sajeva",
+        "bpm": 134.0
+      },
+      {
+        "n": 3,
+        "nom": "Magician 3",
+        "auteur": "James Sajeva",
+        "bpm": 134.0
+      },
+      {
+        "n": 4,
+        "nom": "Magician 4",
+        "auteur": "James Sajeva",
+        "bpm": 134.0
+      },
+      {
+        "n": 5,
+        "nom": "Chip Boy 1",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 6,
+        "nom": "Chip Boy 2",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 7,
+        "nom": "Chip Boy 3",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 8,
+        "nom": "Chip Boy 4",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 9,
+        "nom": "Swinger 1",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 10,
+        "nom": "Swinger 2",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 11,
+        "nom": "Swinger 3",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 12,
+        "nom": "Trap Clap 1",
+        "auteur": "James Sajeva",
+        "bpm": 139.2
+      },
+      {
+        "n": 13,
+        "nom": "Trap Clap 2",
+        "auteur": "James Sajeva",
+        "bpm": 139.2
+      },
+      {
+        "n": 14,
+        "nom": "Trap Clap 3",
+        "auteur": "James Sajeva",
+        "bpm": 139.2
+      },
+      {
+        "n": 15,
+        "nom": "Trap Clap 4",
+        "auteur": "James Sajeva",
+        "bpm": 139.2
+      },
+      {
+        "n": 16,
+        "nom": "NightRace",
+        "auteur": "mryat",
+        "bpm": 170.0
+      },
+      {
+        "n": 17,
+        "nom": "LaserGun",
+        "auteur": "mryat",
+        "bpm": 111.5
+      },
+      {
+        "n": 18,
+        "nom": "TrickySlippy 1",
+        "auteur": "mryat",
+        "bpm": 103.0
+      },
+      {
+        "n": 19,
+        "nom": "TrickySlippy 2",
+        "auteur": "mryat",
+        "bpm": 103.0
+      },
+      {
+        "n": 20,
+        "nom": "TrickySlippy 3",
+        "auteur": "mryat",
+        "bpm": 103.0
+      },
+      {
+        "n": 21,
+        "nom": "Footwerker 1",
+        "auteur": "KORG Inc.",
+        "bpm": 170.0
+      },
+      {
+        "n": 22,
+        "nom": "Footwerker 2",
+        "auteur": "KORG Inc.",
+        "bpm": 170.0
+      },
+      {
+        "n": 23,
+        "nom": "Footwerker 3",
+        "auteur": "KORG Inc.",
+        "bpm": 170.0
+      },
+      {
+        "n": 24,
+        "nom": "Footwerker 4",
+        "auteur": "KORG Inc.",
+        "bpm": 170.0
+      },
+      {
+        "n": 25,
+        "nom": "Footwerker 5",
+        "auteur": "KORG Inc.",
+        "bpm": 170.0
+      },
+      {
+        "n": 26,
+        "nom": "Jumpup 1",
+        "auteur": "Mistabishi",
+        "bpm": 86.0
+      },
+      {
+        "n": 27,
+        "nom": "Jumpup 2",
+        "auteur": "Mistabishi",
+        "bpm": 86.0
+      },
+      {
+        "n": 28,
+        "nom": "Jumpup 3",
+        "auteur": "Mistabishi",
+        "bpm": 172.0
+      },
+      {
+        "n": 29,
+        "nom": "Jumpup 4",
+        "auteur": "Mistabishi",
+        "bpm": 172.0
+      },
+      {
+        "n": 30,
+        "nom": "LemonTop 1",
+        "auteur": "Shrike",
+        "bpm": 124.0
+      },
+      {
+        "n": 31,
+        "nom": "LemonTop 2",
+        "auteur": "Shrike",
+        "bpm": 124.0
+      },
+      {
+        "n": 32,
+        "nom": "Fluid",
+        "auteur": "Sharooz",
+        "bpm": 120.0
+      },
+      {
+        "n": 33,
+        "nom": "Acid Reign",
+        "auteur": "Sharooz",
+        "bpm": 123.0
+      },
+      {
+        "n": 34,
+        "nom": "Hypstar",
+        "auteur": "Francis Preve",
+        "bpm": 120.0
+      },
+      {
+        "n": 35,
+        "nom": "Volcano 1",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 36,
+        "nom": "Volcano 2",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 37,
+        "nom": "Volcano 3",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 38,
+        "nom": "Volcano 4",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 39,
+        "nom": "Traveller 1",
+        "auteur": "Mistabishi",
+        "bpm": 87.0
+      },
+      {
+        "n": 40,
+        "nom": "Traveller 2",
+        "auteur": "Mistabishi",
+        "bpm": 87.0
+      },
+      {
+        "n": 41,
+        "nom": "Traveller 3",
+        "auteur": "Mistabishi",
+        "bpm": 87.0
+      },
+      {
+        "n": 42,
+        "nom": "Traveller 4",
+        "auteur": "Mistabishi",
+        "bpm": 87.0
+      },
+      {
+        "n": 43,
+        "nom": "Traveller 5",
+        "auteur": "Mistabishi",
+        "bpm": 87.0
+      },
+      {
+        "n": 44,
+        "nom": "8BIT ADVENTURE",
+        "auteur": "KORG Inc.",
+        "bpm": 190.0
+      },
+      {
+        "n": 45,
+        "nom": "8BIT SHOOT",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 46,
+        "nom": "8BIT RPG",
+        "auteur": "KORG Inc.",
+        "bpm": 77.1
+      },
+      {
+        "n": 47,
+        "nom": "Thunder 1",
+        "auteur": "mryat",
+        "bpm": 123.0
+      },
+      {
+        "n": 48,
+        "nom": "Thunder 2",
+        "auteur": "mryat",
+        "bpm": 123.0
+      },
+      {
+        "n": 49,
+        "nom": "Thunder 3",
+        "auteur": "mryat",
+        "bpm": 123.0
+      },
+      {
+        "n": 50,
+        "nom": "Jacqueline 1",
+        "auteur": "KORG Inc.",
+        "bpm": 130.0
+      },
+      {
+        "n": 51,
+        "nom": "Jacqueline 2",
+        "auteur": "KORG Inc.",
+        "bpm": 130.0
+      },
+      {
+        "n": 52,
+        "nom": "Jacqueline 3",
+        "auteur": "KORG Inc.",
+        "bpm": 127.0
+      },
+      {
+        "n": 53,
+        "nom": "Jacqueline 4",
+        "auteur": "KORG Inc.",
+        "bpm": 127.0
+      },
+      {
+        "n": 54,
+        "nom": "3Steppin 1",
+        "auteur": "James Sajeva",
+        "bpm": 135.1
+      },
+      {
+        "n": 55,
+        "nom": "3Steppin 2",
+        "auteur": "James Sajeva",
+        "bpm": 135.1
+      },
+      {
+        "n": 56,
+        "nom": "3Steppin 3",
+        "auteur": "James Sajeva",
+        "bpm": 135.1
+      },
+      {
+        "n": 57,
+        "nom": "3Steppin 4",
+        "auteur": "James Sajeva",
+        "bpm": 135.1
+      },
+      {
+        "n": 58,
+        "nom": "Remember 1",
+        "auteur": "James Sajeva",
+        "bpm": 127.4
+      },
+      {
+        "n": 59,
+        "nom": "Remember 2",
+        "auteur": "James Sajeva",
+        "bpm": 127.4
+      },
+      {
+        "n": 60,
+        "nom": "Remember 3",
+        "auteur": "James Sajeva",
+        "bpm": 127.4
+      },
+      {
+        "n": 61,
+        "nom": "Remember 4",
+        "auteur": "James Sajeva",
+        "bpm": 127.4
+      },
+      {
+        "n": 62,
+        "nom": "Altocumulus 1",
+        "auteur": "KORG Inc.",
+        "bpm": 106.0
+      },
+      {
+        "n": 63,
+        "nom": "Altocumulus 2",
+        "auteur": "KORG Inc.",
+        "bpm": 106.0
+      },
+      {
+        "n": 64,
+        "nom": "RockMeNow",
+        "auteur": "mryat",
+        "bpm": 128.0
+      },
+      {
+        "n": 65,
+        "nom": "Transform 1",
+        "auteur": "mryat",
+        "bpm": 115.0
+      },
+      {
+        "n": 66,
+        "nom": "Transform 2",
+        "auteur": "mryat",
+        "bpm": 115.0
+      },
+      {
+        "n": 67,
+        "nom": "Transform 3",
+        "auteur": "mryat",
+        "bpm": 115.0
+      },
+      {
+        "n": 68,
+        "nom": "Plutonic",
+        "auteur": "KORG Inc.",
+        "bpm": 124.0
+      },
+      {
+        "n": 69,
+        "nom": "WarDance 1",
+        "auteur": "Shrike",
+        "bpm": 135.0
+      },
+      {
+        "n": 70,
+        "nom": "WarDance 2",
+        "auteur": "Shrike",
+        "bpm": 135.0
+      },
+      {
+        "n": 71,
+        "nom": "WarDance 3",
+        "auteur": "Shrike",
+        "bpm": 135.0
+      },
+      {
+        "n": 72,
+        "nom": "SwordDancing 1",
+        "auteur": "mryat",
+        "bpm": 128.0
+      },
+      {
+        "n": 73,
+        "nom": "SwordDancing 2",
+        "auteur": "mryat",
+        "bpm": 128.0
+      },
+      {
+        "n": 74,
+        "nom": "Fragrance 1",
+        "auteur": "KORG Inc.",
+        "bpm": 120.0
+      },
+      {
+        "n": 75,
+        "nom": "Fragrance 2",
+        "auteur": "KORG Inc.",
+        "bpm": 120.0
+      },
+      {
+        "n": 76,
+        "nom": "Fragrance 3",
+        "auteur": "KORG Inc.",
+        "bpm": 120.0
+      },
+      {
+        "n": 77,
+        "nom": "Deviance 1",
+        "auteur": "James Sajeva",
+        "bpm": 132.2
+      },
+      {
+        "n": 78,
+        "nom": "Deviance 2",
+        "auteur": "James Sajeva",
+        "bpm": 132.2
+      },
+      {
+        "n": 79,
+        "nom": "Deviance 3",
+        "auteur": "James Sajeva",
+        "bpm": 132.2
+      },
+      {
+        "n": 80,
+        "nom": "Deviance 4",
+        "auteur": "James Sajeva",
+        "bpm": 132.2
+      },
+      {
+        "n": 81,
+        "nom": "DirtyDove 1",
+        "auteur": "Shrike",
+        "bpm": 128.0
+      },
+      {
+        "n": 82,
+        "nom": "DirtyDove 2",
+        "auteur": "Shrike",
+        "bpm": 128.0
+      },
+      {
+        "n": 83,
+        "nom": "Night Dance 1",
+        "auteur": "KORG Inc.",
+        "bpm": 129.0
+      },
+      {
+        "n": 84,
+        "nom": "Night Dance 2",
+        "auteur": "KORG Inc.",
+        "bpm": 129.0
+      },
+      {
+        "n": 85,
+        "nom": "Night Dance 3",
+        "auteur": "KORG Inc.",
+        "bpm": 129.0
+      },
+      {
+        "n": 86,
+        "nom": "It's Hard",
+        "auteur": "Francis Preve",
+        "bpm": 120.0
+      },
+      {
+        "n": 87,
+        "nom": "Uranus 1",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 88,
+        "nom": "Uranus 2",
+        "auteur": "KORG Inc.",
+        "bpm": 126.0
+      },
+      {
+        "n": 89,
+        "nom": "Basement 1",
+        "auteur": "KORG Inc.",
+        "bpm": 124.0
+      },
+      {
+        "n": 90,
+        "nom": "Basement 2",
+        "auteur": "KORG Inc.",
+        "bpm": 124.0
+      },
+      {
+        "n": 91,
+        "nom": "Basement 3",
+        "auteur": "KORG Inc.",
+        "bpm": 124.0
+      },
+      {
+        "n": 92,
+        "nom": "Night Bird 1",
+        "auteur": "KORG Inc.",
+        "bpm": 123.0
+      },
+      {
+        "n": 93,
+        "nom": "Night Bird 2",
+        "auteur": "KORG Inc.",
+        "bpm": 123.0
+      },
+      {
+        "n": 94,
+        "nom": "Tao",
+        "auteur": "Francis Preve",
+        "bpm": 123.0
+      },
+      {
+        "n": 95,
+        "nom": "Italo 1",
+        "auteur": "Mistabishi",
+        "bpm": 89.3
+      },
+      {
+        "n": 96,
+        "nom": "Italo 2",
+        "auteur": "Mistabishi",
+        "bpm": 89.3
+      },
+      {
+        "n": 97,
+        "nom": "Italo 3",
+        "auteur": "Mistabishi",
+        "bpm": 89.3
+      },
+      {
+        "n": 98,
+        "nom": "Lantana 1",
+        "auteur": "Sharooz",
+        "bpm": 120.0
+      },
+      {
+        "n": 99,
+        "nom": "Lantana 2",
+        "auteur": "Sharooz",
+        "bpm": 120.0
+      },
+      {
+        "n": 100,
+        "nom": "Imaginarium 1",
+        "auteur": "Sharooz",
+        "bpm": 120.0
+      },
+      {
+        "n": 101,
+        "nom": "Imaginarium 2",
+        "auteur": "Sharooz",
+        "bpm": 120.0
+      },
+      {
+        "n": 102,
+        "nom": "Schadenfraud",
+        "auteur": "Sharooz",
+        "bpm": 118.0
+      },
+      {
+        "n": 103,
+        "nom": "Krome 1",
+        "auteur": "Sharooz",
+        "bpm": 112.0
+      },
+      {
+        "n": 104,
+        "nom": "Krome 2",
+        "auteur": "Sharooz",
+        "bpm": 112.0
+      },
+      {
+        "n": 105,
+        "nom": "Panorama",
+        "auteur": "Sharooz",
+        "bpm": 121.0
+      },
+      {
+        "n": 106,
+        "nom": "Phlow",
+        "auteur": "Sharooz",
+        "bpm": 122.0
+      },
+      {
+        "n": 107,
+        "nom": "Odysseus 1",
+        "auteur": "Sharooz",
+        "bpm": 118.0
+      },
+      {
+        "n": 108,
+        "nom": "Odysseus 2",
+        "auteur": "Sharooz",
+        "bpm": 118.0
+      },
+      {
+        "n": 109,
+        "nom": "Odysseus 3",
+        "auteur": "Sharooz",
+        "bpm": 118.0
+      },
+      {
+        "n": 110,
+        "nom": "Kwerky",
+        "auteur": "Francis Preve",
+        "bpm": 110.0
+      },
+      {
+        "n": 111,
+        "nom": "Far Away 1",
+        "auteur": "KORG Inc.",
+        "bpm": 134.0
+      },
+      {
+        "n": 112,
+        "nom": "Far Away 2",
+        "auteur": "KORG Inc.",
+        "bpm": 134.0
+      },
+      {
+        "n": 113,
+        "nom": "Legends 1",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 114,
+        "nom": "Legends 2",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 115,
+        "nom": "Legends 3",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 116,
+        "nom": "Legends 4",
+        "auteur": "KORG Inc.",
+        "bpm": 135.0
+      },
+      {
+        "n": 117,
+        "nom": "Body Blow 1",
+        "auteur": "KORG Inc.",
+        "bpm": 132.0
+      },
+      {
+        "n": 118,
+        "nom": "Body Blow 2",
+        "auteur": "KORG Inc.",
+        "bpm": 132.0
+      },
+      {
+        "n": 119,
+        "nom": "Body Blow 3",
+        "auteur": "KORG Inc.",
+        "bpm": 132.0
+      },
+      {
+        "n": 120,
+        "nom": "RetroJammin 1",
+        "auteur": "James Sajeva",
+        "bpm": 138.6
+      },
+      {
+        "n": 121,
+        "nom": "RetroJammin 2",
+        "auteur": "James Sajeva",
+        "bpm": 138.6
+      },
+      {
+        "n": 122,
+        "nom": "RetroJammin 3",
+        "auteur": "James Sajeva",
+        "bpm": 138.6
+      },
+      {
+        "n": 123,
+        "nom": "SpairTheAir 1",
+        "auteur": "KORG Inc.",
+        "bpm": 127.0
+      },
+      {
+        "n": 124,
+        "nom": "SpairTheAir 2",
+        "auteur": "KORG Inc.",
+        "bpm": 127.0
+      },
+      {
+        "n": 125,
+        "nom": "SpairTheAir 3",
+        "auteur": "KORG Inc.",
+        "bpm": 127.0
+      },
+      {
+        "n": 126,
+        "nom": "Be Happy",
+        "auteur": "KORG Inc.",
+        "bpm": 114.0
+      },
+      {
+        "n": 127,
+        "nom": "JaxMan 1",
+        "auteur": "KORG Inc.",
+        "bpm": 125.0
+      },
+      {
+        "n": 128,
+        "nom": "JaxMan 2",
+        "auteur": "KORG Inc.",
+        "bpm": 125.0
+      },
+      {
+        "n": 129,
+        "nom": "JaxMan 3",
+        "auteur": "KORG Inc.",
+        "bpm": 125.0
+      },
+      {
+        "n": 130,
+        "nom": "JaxMan 4",
+        "auteur": "KORG Inc.",
+        "bpm": 125.0
+      },
+      {
+        "n": 131,
+        "nom": "OpenCar 1",
+        "auteur": "mryat",
+        "bpm": 120.0
+      },
+      {
+        "n": 132,
+        "nom": "OpenCar 2",
+        "auteur": "mryat",
+        "bpm": 120.0
+      },
+      {
+        "n": 133,
+        "nom": "OpenCar 3",
+        "auteur": "mryat",
+        "bpm": 120.0
+      },
+      {
+        "n": 134,
+        "nom": "Toolshed 1",
+        "auteur": "Francis Preve",
+        "bpm": 120.0
+      },
+      {
+        "n": 135,
+        "nom": "Toolshed 2",
+        "auteur": "Francis Preve",
+        "bpm": 120.0
+      },
+      {
+        "n": 136,
+        "nom": "Mansion 1",
+        "auteur": "Francis Preve",
+        "bpm": 117.0
+      },
+      {
+        "n": 137,
+        "nom": "Mansion 2",
+        "auteur": "Francis Preve",
+        "bpm": 117.0
+      },
+      {
+        "n": 138,
+        "nom": "Flipflop 1",
+        "auteur": "KORG Inc.",
+        "bpm": 123.0
+      },
+      {
+        "n": 139,
+        "nom": "Flipflop 2",
+        "auteur": "KORG Inc.",
+        "bpm": 123.0
+      },
+      {
+        "n": 140,
+        "nom": "Techstep 1",
+        "auteur": "Mistabishi",
+        "bpm": 85.0
+      },
+      {
+        "n": 141,
+        "nom": "Techstep 2",
+        "auteur": "Mistabishi",
+        "bpm": 170.0
+      },
+      {
+        "n": 142,
+        "nom": "Techstep 3",
+        "auteur": "Mistabishi",
+        "bpm": 170.0
+      },
+      {
+        "n": 143,
+        "nom": "Techstep 4",
+        "auteur": "Mistabishi",
+        "bpm": 170.0
+      },
+      {
+        "n": 144,
+        "nom": "Neuro 1",
+        "auteur": "Mistabishi",
+        "bpm": 170.9
+      },
+      {
+        "n": 145,
+        "nom": "Neuro 2",
+        "auteur": "Mistabishi",
+        "bpm": 170.9
+      },
+      {
+        "n": 146,
+        "nom": "Neuro 3",
+        "auteur": "Mistabishi",
+        "bpm": 170.9
+      },
+      {
+        "n": 147,
+        "nom": "Neurofunk 1",
+        "auteur": "Mistabishi",
+        "bpm": 172.0
+      },
+      {
+        "n": 148,
+        "nom": "Neurofunk 2",
+        "auteur": "Mistabishi",
+        "bpm": 172.0
+      },
+      {
+        "n": 149,
+        "nom": "Neurofunk 3",
+        "auteur": "Mistabishi",
+        "bpm": 172.0
+      },
+      {
+        "n": 150,
+        "nom": "Jungle 1",
+        "auteur": "Mistabishi",
+        "bpm": 42.5
+      },
+      {
+        "n": 151,
+        "nom": "Jungle 2",
+        "auteur": "Mistabishi",
+        "bpm": 170.0
+      },
+      {
+        "n": 152,
+        "nom": "Jungle 3",
+        "auteur": "Mistabishi",
+        "bpm": 170.0
+      },
+      {
+        "n": 153,
+        "nom": "Jungle 4",
+        "auteur": "Mistabishi",
+        "bpm": 170.0
+      },
+      {
+        "n": 154,
+        "nom": "Finalist",
+        "auteur": "mryat",
+        "bpm": 115.0
+      },
+      {
+        "n": 155,
+        "nom": "Scooba 1",
+        "auteur": "Shrike",
+        "bpm": 174.0
+      },
+      {
+        "n": 156,
+        "nom": "Scooba 2",
+        "auteur": "Shrike",
+        "bpm": 174.0
+      },
+      {
+        "n": 157,
+        "nom": "Scooba 3",
+        "auteur": "Shrike",
+        "bpm": 174.0
+      },
+      {
+        "n": 158,
+        "nom": "Surfchord",
+        "auteur": "KORG Inc.",
+        "bpm": 120.0
+      },
+      {
+        "n": 159,
+        "nom": "AgainstAllOdds1",
+        "auteur": "Shrike",
+        "bpm": 144.0
+      },
+      {
+        "n": 160,
+        "nom": "AgainstAllOdds2",
+        "auteur": "Shrike",
+        "bpm": 144.0
+      },
+      {
+        "n": 161,
+        "nom": "AgainstAllOdds3",
+        "auteur": "Shrike",
+        "bpm": 144.0
+      },
+      {
+        "n": 162,
+        "nom": "AgainstAllOdds4",
+        "auteur": "Shrike",
+        "bpm": 144.0
+      },
+      {
+        "n": 163,
+        "nom": "Cygnus 1",
+        "auteur": "KORG Inc.",
+        "bpm": 136.0
+      },
+      {
+        "n": 164,
+        "nom": "Cygnus 2",
+        "auteur": "KORG Inc.",
+        "bpm": 136.0
+      },
+      {
+        "n": 165,
+        "nom": "Sirius 1",
+        "auteur": "KORG Inc.",
+        "bpm": 162.0
+      },
+      {
+        "n": 166,
+        "nom": "Sirius 2",
+        "auteur": "KORG Inc.",
+        "bpm": 162.0
+      },
+      {
+        "n": 167,
+        "nom": "OctopusAlien",
+        "auteur": "mryat",
+        "bpm": 180.0
+      },
+      {
+        "n": 168,
+        "nom": "Debris 1",
+        "auteur": "KORG Inc.",
+        "bpm": 110.0
+      },
+      {
+        "n": 169,
+        "nom": "Debris 2",
+        "auteur": "KORG Inc.",
+        "bpm": 110.0
+      },
+      {
+        "n": 170,
+        "nom": "CoffeeEffect",
+        "auteur": "mryat",
+        "bpm": 110.0
+      },
+      {
+        "n": 171,
+        "nom": "300Miles 1",
+        "auteur": "Shrike",
+        "bpm": 102.0
+      },
+      {
+        "n": 172,
+        "nom": "300Miles 2",
+        "auteur": "Shrike",
+        "bpm": 102.0
+      },
+      {
+        "n": 173,
+        "nom": "300Miles 3",
+        "auteur": "Shrike",
+        "bpm": 102.0
+      },
+      {
+        "n": 174,
+        "nom": "300Miles 4",
+        "auteur": "Shrike",
+        "bpm": 102.0
+      },
+      {
+        "n": 175,
+        "nom": "Abyss 1",
+        "auteur": "Shrike",
+        "bpm": 140.0
+      },
+      {
+        "n": 176,
+        "nom": "Abyss 2",
+        "auteur": "Shrike",
+        "bpm": 140.0
+      },
+      {
+        "n": 177,
+        "nom": "Abyss 3",
+        "auteur": "Shrike",
+        "bpm": 140.0
+      },
+      {
+        "n": 178,
+        "nom": "CiriusSkit 1",
+        "auteur": "Shrike",
+        "bpm": 135.0
+      },
+      {
+        "n": 179,
+        "nom": "CiriusSkit 2",
+        "auteur": "Shrike",
+        "bpm": 135.0
+      },
+      {
+        "n": 180,
+        "nom": "Skarab 1",
+        "auteur": "Shrike",
+        "bpm": 140.0
+      },
+      {
+        "n": 181,
+        "nom": "Skarab 2",
+        "auteur": "Shrike",
+        "bpm": 140.0
+      },
+      {
+        "n": 182,
+        "nom": "Skarab 3",
+        "auteur": "Shrike",
+        "bpm": 140.0
+      },
+      {
+        "n": 183,
+        "nom": "Chillwave 1",
+        "auteur": "Mistabishi",
+        "bpm": 87.8
+      },
+      {
+        "n": 184,
+        "nom": "Chillwave 2",
+        "auteur": "Mistabishi",
+        "bpm": 87.8
+      },
+      {
+        "n": 185,
+        "nom": "Chillwave 3",
+        "auteur": "Mistabishi",
+        "bpm": 87.8
+      },
+      {
+        "n": 186,
+        "nom": "Chillwave 4",
+        "auteur": "Mistabishi",
+        "bpm": 87.8
+      },
+      {
+        "n": 187,
+        "nom": "Chillwave 5",
+        "auteur": "Mistabishi",
+        "bpm": 87.8
+      },
+      {
+        "n": 188,
+        "nom": "Viburnum",
+        "auteur": "Francis Preve",
+        "bpm": 100.0
+      },
+      {
+        "n": 189,
+        "nom": "Taikotune",
+        "auteur": "Francis Preve",
+        "bpm": 85.0
+      },
+      {
+        "n": 190,
+        "nom": "Recife 1",
+        "auteur": "KORG Inc.",
+        "bpm": 111.1
+      },
+      {
+        "n": 191,
+        "nom": "Recife 2",
+        "auteur": "KORG Inc.",
+        "bpm": 111.1
+      },
+      {
+        "n": 192,
+        "nom": "YourCradle",
+        "auteur": "mryat",
+        "bpm": 81.0
+      },
+      {
+        "n": 193,
+        "nom": "SwimDream",
+        "auteur": "KORG Inc.",
+        "bpm": 88.0
+      },
+      {
+        "n": 194,
+        "nom": "Techno Template",
+        "auteur": "KORG Inc.",
+        "bpm": 128.0
+      },
+      {
+        "n": 195,
+        "nom": "House Template",
+        "auteur": "KORG Inc.",
+        "bpm": 120.0
+      },
+      {
+        "n": 196,
+        "nom": "DubstepTemplate",
+        "auteur": "KORG Inc.",
+        "bpm": 140.0
+      },
+      {
+        "n": 197,
+        "nom": "HipHop Template",
+        "auteur": "KORG Inc.",
+        "bpm": 140.0
+      },
+      {
+        "n": 198,
+        "nom": "ClassicTemplate",
+        "auteur": "KORG Inc.",
+        "bpm": 110.0
+      },
+      {
+        "n": 199,
+        "nom": "Drum Template",
+        "auteur": "KORG Inc.",
+        "bpm": 120.0
+      },
+      {
+        "n": 200,
+        "nom": "8BIT TEMPLATE",
+        "auteur": "KORG Inc.",
+        "bpm": 100.0
+      },
+      {
+        "n": 201,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 202,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 203,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 204,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 205,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 206,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 207,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 208,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 209,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 210,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 211,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 212,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 213,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 214,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 215,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 216,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 217,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 218,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 219,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 220,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 221,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 222,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 223,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 224,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 225,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 226,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 227,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 228,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 229,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 230,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 231,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 232,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 233,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 234,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 235,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 236,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 237,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 238,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 239,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 240,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 241,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 242,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 243,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 244,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 245,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 246,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 247,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 248,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 249,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      },
+      {
+        "n": 250,
+        "nom": "Init Pattern",
+        "auteur": "-",
+        "bpm": 120.0
+      }
+    ]
+  },
+  "gammes": {
+    "source": {
+      "doc": "PG",
+      "page": 15
+    },
+    "synth": "confirmé",
+    "note": "Notes données pour KEY = C.",
+    "liste": [
+      {
+        "n": 1,
+        "nom": "Chromatic",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "D",
+          "E♭",
+          "E",
+          "F",
+          "G♭",
+          "G",
+          "A♭",
+          "A",
+          "B♭",
+          "B"
+        ]
+      },
+      {
+        "n": 2,
+        "nom": "Ionian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "n": 3,
+        "nom": "Dorian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "F",
+          "G",
+          "A",
+          "B♭"
+        ]
+      },
+      {
+        "n": 4,
+        "nom": "Phrygian",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E♭",
+          "F",
+          "G",
+          "A♭",
+          "B♭"
+        ]
+      },
+      {
+        "n": 5,
+        "nom": "Lydian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E",
+          "F♯",
+          "G",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "n": 6,
+        "nom": "Mixolydian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "A",
+          "B♭"
+        ]
+      },
+      {
+        "n": 7,
+        "nom": "Aeolian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "F",
+          "G",
+          "A♭",
+          "B♭"
+        ]
+      },
+      {
+        "n": 8,
+        "nom": "Locrian",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E♭",
+          "F",
+          "G♭",
+          "A♭",
+          "B♭"
+        ]
+      },
+      {
+        "n": 9,
+        "nom": "Harm minor",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "F",
+          "G",
+          "A♭",
+          "B"
+        ]
+      },
+      {
+        "n": 10,
+        "nom": "Melo minor",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "F",
+          "G",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "n": 11,
+        "nom": "Major Blues",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "E",
+          "G",
+          "A"
+        ]
+      },
+      {
+        "n": 12,
+        "nom": "minor Blues",
+        "notesEnDo": [
+          "C",
+          "E♭",
+          "F",
+          "G♭",
+          "G",
+          "B♭"
+        ]
+      },
+      {
+        "n": 13,
+        "nom": "Diminished",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "F",
+          "F♯",
+          "G♯",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "n": 14,
+        "nom": "Com.Dim",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E♭",
+          "E",
+          "F♯",
+          "G",
+          "A",
+          "B♭"
+        ]
+      },
+      {
+        "n": 15,
+        "nom": "Major Penta",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E",
+          "G",
+          "A"
+        ]
+      },
+      {
+        "n": 16,
+        "nom": "minor Penta",
+        "notesEnDo": [
+          "C",
+          "E♭",
+          "F",
+          "G",
+          "B♭"
+        ]
+      },
+      {
+        "n": 17,
+        "nom": "Raga 1 (Bhairav)",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E",
+          "F",
+          "G",
+          "A♭",
+          "B"
+        ]
+      },
+      {
+        "n": 18,
+        "nom": "Raga 2 (Gamanasrama)",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E",
+          "F♯",
+          "G",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "n": 19,
+        "nom": "Raga 3 (Todi)",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E♭",
+          "F♯",
+          "G",
+          "A♭",
+          "B"
+        ]
+      },
+      {
+        "n": 20,
+        "nom": "Arabic",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E",
+          "F",
+          "G♭",
+          "A♭",
+          "B♭"
+        ]
+      },
+      {
+        "n": 21,
+        "nom": "Spanish",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E♭",
+          "E",
+          "F",
+          "G",
+          "A♭",
+          "B♭"
+        ]
+      },
+      {
+        "n": 22,
+        "nom": "Gypsy",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "F♯",
+          "G",
+          "A♭",
+          "B"
+        ]
+      },
+      {
+        "n": 23,
+        "nom": "Egyptian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "F",
+          "G",
+          "B♭"
+        ]
+      },
+      {
+        "n": 24,
+        "nom": "Hawaiian",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E♭",
+          "G",
+          "A"
+        ]
+      },
+      {
+        "n": 25,
+        "nom": "Pelog",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "E♭",
+          "G",
+          "A♭"
+        ]
+      },
+      {
+        "n": 26,
+        "nom": "Japanese",
+        "notesEnDo": [
+          "C",
+          "D♭",
+          "F",
+          "G",
+          "A♭"
+        ]
+      },
+      {
+        "n": 27,
+        "nom": "Ryuku",
+        "notesEnDo": [
+          "C",
+          "E",
+          "F",
+          "G",
+          "B"
+        ]
+      },
+      {
+        "n": 28,
+        "nom": "Chinese",
+        "notesEnDo": [
+          "C",
+          "E",
+          "F♯",
+          "G",
+          "B"
+        ]
+      },
+      {
+        "n": 29,
+        "nom": "Bass Line",
+        "notesEnDo": [
+          "C",
+          "G",
+          "B♭"
+        ]
+      },
+      {
+        "n": 30,
+        "nom": "Whole Tone",
+        "notesEnDo": [
+          "C",
+          "D",
+          "E",
+          "G♭",
+          "A♭",
+          "B♭"
+        ]
+      },
+      {
+        "n": 31,
+        "nom": "minor 3rd",
+        "notesEnDo": [
+          "C",
+          "E♭",
+          "G♭",
+          "A"
+        ]
+      },
+      {
+        "n": 32,
+        "nom": "Major 3rd",
+        "notesEnDo": [
+          "C",
+          "E",
+          "A♭"
+        ]
+      },
+      {
+        "n": 33,
+        "nom": "4th Interval",
+        "notesEnDo": [
+          "C",
+          "F",
+          "B♭"
+        ]
+      },
+      {
+        "n": 34,
+        "nom": "5th Interval",
+        "notesEnDo": [
+          "C",
+          "G"
+        ]
+      },
+      {
+        "n": 35,
+        "nom": "Octave",
+        "notesEnDo": [
+          "C"
+        ]
+      }
+    ]
+  }
+}

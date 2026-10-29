@@ -1,0 +1,46 @@
+/* Glossaire : cartes de termes, fiche, schémas, sélection pour le quiz */
+.lx-quizbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; padding: 6px 10px; margin: 0 0 12px; background: var(--panel); border: 2px solid var(--edge); }
+.lx-quizbar > span { margin-right: auto; font-size: 0.9rem; }
+.lx-cartes { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.lx-carte { position: relative; display: flex; background: var(--panel-2); border: 2px solid var(--edge); border-left: 5px solid var(--cc); min-width: 0; }
+.lx-carte > input { margin: 10px 0 0 8px; width: 18px; height: 18px; flex: none; accent-color: var(--cc); }
+.lx-carte-b { flex: 1; min-width: 0; display: grid; gap: 4px; text-align: left; padding: 8px 10px; background: none; border: 0; color: var(--text); cursor: pointer; font: inherit; }
+.lx-carte-b:hover { background: #ffffff0a; }
+.lx-carte-h { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.lx-carte-h b { font-size: 1rem; }
+.lx-carte-h small { font-size: 0.75rem; }
+.lx-carte-def { font-size: 0.85rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.lx-carte-pied { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+
+.lx-fiche { scroll-margin-top: 80px; margin-top: 12px; display: grid; gap: 12px; padding: 14px; background: var(--panel); border: 2px solid var(--edge); border-top: 5px solid var(--cc); }
+.lx-fiche-h { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: flex-start; }
+.lx-fiche-h p { margin: 0; }
+.lx-fiche h3 { margin: 2px 0 4px; font-size: 1.6rem; }
+.lx-fiche h4 { margin: 0 0 6px; font-size: 0.95rem; }
+.lx-noms { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.lx-noms b { color: var(--muted); font-weight: 600; margin-right: 4px; }
+.lx-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.lx-check { display: inline-flex; gap: 6px; align-items: center; font-size: 0.85rem; padding: 3px 8px; border: 2px solid var(--edge); background: var(--panel-2); cursor: pointer; }
+.lx-check input { accent-color: var(--cc); }
+.lx-def { margin: 0; font-size: 1.05rem; line-height: 1.5; }
+.lx-media { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lx-sch { margin: 0; flex: 0 1 320px; background: #0b0c10; border: 2px solid var(--edge); padding: 6px 8px 4px; }
+.lx-sch svg { display: block; width: 100%; height: auto; }
+.lx-sch figcaption { font-size: 0.72rem; color: var(--muted); text-align: center; }
+.lx-ecoute { flex: 1 1 240px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lx-ecoute .small { flex-basis: 100%; }
+.lx-e2 { padding: 10px 12px; background: #0e1626; border-left: 4px solid #4e7ec2; }
+.lx-e2 p { margin: 0 0 6px; }
+.lx-pages { display: flex; flex-wrap: wrap; gap: 6px; }
+.lx-liens { display: grid; gap: 10px; }
+.lx-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.lx-chips .chipbtn { text-decoration: none; }
+.lx-abc { margin-top: 12px; }
+.lx-abc h3 { margin: 0 0 8px; }
+.lx-az { border-left: 4px solid var(--cc) !important; }
+.qz-sel { margin: 0 0 10px; padding: 8px 10px; background: var(--panel-2); border-left: 4px solid #9b6bff; }
+@media (max-width: 760px) {
+  .lx-cartes { grid-template-columns: 1fr; }
+  .lx-fiche h3 { font-size: 1.3rem; }
+  .lx-sch { flex-basis: 100%; }
+}

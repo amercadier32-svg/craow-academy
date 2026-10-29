@@ -1,0 +1,1203 @@
+{
+  "meta": {
+    "description": "Paramètres de l'electribe : son de partie, motif, partie, pas, global. Une entrée = un paramètre.",
+    "documents": {
+      "OM": {
+        "fichier": "docs/281ffa.pdf",
+        "titre": "Mode d'emploi electribe / electribe sampler (section française)",
+        "pages": "Numéros imprimés en bas de page (section FR : p. 20 à 38). Page PDF = page imprimée + 16.",
+        "couvreSynth": true
+      },
+      "PG": {
+        "fichier": "docs/electribe_PG_F4.pdf",
+        "titre": "Guide des paramètres de l'electribe (Synth)",
+        "pages": "Numéro imprimé = page PDF.",
+        "couvreSynth": true
+      },
+      "PGS": {
+        "fichier": "docs/electribe_sampler_PG_F3.pdf",
+        "titre": "Guide des paramètres de l'electribe SAMPLER",
+        "couvreSynth": false,
+        "remarque": "Non utilisé : guide du modèle Sampler (la rouge), remplacé par le guide Synth."
+      }
+    },
+    "statutsSynth": {
+      "confirmé": "Vient du mode d'emploi commun ou du guide des paramètres Synth.",
+      "absent du manuel": "Aucun des PDF fournis ne donne cette information."
+    },
+    "extraitLe": "2026-10-28"
+  },
+  "groupes": {
+    "oscillateur": "Oscillateur",
+    "filtre": "Filtre",
+    "modulation": "Modulation (LFO / EG)",
+    "ampli": "Amp / EG",
+    "ifx": "Effet d'insertion",
+    "mfx": "Effet master",
+    "motif": "Paramètres de motif",
+    "partie": "Paramètres de partie",
+    "pas": "Édition de pas",
+    "global": "Paramètres Global"
+  },
+  "parametres": [
+    {
+      "id": "osc.type",
+      "nom": "Oscillator",
+      "groupe": "oscillateur",
+      "effet": "Choisit la forme d'onde de la partie (dent de scie, carré, bruit, PCM...).",
+      "plage": "1…409",
+      "controle": "potard Oscillator",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "409 oscillateurs listés dans le guide p. 11-13 (voir oscillators.json).",
+      "shift": {
+        "combo": "Shift + Oscillator",
+        "effet": "Fait défiler les oscillateurs par catégorie.",
+        "source": {
+          "doc": "PG",
+          "page": 10
+        },
+        "synth": "confirmé"
+      }
+    },
+    {
+      "id": "osc.edit",
+      "nom": "OSC Edit",
+      "groupe": "oscillateur",
+      "effet": "Change le caractère du son. Son rôle exact dépend de l'oscillateur choisi.",
+      "controle": "potard Edit (section Oscillator)",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis.",
+      "notes": [
+        "Ni le mode d'emploi ni le guide des paramètres ne détaillent le rôle de ce potard pour chaque oscillateur : à découvrir à l'oreille."
+      ]
+    },
+    {
+      "id": "osc.pitch",
+      "nom": "Pitch",
+      "groupe": "oscillateur",
+      "effet": "Règle la hauteur de la note.",
+      "controle": "potard Pitch/Glide",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis.",
+      "shift": {
+        "combo": "Shift + Pitch/Glide",
+        "effet": "Règle le Glide (glissement d'une note à l'autre) ; ouvre la page Glide du menu.",
+        "source": {
+          "doc": "OM",
+          "page": 23
+        },
+        "synth": "confirmé"
+      }
+    },
+    {
+      "id": "osc.glide",
+      "nom": "Glide",
+      "groupe": "oscillateur",
+      "effet": "Glissement progressif de hauteur entre deux notes (sons de synthé).",
+      "controle": "Shift + potard Pitch/Glide",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "filter.lpf",
+      "nom": "LPF (passe-bas)",
+      "groupe": "filtre",
+      "effet": "Active le filtre passe-bas. Des appuis successifs changent de type de filtre.",
+      "valeurs": [
+        "OFF",
+        "electribe LPF",
+        "MS20 LPF",
+        "MG LPF",
+        "P5 LPF",
+        "OB LPF",
+        "Acid LPF"
+      ],
+      "controle": "bouton LPF",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Liste des types de filtres, guide p. 15."
+    },
+    {
+      "id": "filter.hpf",
+      "nom": "HPF (passe-haut)",
+      "groupe": "filtre",
+      "effet": "Active le filtre passe-haut. Des appuis successifs changent de type de filtre.",
+      "valeurs": [
+        "OFF",
+        "electribe HPF",
+        "MS20 HPF",
+        "P5 HPF",
+        "OB HPF",
+        "Acid HPF"
+      ],
+      "controle": "bouton HPF",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Liste des types de filtres, guide p. 15."
+    },
+    {
+      "id": "filter.bpf",
+      "nom": "BPF (passe-bande)",
+      "groupe": "filtre",
+      "effet": "Active le filtre passe-bande. Des appuis successifs changent de type de filtre.",
+      "valeurs": [
+        "OFF",
+        "electribe BPF",
+        "MS20 BPF",
+        "P5 BPF",
+        "OB BPF",
+        "Acid BPF"
+      ],
+      "controle": "bouton BPF",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Liste des types de filtres, guide p. 15."
+    },
+    {
+      "id": "filter.cutoff",
+      "nom": "Cutoff",
+      "groupe": "filtre",
+      "effet": "Fréquence de coupure : la limite à partir de laquelle le filtre enlève des fréquences.",
+      "controle": "potard Filter",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "filter.resonance",
+      "nom": "Resonance",
+      "groupe": "filtre",
+      "effet": "Accentue les fréquences autour de la coupure (son plus « nasillard » ou sifflant).",
+      "controle": "potard Resonance",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "filter.egint",
+      "nom": "EG Int",
+      "groupe": "filtre",
+      "effet": "Quantité de mouvement de la coupure par l'enveloppe réglée dans la section Amp/EG.",
+      "controle": "potard EG Int",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "mod.type",
+      "nom": "Modulation",
+      "groupe": "modulation",
+      "effet": "Choisit le type de modulation (source LFO ou enveloppe + destination).",
+      "plage": "1…72",
+      "controle": "potard Modulation",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "72 types listés dans le guide p. 14-15 (voir effects.json > modulation).",
+      "shift": {
+        "combo": "Shift + Modulation",
+        "effet": "Change la forme d'onde en gardant la même destination.",
+        "source": {
+          "doc": "PG",
+          "page": 10
+        },
+        "synth": "confirmé"
+      }
+    },
+    {
+      "id": "mod.depth",
+      "nom": "Depth",
+      "groupe": "modulation",
+      "effet": "Intensité de la modulation.",
+      "controle": "potard Depth",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "mod.speed",
+      "nom": "Speed",
+      "groupe": "modulation",
+      "effet": "Vitesse de la modulation.",
+      "controle": "potard Speed",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "amp.level",
+      "nom": "Level",
+      "groupe": "ampli",
+      "effet": "Volume de la partie.",
+      "controle": "potard Level",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "amp.pan",
+      "nom": "Pan",
+      "groupe": "ampli",
+      "effet": "Place la partie à gauche / droite dans l'image stéréo.",
+      "controle": "potard Pan",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "amp.attack",
+      "nom": "Attack",
+      "groupe": "ampli",
+      "effet": "Durée de montée du son au début de la note.",
+      "controle": "potard Attack",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "amp.decay",
+      "nom": "Decay/Release",
+      "groupe": "ampli",
+      "effet": "Durée de chute du son.",
+      "controle": "potard Decay/Release",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "amp.eg",
+      "nom": "Amp EG",
+      "groupe": "ampli",
+      "effet": "Allumé : le volume suit l'enveloppe Attack / Decay-Release. Éteint : volume constant tant que la note est tenue (enveloppe « orgue »).",
+      "valeurs": [
+        "OFF",
+        "ON"
+      ],
+      "controle": "bouton Amp EG",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "mfx.send",
+      "nom": "MFX Send",
+      "groupe": "ampli",
+      "effet": "Envoie ou non la partie vers l'effet master.",
+      "valeurs": [
+        "OFF",
+        "ON"
+      ],
+      "controle": "bouton MFX Send",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "ifx.type",
+      "nom": "Insert Fx",
+      "groupe": "ifx",
+      "effet": "Choisit le type d'effet d'insertion de la partie (distorsion, etc.).",
+      "plage": "1…38",
+      "controle": "potard Insert Fx",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "38 types listés dans le guide p. 16 (voir effects.json)."
+    },
+    {
+      "id": "ifx.edit",
+      "nom": "IFX Edit",
+      "groupe": "ifx",
+      "effet": "Intensité de l'effet d'insertion ; son rôle dépend de l'effet choisi.",
+      "controle": "potard Edit (section Insert Fx)",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "ifx.on",
+      "nom": "IFX On",
+      "groupe": "ifx",
+      "effet": "Active ou coupe l'effet d'insertion de la partie.",
+      "valeurs": [
+        "OFF",
+        "ON"
+      ],
+      "controle": "bouton IFX On",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 24
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "mfx.on",
+      "nom": "Master Fx On",
+      "groupe": "mfx",
+      "effet": "Active le contrôle de l'effet master par le pad tactile.",
+      "valeurs": [
+        "OFF",
+        "ON"
+      ],
+      "controle": "bouton Master Fx",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "synth": "confirmé",
+      "shift": {
+        "combo": "Shift + Master Fx",
+        "effet": "Ouvre la page MFX TYPE.",
+        "source": {
+          "doc": "PG",
+          "page": 10
+        },
+        "synth": "confirmé"
+      }
+    },
+    {
+      "id": "mfx.x",
+      "nom": "Master Fx X",
+      "groupe": "mfx",
+      "effet": "Position horizontale du doigt sur le pad tactile quand Master Fx est actif.",
+      "controle": "pad tactile (axe X)",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 31
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "mfx.y",
+      "nom": "Master Fx Y",
+      "groupe": "mfx",
+      "effet": "Position verticale du doigt sur le pad tactile quand Master Fx est actif.",
+      "controle": "pad tactile (axe Y)",
+      "enregistrableMotionSeq": true,
+      "source": {
+        "doc": "OM",
+        "page": 31
+      },
+      "synth": "confirmé",
+      "plageNote": "Plage non indiquée dans les manuels fournis."
+    },
+    {
+      "id": "mfx.hold",
+      "nom": "MFX Hold",
+      "groupe": "mfx",
+      "effet": "Garde l'effet master dans l'état du pad même après avoir levé le doigt. L'état est mémorisé dans le motif.",
+      "valeurs": [
+        "OFF",
+        "ON"
+      ],
+      "controle": "bouton MFX Hold",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "OM",
+        "page": 22
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.bpm",
+      "nom": "BPM",
+      "groupe": "motif",
+      "effet": "Tempo du motif. Shift + molette : pas de 0,1.",
+      "plage": "20.0…300.0",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.swing",
+      "nom": "SWING",
+      "groupe": "motif",
+      "effet": "Décale les pas pairs pour donner du swing. +33 % donne un shuffle presque parfait.",
+      "plage": "-50 %…+50 %",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.beat",
+      "nom": "BEAT",
+      "groupe": "motif",
+      "effet": "Type de mesure du motif. En 8Tri / 16Tri, un bloc fait 12 pas.",
+      "valeurs": [
+        "16",
+        "32",
+        "8Tri",
+        "16Tri"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.length",
+      "nom": "LENGTH",
+      "groupe": "motif",
+      "effet": "Longueur du motif en blocs de 16 pas (4 blocs = 64 pas).",
+      "plage": "1…4",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.level",
+      "nom": "PATTERN LEVEL",
+      "groupe": "motif",
+      "effet": "Volume du motif entier.",
+      "plage": "0…127",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.mfxtype",
+      "nom": "MFX TYPE",
+      "groupe": "motif",
+      "effet": "Type d'effet master du motif.",
+      "plage": "01…32",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.key",
+      "nom": "KEY",
+      "groupe": "motif",
+      "effet": "Tonique (note de départ) de la gamme.",
+      "plage": "C…B",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.scale",
+      "nom": "SCALE",
+      "groupe": "motif",
+      "effet": "Gamme utilisée par le pad tactile et les pads en mode Keyboard.",
+      "plage": "Chromatic…Octave (35 gammes)",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.chordset",
+      "nom": "CHORD SET",
+      "groupe": "motif",
+      "effet": "Richesse des accords joués en mode Chord. La plage dépend de la gamme.",
+      "plage": "1…5",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.gatearp",
+      "nom": "GATE ARP",
+      "groupe": "motif",
+      "effet": "Motif rythmique utilisé par le Gate Arpeggiator.",
+      "plage": "1…50",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.alt1314",
+      "nom": "ALTERNATE 13-14",
+      "groupe": "motif",
+      "effet": "Empêche les parties 13 et 14 de sonner en même temps (ex. charley fermé / ouvert).",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.alt1516",
+      "nom": "ALTERNATE 15-16",
+      "groupe": "motif",
+      "effet": "Même chose pour les parties 15 et 16.",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.chainto",
+      "nom": "CHAIN TO",
+      "groupe": "motif",
+      "effet": "Motif lancé automatiquement quand celui-ci est fini. Nécessite CHAIN MODE = On.",
+      "plage": "Off, 1…250",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.chainrepeat",
+      "nom": "CHAIN REPEAT",
+      "groupe": "motif",
+      "effet": "Nombre de lectures du motif avant de passer au motif CHAIN TO.",
+      "plage": "1…64",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "pat.clearmfxmotion",
+      "nom": "CLEAR MFX MOTION",
+      "groupe": "motif",
+      "effet": "Efface la Motion Sequence de l'effet master du motif.",
+      "valeurs": [
+        "exécuter"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 3
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.priority",
+      "nom": "PART PRIORITY",
+      "groupe": "partie",
+      "effet": "Sur High, la partie risque moins de voir ses notes coupées quand beaucoup de notes se chevauchent.",
+      "valeurs": [
+        "Normal",
+        "High"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.laststep",
+      "nom": "LAST STEP",
+      "groupe": "partie",
+      "effet": "Dernier pas joué par la partie : permet des mesures impaires (ex. 11 pas). Non synchronisé avec un séquenceur externe.",
+      "plage": "1…16",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.motionseq",
+      "nom": "MOTION SEQ",
+      "groupe": "partie",
+      "effet": "Mode de lecture de la Motion Sequence : Smooth = fondu continu ; Trigger Hold = valeur tenue à chaque déclenchement.",
+      "valeurs": [
+        "Off",
+        "Smooth",
+        "Trigger Hold"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.trgvelocity",
+      "nom": "TRG.PAD VELOCITY",
+      "groupe": "partie",
+      "effet": "Active la sensibilité à la force de frappe des pads.",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.groovetype",
+      "nom": "GROOVE TYPE",
+      "groupe": "partie",
+      "effet": "Applique un « groove » (décalages de timing typiques) à la séquence.",
+      "plage": "01 Conga1…25 Decrescendo",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé",
+      "notes": [
+        "Le mode d'emploi (p. 32) le range dans les réglages de motif ; le guide des paramètres (p. 4) dans les paramètres de partie."
+      ]
+    },
+    {
+      "id": "part.groovedepth",
+      "nom": "GROOVE DEPTH",
+      "groupe": "partie",
+      "effet": "Intensité du groove.",
+      "plage": "0…127",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.scalemode",
+      "nom": "SCALE MODE",
+      "groupe": "partie",
+      "effet": "Si On, changer KEY / SCALE change aussi la hauteur des notes de la partie. À activer avant d'enregistrer.",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "part.voiceassign",
+      "nom": "VOICE ASSIGN",
+      "groupe": "partie",
+      "effet": "Polyphonie : Mono1 (legato, pas de redéclenchement), Mono2 (redéclenche à chaque note), Poly1 / Poly2 (jusqu'à 4 voix ; Poly2 redéclenche à chaque note).",
+      "valeurs": [
+        "Mono1",
+        "Mono2",
+        "Poly1",
+        "Poly2"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 4
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "step.number",
+      "nom": "STEP NUMBER",
+      "groupe": "pas",
+      "effet": "Pas à éditer, au format bloc.pas. Shift + molette : saute d'un bloc de 16.",
+      "plage": "1.01…4.16",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 5
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "step.note",
+      "nom": "NOTE",
+      "groupe": "pas",
+      "effet": "Note(s) du pas : jusqu'à 4 notes par pas. Shift + molette : par octave.",
+      "plage": "---, C-1…G9",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 5
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "step.gate",
+      "nom": "GATE TIME",
+      "groupe": "pas",
+      "effet": "Durée de la note. 96 = un pas entier. TIE = liée à la note suivante identique (sans redéclencher).",
+      "plage": "00…96, TIE",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 5
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "step.velocity",
+      "nom": "VELOCITY",
+      "groupe": "pas",
+      "effet": "Force (volume) de la note.",
+      "plage": "001…127",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 5
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.triggermode",
+      "nom": "TRIGGER MODE",
+      "groupe": "global",
+      "effet": "Ce que joue un pad en mode Trigger : Normal = C4 ; Seq 1st = première note de la partie ; Seq Play = joue la séquence tant que le pad est tenu.",
+      "valeurs": [
+        "Normal",
+        "Seq 1st",
+        "Seq Play"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 6
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.velocitycurve",
+      "nom": "VELOCITY CURVE",
+      "groupe": "global",
+      "effet": "Réponse des pads à la force de frappe.",
+      "valeurs": [
+        "Heavy",
+        "Normal",
+        "Light",
+        "Const96"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 6
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.metronome",
+      "nom": "METRONOME",
+      "groupe": "global",
+      "effet": "Métronome sur chaque noire. Rec 0/1/2 : seulement en enregistrement (Rec 0 = sans décompte).",
+      "valeurs": [
+        "Off",
+        "Rec 0",
+        "Rec 1",
+        "Rec 2",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.tempolock",
+      "nom": "TEMPO LOCK",
+      "groupe": "global",
+      "effet": "Garde le tempo actuel même en changeant de motif.",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.knobmode",
+      "nom": "KNOB MODE",
+      "groupe": "global",
+      "effet": "Comportement d'un potard dont la position ne correspond pas à la valeur : Jump (saute), Catch (attend d'atteindre la valeur), Value Scale (relatif).",
+      "valeurs": [
+        "Jump",
+        "Catch",
+        "Value Scale"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.midich",
+      "nom": "GLOBAL MIDI CH.",
+      "groupe": "global",
+      "effet": "Canal MIDI de la machine.",
+      "plage": "01…16",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 6
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.midirx",
+      "nom": "MIDI RECEIVE FILTER",
+      "groupe": "global",
+      "effet": "Messages MIDI ignorés en réception.",
+      "valeurs": [
+        "Off",
+        "Short",
+        "Short+Program"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.miditx",
+      "nom": "MIDI SEND FILTER",
+      "groupe": "global",
+      "effet": "Messages MIDI non envoyés.",
+      "valeurs": [
+        "Off",
+        "Short",
+        "Short+Program"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.clockmode",
+      "nom": "CLOCK MODE",
+      "groupe": "global",
+      "effet": "Source d'horloge : Internal (maître), Auto, External USB, External MIDI, External Sync. En Auto, priorité USB > MIDI > Sync.",
+      "valeurs": [
+        "Internal",
+        "Auto",
+        "External USB",
+        "External MIDI",
+        "External Sync"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 6
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.syncpolarity",
+      "nom": "SYNC POLARITY",
+      "groupe": "global",
+      "effet": "Polarité de l'impulsion de synchro (Sync In / Sync Out).",
+      "valeurs": [
+        "Hi",
+        "Lo"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.syncunit",
+      "nom": "SYNC UNIT",
+      "groupe": "global",
+      "effet": "Nombre de pas avancés par impulsion reçue et cadence des impulsions envoyées.",
+      "valeurs": [
+        "1 Step",
+        "2 Steps"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.ptnchangelock",
+      "nom": "PTN. CHANGE LOCK",
+      "groupe": "global",
+      "effet": "Si On, il faut Shift + molette pour changer de motif.",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 8
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.chainmode",
+      "nom": "CHAIN MODE",
+      "groupe": "global",
+      "effet": "Active l'enchaînement de motifs (CHAIN TO / CHAIN REPEAT).",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 8
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.xycal",
+      "nom": "XY CALIBRATION",
+      "groupe": "global",
+      "effet": "Calibre la surface du pad tactile.",
+      "valeurs": [
+        "exécuter"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 8
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.touchrange",
+      "nom": "TOUCH SCALE RANGE",
+      "groupe": "global",
+      "effet": "Étendue de notes du pad tactile en mode Touch Scale.",
+      "valeurs": [
+        "1 Oct",
+        "2 Oct",
+        "3 Oct",
+        "4 Oct"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.lcd",
+      "nom": "LCD CONTRAST",
+      "groupe": "global",
+      "effet": "Contraste de l'écran.",
+      "plage": "1…25",
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.audiointhru",
+      "nom": "AUDIO IN THRU",
+      "groupe": "global",
+      "effet": "Envoie l'entrée Audio In vers les sorties.",
+      "valeurs": [
+        "Off",
+        "On"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.battery",
+      "nom": "BATTERY TYPE",
+      "groupe": "global",
+      "effet": "Type de piles, pour afficher la charge restante.",
+      "valeurs": [
+        "Ni-MH",
+        "Alkali"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.autopoweroff",
+      "nom": "AUTO POWER OFF",
+      "groupe": "global",
+      "effet": "Extinction après 4 h sans manipulation.",
+      "valeurs": [
+        "Disable",
+        "4 hours"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    },
+    {
+      "id": "glob.powersave",
+      "nom": "POWER SAVE MODE",
+      "groupe": "global",
+      "effet": "Baisse la luminosité de l'écran et des LED.",
+      "valeurs": [
+        "Disable",
+        "Auto",
+        "Enable"
+      ],
+      "enregistrableMotionSeq": false,
+      "source": {
+        "doc": "PG",
+        "page": 7
+      },
+      "synth": "confirmé"
+    }
+  ]
+}

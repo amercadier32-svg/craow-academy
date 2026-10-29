@@ -1,0 +1,682 @@
+{
+  "meta": {
+    "description": "Procédures pas à pas, reformulées, avec niveau de parcours suggéré (1-5).",
+    "documents": {
+      "OM": {
+        "fichier": "docs/281ffa.pdf",
+        "titre": "Mode d'emploi electribe / electribe sampler (section française)",
+        "pages": "Numéros imprimés en bas de page (section FR : p. 20 à 38). Page PDF = page imprimée + 16.",
+        "couvreSynth": true
+      },
+      "PG": {
+        "fichier": "docs/electribe_PG_F4.pdf",
+        "titre": "Guide des paramètres de l'electribe (Synth)",
+        "pages": "Numéro imprimé = page PDF.",
+        "couvreSynth": true
+      },
+      "PGS": {
+        "fichier": "docs/electribe_sampler_PG_F3.pdf",
+        "titre": "Guide des paramètres de l'electribe SAMPLER",
+        "couvreSynth": false,
+        "remarque": "Non utilisé : guide du modèle Sampler (la rouge), remplacé par le guide Synth."
+      }
+    },
+    "statutsSynth": {
+      "confirmé": "Vient du mode d'emploi commun ou du guide des paramètres Synth.",
+      "absent du manuel": "Aucun des PDF fournis ne donne cette information."
+    },
+    "extraitLe": "2026-10-28"
+  },
+  "procedures": [
+    {
+      "id": "power",
+      "titre": "Allumer / éteindre",
+      "but": "Démarrer la machine sans risque.",
+      "etapes": [
+        "Maintiens le bouton d'alimentation jusqu'à l'écran de démarrage.",
+        "Pour éteindre, maintiens-le jusqu'à ce que l'écran s'éteigne."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 27
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Ne touche ni pad ni bouton pendant l'allumage.",
+        "Extinction auto après 4 h sans manipulation (AUTO POWER OFF)."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "playpattern",
+      "titre": "Choisir et lancer un motif",
+      "but": "Écouter un motif.",
+      "etapes": [
+        "Exit deux fois pour revenir à l'écran de sélection de motif.",
+        "Tourne la molette pour choisir le motif.",
+        "Lecture/Pause pour lancer, Stop pour arrêter."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 27
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "On peut changer de motif pendant la lecture."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "selectpart",
+      "titre": "Choisir et écouter une partie",
+      "but": "Savoir quelle partie on édite.",
+      "etapes": [
+        "Allume Trigger.",
+        "Appuie sur un pad pour écouter sa partie.",
+        "Ou utilise <Part, Part> : le pad de la partie s'allume en bleu."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 27
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 1
+    },
+    {
+      "id": "menu",
+      "titre": "Naviguer dans les menus",
+      "but": "Trouver un paramètre.",
+      "etapes": [
+        "Depuis l'écran motif, Menu/Enter ouvre le menu d'édition.",
+        "< / > choisissent le paramètre.",
+        "La molette change la valeur.",
+        "Exit deux fois pour revenir."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 27
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 1
+    },
+    {
+      "id": "menuglobal",
+      "titre": "Ouvrir Global, Data Utility, Part Utility",
+      "but": "Accéder aux réglages de la machine.",
+      "etapes": [
+        "Menu/Enter depuis l'écran motif.",
+        "< / > jusqu'à GLOBAL PARAMETER, DATA UTILITY ou PART UTILITY.",
+        "Menu/Enter pour entrer.",
+        "Write pour sauvegarder les réglages."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Sans Write, les réglages reviennent à leur état d'avant à l'extinction."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "savepattern",
+      "titre": "Sauvegarder un motif (remplacer)",
+      "but": "Ne rien perdre.",
+      "etapes": [
+        "Appuie sur Write.",
+        "Choisis l'emplacement avec la molette.",
+        "Appuie encore sur Write (« Working... » puis Write s'éteint)."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 31
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Changer de motif sans sauvegarder = toutes les modifications perdues.",
+        "N'éteins pas tant que Write est allumé."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "savepatternas",
+      "titre": "Sauvegarder sous un autre nom / numéro",
+      "but": "Copier un motif ou le renommer.",
+      "etapes": [
+        "Shift + Write : « enter NAME » s'affiche.",
+        "< / > pour choisir le caractère, molette pour le changer.",
+        "Choisis le numéro de destination avec la molette.",
+        "Write pour sauvegarder (Exit pour annuler)."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 31
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 1
+    },
+    {
+      "id": "bpm",
+      "titre": "Régler le tempo",
+      "but": "Caler la machine à 165-170 BPM.",
+      "etapes": [
+        "Tape plusieurs fois sur Tap au tempo voulu.",
+        "Ou : menu d'édition > BPM, puis la molette (Shift + molette = pas de 0,1)."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        },
+        {
+          "doc": "PG",
+          "page": 3
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 1
+    },
+    {
+      "id": "keyboardplay",
+      "titre": "Jouer des notes avec les pads",
+      "but": "Jouer une mélodie dans la gamme.",
+      "etapes": [
+        "Appuie sur Keyboard.",
+        "Choisis la partie avec <Part, Part>.",
+        "Joue sur les pads.",
+        "Step 1 / Step 4 : octave en dessous / au-dessus."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 28
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "KEY et SCALE (menu d'édition) choisissent les notes des pads."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "stepedit",
+      "titre": "Programmer une partie pas à pas",
+      "but": "Écrire un rythme sur la grille.",
+      "etapes": [
+        "Choisis la partie.",
+        "Allume Sequencer.",
+        "Règle la longueur avec les boutons Step (LED rouges).",
+        "Appuie sur les pads pour allumer / éteindre les pas."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "Note par défaut : C4.",
+        "Step Edit dans le menu pour régler note, durée, vélocité de chaque pas."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "realtimerec",
+      "titre": "Enregistrer en temps réel",
+      "but": "Enregistrer une phrase en jouant.",
+      "etapes": [
+        "Lance la lecture.",
+        "Choisis la partie.",
+        "Rec (s'allume).",
+        "Joue : le motif boucle et l'enregistrement continue.",
+        "Rec à nouveau pour arrêter."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "Part Erase + pad tenu efface les notes ratées en direct.",
+        "Métronome : Global > METRONOME."
+      ],
+      "niveau": 2
+    },
+    {
+      "id": "motionrec",
+      "titre": "Enregistrer une Motion Sequence",
+      "but": "Automatiser un potard (ex. ouverture de filtre).",
+      "etapes": [
+        "Choisis la partie.",
+        "Menu d'édition > MOTION SEQ : Smooth ou Trigger Hold.",
+        "Rec, puis Lecture/Pause.",
+        "Tourne le potard pendant un cycle (Rec clignote).",
+        "Après un cycle, la lecture de la motion commence. Rec pour continuer d'enregistrer."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 31
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 3
+    },
+    {
+      "id": "motionclear",
+      "titre": "Effacer une Motion Sequence",
+      "but": "Repartir de zéro.",
+      "etapes": [
+        "Partie : PART UTILITY > CLEAR MOTION, puis exécuter.",
+        "Effet master : CLEAR MFX MOTION."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 31
+        },
+        {
+          "doc": "PG",
+          "page": 6
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 3
+    },
+    {
+      "id": "mfx",
+      "titre": "Jouer l'effet master",
+      "but": "Faire des montées / breaks au pad tactile.",
+      "etapes": [
+        "Appuie sur Master Fx.",
+        "Choisis une partie et allume MFX Send (répète pour chaque partie à envoyer).",
+        "Touche le pad tactile."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 29
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "Type d'effet : menu d'édition > MFX TYPE (ou Shift + Master Fx).",
+        "MFX Hold garde l'effet après avoir levé le doigt."
+      ],
+      "niveau": 3
+    },
+    {
+      "id": "gatearp",
+      "titre": "Utiliser le Gate Arpeggiator",
+      "but": "Faire des roulements rythmiques.",
+      "etapes": [
+        "Allume Gate Arp.",
+        "Trigger allumé, tiens le pad de la partie et joue sur le pad tactile (X = vitesse, Y = longueur)."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 29
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "Avec Keyboard ou Chord, les pads donnent la hauteur."
+      ],
+      "niveau": 3
+    },
+    {
+      "id": "partmute",
+      "titre": "Couper / rétablir une partie",
+      "but": "Construire un morceau en direct.",
+      "etapes": [
+        "Allume Part Mute.",
+        "Appuie sur le pad de la partie (il s'éteint).",
+        "Rappuie dessus pour la rétablir."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "Shift + Part Mute rétablit toutes les parties (guide p. 10)."
+      ],
+      "niveau": 5
+    },
+    {
+      "id": "parterase",
+      "titre": "Effacer les notes d'une partie",
+      "but": "Nettoyer une partie.",
+      "etapes": [
+        "Allume Part Erase.",
+        "Pendant la lecture, tiens le pad de la partie."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "Tout effacer : PART UTILITY > CLEAR SEQUENCE."
+      ],
+      "niveau": 2
+    },
+    {
+      "id": "partcopy",
+      "titre": "Copier une partie",
+      "but": "Dupliquer un son et sa séquence.",
+      "etapes": [
+        "Choisis la partie source avec <Part, Part>.",
+        "PART UTILITY > PART COPY.",
+        "Menu/Enter, puis le pad de la partie de destination."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        }
+      ],
+      "synth": "confirmé",
+      "astuces": [
+        "COPY PART SOUND copie seulement le son, sans les pas (guide p. 6)."
+      ],
+      "niveau": 2
+    },
+    {
+      "id": "patternset",
+      "titre": "Ranger des motifs dans Pattern Set",
+      "but": "Changer de motif d'un seul pad en live.",
+      "etapes": [
+        "Allume Pattern Set.",
+        "Choisis le groupe avec Step 1-4.",
+        "Choisis le motif avec la molette.",
+        "Tiens Pattern Set et appuie sur le pad de destination."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 5
+    },
+    {
+      "id": "patternsetplay",
+      "titre": "Jouer avec Pattern Set",
+      "but": "Enchaîner les motifs en live.",
+      "etapes": [
+        "Allume Pattern Set.",
+        "Choisis le groupe avec Step 1-4.",
+        "Appuie sur un pad pour lancer son motif."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 30
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 5
+    },
+    {
+      "id": "chain",
+      "titre": "Enchaîner des motifs (Chain)",
+      "but": "Faire un morceau qui se joue seul.",
+      "etapes": [
+        "Global > CHAIN MODE = On.",
+        "Dans le motif 1 : CHAIN TO = 2, CHAIN REPEAT = nombre de répétitions.",
+        "Dans le dernier motif : CHAIN TO = Off (s'arrête de chaîner) ou = 1 (boucle)."
+      ],
+      "sources": [
+        {
+          "doc": "PG",
+          "page": 3
+        },
+        {
+          "doc": "PG",
+          "page": 8
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 4
+    },
+    {
+      "id": "sync",
+      "titre": "Synchroniser avec un autre appareil",
+      "but": "Caler deux E2, une TD-3 ou un DAW.",
+      "etapes": [
+        "Global > CLOCK MODE.",
+        "Maître : Internal. Esclave : Auto, ou Ext.USB / Ext.MIDI / Ext.Sync selon la prise utilisée.",
+        "Sync analogique : Sync Out envoie une impulsion par pas ; régler SYNC POLARITY et SYNC UNIT si besoin."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 25
+        },
+        {
+          "doc": "OM",
+          "page": 33
+        },
+        {
+          "doc": "PG",
+          "page": 6
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Last Step (mesures impaires) n'est pas synchronisé avec un séquenceur externe (guide p. 4)."
+      ],
+      "niveau": 5
+    },
+    {
+      "id": "midich",
+      "titre": "Régler le canal MIDI",
+      "but": "Piloter / être piloté en MIDI.",
+      "etapes": [
+        "Global > MIDI GLOBAL CH.",
+        "Molette pour choisir le canal."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 5
+    },
+    {
+      "id": "metronome",
+      "titre": "Régler le métronome",
+      "but": "Enregistrer en rythme.",
+      "etapes": [
+        "Global > METRONOME.",
+        "Off, Rec 0 / Rec 1 / Rec 2 (seulement en enregistrement) ou On."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 32
+        },
+        {
+          "doc": "PG",
+          "page": 7
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 2
+    },
+    {
+      "id": "sdformat",
+      "titre": "Formater une carte SD",
+      "but": "Préparer une carte.",
+      "etapes": [
+        "DATA UTILITY > FORMAT SD CARD.",
+        "Menu/Enter ; « OK » quand c'est fini."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Efface tout le contenu de la carte.",
+        "Ne pas éteindre ni retirer la carte pendant le formatage.",
+        "Insérer / retirer la carte seulement machine éteinte (p. 26)."
+      ],
+      "niveau": 1
+    },
+    {
+      "id": "exportpattern",
+      "titre": "Sauvegarder un motif sur carte SD",
+      "but": "Faire une copie de sécurité.",
+      "etapes": [
+        "DATA UTILITY > EXPORT PATTERN.",
+        "Menu/Enter."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 1
+    },
+    {
+      "id": "importpattern",
+      "titre": "Charger un motif depuis la carte SD",
+      "but": "Récupérer une sauvegarde.",
+      "etapes": [
+        "DATA UTILITY > IMPORT PATTERN.",
+        "Choisis le fichier (Menu/Enter ouvre un dossier, « Upper Folder » remonte).",
+        "Menu/Enter pour confirmer."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 1
+    },
+    {
+      "id": "exportaudio",
+      "titre": "Exporter un motif en WAV",
+      "but": "Récupérer l'audio dans FL Studio.",
+      "etapes": [
+        "DATA UTILITY > EXPORT AUDIO.",
+        "Format : WAV seul ou Ableton Live Set.",
+        "Menu/Enter."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 4
+    },
+    {
+      "id": "exportpsetaudio",
+      "titre": "Exporter un Pattern Set en WAV",
+      "but": "Exporter plusieurs motifs.",
+      "etapes": [
+        "DATA UTILITY > EXPORT P.SET AUDIO.",
+        "Choisis le format.",
+        "Choisis la plage (1-64).",
+        "Menu/Enter."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        },
+        {
+          "doc": "PG",
+          "page": 9
+        }
+      ],
+      "synth": "confirmé",
+      "niveau": 4
+    },
+    {
+      "id": "eventrec",
+      "titre": "Enregistrer une performance (Event Recorder)",
+      "but": "Garder une trace d'un live.",
+      "etapes": [
+        "Menu d'édition > EVENT REC/PLAY, Menu/Enter.",
+        "Menu/Enter encore : prêt à enregistrer.",
+        "Lecture/Pause pour démarrer.",
+        "Exit plusieurs fois et joue en changeant de motifs.",
+        "Stop à la fin : le nom du fichier s'affiche.",
+        "Exit pour terminer."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 33
+        },
+        {
+          "doc": "OM",
+          "page": 34
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Carte SD obligatoire.",
+        "CLOCK MODE doit être Internal (guide p. 9)."
+      ],
+      "niveau": 5
+    },
+    {
+      "id": "factoryreset",
+      "titre": "Revenir aux réglages d'usine",
+      "but": "Tout remettre à zéro.",
+      "etapes": [
+        "Utility > Factory Reset.",
+        "Menu/Enter."
+      ],
+      "sources": [
+        {
+          "doc": "OM",
+          "page": 34
+        }
+      ],
+      "synth": "confirmé",
+      "attention": [
+        "Efface tous les motifs utilisateur : sauvegarde d'abord sur carte SD."
+      ],
+      "niveau": 1
+    }
+  ]
+}

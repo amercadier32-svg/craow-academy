@@ -1,0 +1,21 @@
+/* Mes données (#donnees), rappel d'export, jauge de place utilisée */
+.donnees-page { max-width: 900px; margin: 0 auto; }
+.donnees-carte { background: var(--panel); border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); padding: 12px 16px; margin: 14px 0; }
+.donnees-carte h3 { margin: 0 0 8px; }
+.donnees-copies { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 6px; }
+.donnees-copies li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; padding: 6px 8px; background: var(--panel-2); }
+.jauge { height: 10px; background: var(--panel-2); border: 2px solid var(--edge); margin: 6px 0; overflow: hidden; }
+.jauge > span { display: block; height: 100%; background: #3fd6d0; }
+.jauge.pleine > span { background: #ff6a3d; }
+.mp-place { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.mp-place .jauge { flex: 1; height: 8px; margin: 0; min-width: 60px; }
+.rappel-donnees { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; max-width: 1200px; box-sizing: border-box;
+  margin: 10px auto 0; padding: 10px 12px; background: #0f2a2a; border: 3px solid #3fd6d0; color: #e6fffd; box-shadow: 0 4px 0 var(--edge); }
+.rappel-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 1240px) { .rappel-donnees { margin-left: 16px; margin-right: 16px; } }
+.raccourcis-page { max-width: 900px; margin: 0 auto; }
+.raccourcis { width: 100%; border-collapse: collapse; }
+.raccourcis th, .raccourcis td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.raccourcis th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+.raccourcis kbd { display: inline-block; min-width: 1.6em; text-align: center; padding: 2px 6px; background: var(--panel-2); border: 2px solid var(--edge); box-shadow: 0 2px 0 var(--edge); font-family: var(--txt, system-ui); }
+@media (max-width: 560px) { .raccourcis thead { display: none; } .raccourcis tr { display: grid; padding: 6px 0; border-bottom: 1px solid var(--line); } .raccourcis td { border: 0; padding: 2px 0; } }

@@ -1,0 +1,2623 @@
+{
+  "meta": {
+    "description": "Les 409 oscillateurs de l'electribe Synth, par numéro et catégorie (guide p. 11-13).",
+    "documents": {
+      "OM": {
+        "fichier": "docs/281ffa.pdf",
+        "titre": "Mode d'emploi electribe / electribe sampler (section française)",
+        "pages": "Numéros imprimés en bas de page (section FR : p. 20 à 38). Page PDF = page imprimée + 16.",
+        "couvreSynth": true
+      },
+      "PG": {
+        "fichier": "docs/electribe_PG_F4.pdf",
+        "titre": "Guide des paramètres de l'electribe (Synth)",
+        "pages": "Numéro imprimé = page PDF.",
+        "couvreSynth": true
+      },
+      "PGS": {
+        "fichier": "docs/electribe_sampler_PG_F3.pdf",
+        "titre": "Guide des paramètres de l'electribe SAMPLER",
+        "couvreSynth": false,
+        "remarque": "Non utilisé : guide du modèle Sampler (la rouge), remplacé par le guide Synth."
+      }
+    },
+    "statutsSynth": {
+      "confirmé": "Vient du mode d'emploi commun ou du guide des paramètres Synth.",
+      "absent du manuel": "Aucun des PDF fournis ne donne cette information."
+    },
+    "extraitLe": "2026-10-28"
+  },
+  "source": {
+    "doc": "PG",
+    "page": 11
+  },
+  "synth": "confirmé",
+  "total": 409,
+  "ceQueDitLeManuel": [
+    {
+      "texte": "Formes d'onde citées : dent de scie, carré, bruit et PCM.",
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé"
+    },
+    {
+      "texte": "Le potard Edit change le caractère du son ; son effet dépend de la forme d'onde choisie.",
+      "source": {
+        "doc": "OM",
+        "page": 23
+      },
+      "synth": "confirmé"
+    },
+    {
+      "texte": "Shift + Oscillator fait défiler les oscillateurs par catégorie.",
+      "source": {
+        "doc": "PG",
+        "page": 10
+      },
+      "synth": "confirmé"
+    }
+  ],
+  "absentDuManuel": [
+    "Le rôle exact du potard Edit pour chaque oscillateur.",
+    "Le sens des préfixes de la catégorie Synth (DUAL, OCT, UNI, SYNC, CHIP, RING, X, VPM, SYN) : seuls les noms sont donnés.",
+    "La distinction officielle « modélisation analogique » / « PCM » oscillateur par oscillateur : le guide ne donne que des catégories."
+  ],
+  "categories": [
+    {
+      "categorie": "Kick",
+      "nomFr": "Grosse caisse",
+      "de": 1,
+      "a": 56,
+      "nombre": 56
+    },
+    {
+      "categorie": "Snare",
+      "nomFr": "Caisse claire",
+      "de": 57,
+      "a": 114,
+      "nombre": 58
+    },
+    {
+      "categorie": "Clap",
+      "nomFr": "Clap",
+      "de": 115,
+      "a": 130,
+      "nombre": 16
+    },
+    {
+      "categorie": "HiHat",
+      "nomFr": "Charley",
+      "de": 131,
+      "a": 172,
+      "nombre": 42
+    },
+    {
+      "categorie": "Cymbal",
+      "nomFr": "Cymbale",
+      "de": 173,
+      "a": 186,
+      "nombre": 14
+    },
+    {
+      "categorie": "Tom",
+      "nomFr": "Tom",
+      "de": 187,
+      "a": 202,
+      "nombre": 16
+    },
+    {
+      "categorie": "Percussion",
+      "nomFr": "Percussion",
+      "de": 203,
+      "a": 257,
+      "nombre": 55
+    },
+    {
+      "categorie": "Voice",
+      "nomFr": "Voix",
+      "de": 258,
+      "a": 273,
+      "nombre": 16
+    },
+    {
+      "categorie": "Synth FX",
+      "nomFr": "Effets synthé",
+      "de": 274,
+      "a": 291,
+      "nombre": 18
+    },
+    {
+      "categorie": "Synth Hit",
+      "nomFr": "Hits synthé",
+      "de": 292,
+      "a": 309,
+      "nombre": 18
+    },
+    {
+      "categorie": "Inst.Hit",
+      "nomFr": "Hits instrument",
+      "de": 310,
+      "a": 325,
+      "nombre": 16
+    },
+    {
+      "categorie": "Synth",
+      "nomFr": "Synthé (formes d'onde)",
+      "de": 326,
+      "a": 380,
+      "nombre": 55
+    },
+    {
+      "categorie": "Instrument",
+      "nomFr": "Instrument",
+      "de": 381,
+      "a": 408,
+      "nombre": 28
+    },
+    {
+      "categorie": "Audio In",
+      "nomFr": "Entrée audio",
+      "de": 409,
+      "a": 409,
+      "nombre": 1
+    }
+  ],
+  "oscillateurs": [
+    {
+      "n": 1,
+      "nom": "SubBeef",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 2,
+      "nom": "Lazy",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 3,
+      "nom": "Echoes",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 4,
+      "nom": "Lay",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 5,
+      "nom": "Hardstyle",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 6,
+      "nom": "Hardcore",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 7,
+      "nom": "Southpaw",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 8,
+      "nom": "8BitGrime",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 9,
+      "nom": "Noiz",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 10,
+      "nom": "HiKnock",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 11,
+      "nom": "LoKnock",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 12,
+      "nom": "Tronica",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 13,
+      "nom": "HiClicky",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 14,
+      "nom": "LoClicky",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 15,
+      "nom": "Subsonic",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 16,
+      "nom": "Threed",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 17,
+      "nom": "Lololow",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 18,
+      "nom": "Risky",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 19,
+      "nom": "ShortBoom",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 20,
+      "nom": "AttackEight",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 21,
+      "nom": "PureEight",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 22,
+      "nom": "UltraEight",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 23,
+      "nom": "SnipEight",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 24,
+      "nom": "ShortNine",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 25,
+      "nom": "PureNine",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 26,
+      "nom": "BoostNine",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 27,
+      "nom": "Harder",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 28,
+      "nom": "BitBreak",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 29,
+      "nom": "Finger",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 30,
+      "nom": "Filthy",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 31,
+      "nom": "Visual",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 32,
+      "nom": "Breaker",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 33,
+      "nom": "Urban",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 34,
+      "nom": "Roomy",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 35,
+      "nom": "Studio",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 36,
+      "nom": "Twinkling",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 37,
+      "nom": "Hippy",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 38,
+      "nom": "Ringy",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 39,
+      "nom": "Womp",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 40,
+      "nom": "Hip",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 41,
+      "nom": "Jungle",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 42,
+      "nom": "EastCoast",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 43,
+      "nom": "Jazz",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 44,
+      "nom": "Rock",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 45,
+      "nom": "Warm",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 46,
+      "nom": "Breaks",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 47,
+      "nom": "80'sR&B1",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 48,
+      "nom": "80'sR&B2",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 49,
+      "nom": "80'sR&B3",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 50,
+      "nom": "DDD1",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 51,
+      "nom": "DoncaMatic",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 52,
+      "nom": "BeatVox1",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 53,
+      "nom": "BeatVox2",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 54,
+      "nom": "BeatVox3",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 55,
+      "nom": "Reverse1",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 56,
+      "nom": "Reverse2",
+      "categorie": "Kick",
+      "nomCategorieFr": "Grosse caisse"
+    },
+    {
+      "n": 57,
+      "nom": "Aftertaste",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 58,
+      "nom": "Sharp",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 59,
+      "nom": "Toofer",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 60,
+      "nom": "Clpsnr",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 61,
+      "nom": "Bosh",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 62,
+      "nom": "Wide",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 63,
+      "nom": "BreaksLofi",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 64,
+      "nom": "Beach",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 65,
+      "nom": "Hefty",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 66,
+      "nom": "Goodie",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 67,
+      "nom": "Steady",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 68,
+      "nom": "Tech",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 69,
+      "nom": "Lay",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 70,
+      "nom": "LoNine",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 71,
+      "nom": "HiNine",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 72,
+      "nom": "CompNine",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 73,
+      "nom": "PureEight",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 74,
+      "nom": "BodyEight",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 75,
+      "nom": "TrapEight",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 76,
+      "nom": "Shortate",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 77,
+      "nom": "LeanSnare",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 78,
+      "nom": "Seventy",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 79,
+      "nom": "DDD1",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 80,
+      "nom": "Nuxx",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 81,
+      "nom": "Oldie",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 82,
+      "nom": "Bigger",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 83,
+      "nom": "80'sR&B1",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 84,
+      "nom": "80'sR&B2",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 85,
+      "nom": "Jazz1",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 86,
+      "nom": "Jazz2",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 87,
+      "nom": "Snappy",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 88,
+      "nom": "Ambee",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 89,
+      "nom": "Verdy",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 90,
+      "nom": "Tubeverb",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 91,
+      "nom": "Open1",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 92,
+      "nom": "Open2",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 93,
+      "nom": "Oldskool",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 94,
+      "nom": "Hoppy",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 95,
+      "nom": "Ringy",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 96,
+      "nom": "OldBreaks",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 97,
+      "nom": "Piccolo",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 98,
+      "nom": "Jungla",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 99,
+      "nom": "EastCoast",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 100,
+      "nom": "D'n'B",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 101,
+      "nom": "Ambig",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 102,
+      "nom": "Juggler",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 103,
+      "nom": "DoncaMatic",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 104,
+      "nom": "Whip",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 105,
+      "nom": "Arcade",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 106,
+      "nom": "RimVox",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 107,
+      "nom": "Parched",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 108,
+      "nom": "Rimmy",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 109,
+      "nom": "AmbiRim",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 110,
+      "nom": "SnareVox",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 111,
+      "nom": "Waffle",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 112,
+      "nom": "Blast",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 113,
+      "nom": "Reverse1",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 114,
+      "nom": "Reverse2",
+      "categorie": "Snare",
+      "nomCategorieFr": "Caisse claire"
+    },
+    {
+      "n": 115,
+      "nom": "PureEight",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 116,
+      "nom": "AmbEight",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 117,
+      "nom": "DirtySouth",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 118,
+      "nom": "PureNine",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 119,
+      "nom": "Mixed",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 120,
+      "nom": "Trap",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 121,
+      "nom": "Small",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 122,
+      "nom": "Clapper",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 123,
+      "nom": "Doubler",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 124,
+      "nom": "EastCoast",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 125,
+      "nom": "Liteclap",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 126,
+      "nom": "DDD1",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 127,
+      "nom": "Crispy",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 128,
+      "nom": "B.Boy",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 129,
+      "nom": "Crumbles",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 130,
+      "nom": "FingerSnap",
+      "categorie": "Clap",
+      "nomCategorieFr": "Clap"
+    },
+    {
+      "n": 131,
+      "nom": "NineClose1",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 132,
+      "nom": "NineOpen1",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 133,
+      "nom": "NineClose2",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 134,
+      "nom": "NineOpen2",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 135,
+      "nom": "EightClose1",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 136,
+      "nom": "EightOpen1",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 137,
+      "nom": "EightOpen2",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 138,
+      "nom": "CompClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 139,
+      "nom": "CompOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 140,
+      "nom": "EastClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 141,
+      "nom": "EastOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 142,
+      "nom": "DDD1Close",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 143,
+      "nom": "DDD1Open",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 144,
+      "nom": "WarmClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 145,
+      "nom": "WarmOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 146,
+      "nom": "ZeeClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 147,
+      "nom": "ZeeOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 148,
+      "nom": "RoomyClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 149,
+      "nom": "RoomyOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 150,
+      "nom": "RockClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 151,
+      "nom": "RockOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 152,
+      "nom": "JazzClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 153,
+      "nom": "JazzOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 154,
+      "nom": "HoppyClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 155,
+      "nom": "HoppyOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 156,
+      "nom": "PhaseClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 157,
+      "nom": "PhaseOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 158,
+      "nom": "NuHopClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 159,
+      "nom": "NuHopOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 160,
+      "nom": "RightClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 161,
+      "nom": "RightOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 162,
+      "nom": "NoizClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 163,
+      "nom": "NoizOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 164,
+      "nom": "GranClose",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 165,
+      "nom": "GranOpen",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 166,
+      "nom": "Ambi",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 167,
+      "nom": "Crackle",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 168,
+      "nom": "Hippy",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 169,
+      "nom": "Pump",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 170,
+      "nom": "Voice1",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 171,
+      "nom": "Voice2",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 172,
+      "nom": "Reverse",
+      "categorie": "HiHat",
+      "nomCategorieFr": "Charley"
+    },
+    {
+      "n": 173,
+      "nom": "NineCym",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 174,
+      "nom": "HiCymbal",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 175,
+      "nom": "DoncaMatic",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 176,
+      "nom": "EastCoast",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 177,
+      "nom": "Rock",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 178,
+      "nom": "Synth",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 179,
+      "nom": "WhiteNoiz",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 180,
+      "nom": "RevCrash",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 181,
+      "nom": "NineRide",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 182,
+      "nom": "JazzRide1",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 183,
+      "nom": "JazzRide2",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 184,
+      "nom": "RockRide",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 185,
+      "nom": "ZeeRide",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 186,
+      "nom": "RevRide",
+      "categorie": "Cymbal",
+      "nomCategorieFr": "Cymbale"
+    },
+    {
+      "n": 187,
+      "nom": "Real Hi",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 188,
+      "nom": "Real MidHi",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 189,
+      "nom": "Real MidLo",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 190,
+      "nom": "Real Lo",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 191,
+      "nom": "Driven",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 192,
+      "nom": "Zee Hi",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 193,
+      "nom": "Zee Lo",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 194,
+      "nom": "OldSkool",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 195,
+      "nom": "Crunchy",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 196,
+      "nom": "E.Tom",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 197,
+      "nom": "Synth Hi1",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 198,
+      "nom": "Synth Mid1",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 199,
+      "nom": "Synth Lo1",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 200,
+      "nom": "Synth Hi2",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 201,
+      "nom": "Synth Lo2",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 202,
+      "nom": "TomEight",
+      "categorie": "Tom",
+      "nomCategorieFr": "Tom"
+    },
+    {
+      "n": 203,
+      "nom": "Conga1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 204,
+      "nom": "Conga2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 205,
+      "nom": "Conga3",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 206,
+      "nom": "Conga4",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 207,
+      "nom": "Conga5",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 208,
+      "nom": "Bongo1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 209,
+      "nom": "Bongo2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 210,
+      "nom": "Bongo3",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 211,
+      "nom": "Bongo4",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 212,
+      "nom": "Bongo5",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 213,
+      "nom": "Bongo6",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 214,
+      "nom": "Djembe1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 215,
+      "nom": "Djembe2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 216,
+      "nom": "Djembe3",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 217,
+      "nom": "Djembe4",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 218,
+      "nom": "Darbuka1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 219,
+      "nom": "Darbuka2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 220,
+      "nom": "Darbuka3",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 221,
+      "nom": "Darbuka4",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 222,
+      "nom": "Timbales Hi",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 223,
+      "nom": "Timbales Lo",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 224,
+      "nom": "CowBell1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 225,
+      "nom": "CowBell2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 226,
+      "nom": "CowBell3",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 227,
+      "nom": "Tambourine1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 228,
+      "nom": "Tambourine2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 229,
+      "nom": "Clave",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 230,
+      "nom": "Guiro",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 231,
+      "nom": "Cabasa",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 232,
+      "nom": "Shaker",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 233,
+      "nom": "WaveDrum1",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 234,
+      "nom": "WaveDrum2",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 235,
+      "nom": "WaveDrum3",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 236,
+      "nom": "WaveDrum4",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 237,
+      "nom": "WaveDrum5",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 238,
+      "nom": "WaveDrum6",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 239,
+      "nom": "WaveDrum7",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 240,
+      "nom": "WaveDrum8",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 241,
+      "nom": "ShakerHit",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 242,
+      "nom": "RimPerc",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 243,
+      "nom": "Wavestation",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 244,
+      "nom": "RimNine",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 245,
+      "nom": "RimEight",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 246,
+      "nom": "SynthShake",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 247,
+      "nom": "CowbellEight",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 248,
+      "nom": "DoncaCongaS",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 249,
+      "nom": "DoncaCongaL",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 250,
+      "nom": "DoncaMaracas",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 251,
+      "nom": "DoncaClaves",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 252,
+      "nom": "DoncaW.block",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 253,
+      "nom": "Synthclave",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 254,
+      "nom": "ClickRoll",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 255,
+      "nom": "GlitchDmg",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 256,
+      "nom": "MouthPop",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 257,
+      "nom": "Droplet",
+      "categorie": "Percussion",
+      "nomCategorieFr": "Percussion"
+    },
+    {
+      "n": 258,
+      "nom": "Rave",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 259,
+      "nom": "Whoo",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 260,
+      "nom": "Ohooo",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 261,
+      "nom": "ComOn",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 262,
+      "nom": "Nahh",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 263,
+      "nom": "Ahaa..",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 264,
+      "nom": "Haa",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 265,
+      "nom": "Baaa",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 266,
+      "nom": "Grun",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 267,
+      "nom": "Ahaaw",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 268,
+      "nom": "Paa",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 269,
+      "nom": "Hey",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 270,
+      "nom": "Doh",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 271,
+      "nom": "GlitchEey",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 272,
+      "nom": "BotVox1",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 273,
+      "nom": "BotVox2",
+      "categorie": "Voice",
+      "nomCategorieFr": "Voix"
+    },
+    {
+      "n": 274,
+      "nom": "NoizyVox",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 275,
+      "nom": "Noiser",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 276,
+      "nom": "Botox",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 277,
+      "nom": "ShockSonar",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 278,
+      "nom": "Quark",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 279,
+      "nom": "ebPerc",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 280,
+      "nom": "Needle",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 281,
+      "nom": "SqueakyBum",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 282,
+      "nom": "SynSiren",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 283,
+      "nom": "Bubble",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 284,
+      "nom": "Burp",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 285,
+      "nom": "Lux",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 286,
+      "nom": "Squirt",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 287,
+      "nom": "Degraded",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 288,
+      "nom": "Flyby",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 289,
+      "nom": "SonicDrop",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 290,
+      "nom": "LoZap",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 291,
+      "nom": "SubBang",
+      "categorie": "Synth FX",
+      "nomCategorieFr": "Effets synthé"
+    },
+    {
+      "n": 292,
+      "nom": "Stabium",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 293,
+      "nom": "Futurize",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 294,
+      "nom": "LilChord",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 295,
+      "nom": "Ploinky",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 296,
+      "nom": "Strippa",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 297,
+      "nom": "BigChords",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 298,
+      "nom": "StarBurst",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 299,
+      "nom": "WishWash",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 300,
+      "nom": "BangPop",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 301,
+      "nom": "RegulatePop",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 302,
+      "nom": "TigerPad",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 303,
+      "nom": "LofiSynth",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 304,
+      "nom": "BlastBass",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 305,
+      "nom": "BenderBass",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 306,
+      "nom": "RockHit1",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 307,
+      "nom": "RockHit2",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 308,
+      "nom": "FormantBass",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 309,
+      "nom": "SynGrowl",
+      "categorie": "Synth Hit",
+      "nomCategorieFr": "Hits synthé"
+    },
+    {
+      "n": 310,
+      "nom": "BrassHit1",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 311,
+      "nom": "BrassHit2",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 312,
+      "nom": "StringsHit1",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 313,
+      "nom": "StringsHit2",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 314,
+      "nom": "BadOrch",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 315,
+      "nom": "CarmOrch",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 316,
+      "nom": "Sho2DOrch",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 317,
+      "nom": "V2Orch",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 318,
+      "nom": "Suspended",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 319,
+      "nom": "Jazz",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 320,
+      "nom": "Jazzy",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 321,
+      "nom": "Hop",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 322,
+      "nom": "OldBrass",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 323,
+      "nom": "Record",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 324,
+      "nom": "Rave",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 325,
+      "nom": "Oldie",
+      "categorie": "Inst.Hit",
+      "nomCategorieFr": "Hits instrument"
+    },
+    {
+      "n": 326,
+      "nom": "SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 327,
+      "nom": "BOOST-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 328,
+      "nom": "PULSE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 329,
+      "nom": "TRIANGLE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 330,
+      "nom": "SINE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 331,
+      "nom": "DUAL-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 332,
+      "nom": "DUAL-SQU",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 333,
+      "nom": "DUAL-TRI",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 334,
+      "nom": "DUAL-SINE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 335,
+      "nom": "OCT-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 336,
+      "nom": "OCT-SQU",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 337,
+      "nom": "OCT-TRI",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 338,
+      "nom": "OCT-SINE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 339,
+      "nom": "UNI-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 340,
+      "nom": "UNI-SQU",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 341,
+      "nom": "UNI-TRI",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 342,
+      "nom": "UNI-SINE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 343,
+      "nom": "SYNC-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 344,
+      "nom": "SYNC-SQU",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 345,
+      "nom": "SYNC-TRI",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 346,
+      "nom": "SYNC-SINE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 347,
+      "nom": "CHIP-TRI 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 348,
+      "nom": "CHIP-TRI 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 349,
+      "nom": "CHIP-PULSE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 350,
+      "nom": "CHIP-NOISE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 351,
+      "nom": "RING-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 352,
+      "nom": "RING-SQU",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 353,
+      "nom": "RING-TRI",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 354,
+      "nom": "RING-SINE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 355,
+      "nom": "X-SAW 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 356,
+      "nom": "X-SAW 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 357,
+      "nom": "X-SQUARE 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 358,
+      "nom": "X-SQUARE 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 359,
+      "nom": "X-TRI 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 360,
+      "nom": "X-TRI 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 361,
+      "nom": "X-SINE 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 362,
+      "nom": "X-SINE 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 363,
+      "nom": "VPM-SAW",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 364,
+      "nom": "VPM-SQUARE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 365,
+      "nom": "VPM-TRI",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 366,
+      "nom": "VPM-SINE 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 367,
+      "nom": "VPM-SINE 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 368,
+      "nom": "VPM-SINE 3",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 369,
+      "nom": "VPM-SINE 4",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 370,
+      "nom": "SYN-SINE 1",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 371,
+      "nom": "SYN-SINE 2",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 372,
+      "nom": "SYN-SINE 3",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 373,
+      "nom": "SYN-SINE 4",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 374,
+      "nom": "SYN-SINE 5",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 375,
+      "nom": "SYN-SINE 6",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 376,
+      "nom": "SYN-SINE 7",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 377,
+      "nom": "HPF NOISE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 378,
+      "nom": "LPF NOISE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 379,
+      "nom": "LOFI NOISE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 380,
+      "nom": "RES NOISE",
+      "categorie": "Synth",
+      "nomCategorieFr": "Synthé (formes d'onde)"
+    },
+    {
+      "n": 381,
+      "nom": "M1 Piano",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 382,
+      "nom": "E.P.Roads",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 383,
+      "nom": "E.P.Wurly",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 384,
+      "nom": "Clav",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 385,
+      "nom": "M1 Organ",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 386,
+      "nom": "Brass Ens.",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 387,
+      "nom": "Tenor Sax",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 388,
+      "nom": "Alto Sax",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 389,
+      "nom": "Strings Ens.",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 390,
+      "nom": "Strings Pizz",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 391,
+      "nom": "Vox Pop Ah",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 392,
+      "nom": "Vox Pad",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 393,
+      "nom": "Vox Helium",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 394,
+      "nom": "A.Bass",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 395,
+      "nom": "E.Bass Finger",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 396,
+      "nom": "E.Bass Pick",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 397,
+      "nom": "E.Bass Slap",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 398,
+      "nom": "E.Bass Dist.",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 399,
+      "nom": "A.Guitar",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 400,
+      "nom": "E.Guitar1",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 401,
+      "nom": "E.Guitar2",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 402,
+      "nom": "Kalimba",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 403,
+      "nom": "Metal Bell",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 404,
+      "nom": "GamelanWave",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 405,
+      "nom": "Bell1",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 406,
+      "nom": "Bell2",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 407,
+      "nom": "Bell3",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 408,
+      "nom": "Bell4",
+      "categorie": "Instrument",
+      "nomCategorieFr": "Instrument"
+    },
+    {
+      "n": 409,
+      "nom": "Audio In",
+      "categorie": "Audio In",
+      "nomCategorieFr": "Entrée audio"
+    }
+  ]
+}
