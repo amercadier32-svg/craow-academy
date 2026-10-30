@@ -1,7 +1,7 @@
 import { BoutonJeter, Corbeille, EntreeCorbeille } from "../components/Corbeille";
 import { BoutonsEcoute } from "../components/Lecteur";
 import { lireObjet, ecrireJson } from "../lib/stockage";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Etoile } from "../components/Etoile";
 import { COULEURS, Infos, Rangement } from "../components/Rangement";
 import { Confirmer, FiltreMenu, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
@@ -11,7 +11,7 @@ import { etatRecette, jouerSeq } from "../lib/apercus";
 import { engine, type Mode } from "../lib/seq";
 import { CATEGORIES, ELEMENTS, FONCTIONS, KNOBS_APERCU, RECETTES, STYLE_NOM, type ElementId, type Recette, type Reglage, type Style, type StyleBase } from "../content/recettes";
 import { exerciseById, type Exercise } from "../content/exercises";
-import { paramById, parameterGroups } from "../lib/data";
+import { paramById } from "../lib/data";
 import { ALL_KEYS, GAMMES, gammeByN } from "../lib/music";
 import { SONS_PERCU } from "../lib/seq";
 import { CTL, CopierPanel, LIGNE_NOTES, LIGNE_SEQUENCER, LIGNE_WRITE, MonEnregistrement, fusion, lignesPrep, lignesSequence, lignesSon, listPage, val } from "../components/Machine";
@@ -23,6 +23,10 @@ import { Editeur } from "./Grilles";
 import { SelecteurStyles } from "../components/Styles";
 import { FICHE, useStyles } from "../content/styles";
 import { VIDES_STYLES } from "../content/recettesStylesSuite";
+import { Fenetre } from "../components/Fenetre";
+import { fermerFenetre, ouvrirFenetre, useEtatPage } from "../lib/retour";
+import { MODS, blocsComplets, modParNom, padTactile, pourquoiMod, reglagesPas, type Ligne as LigneParam } from "../content/recetteComplete";
+import "./recettes-fenetre.css";
 
 const BPM = 165;
 /** Badge des recettes gardées : « 🎲 Générée » ou « 🔍 D'après une référence » (module Analyser une référence). */
@@ -31,8 +35,6 @@ function BadgeGen({ rc }: { rc: Recette }) {
     ? <Badge kind="ref" title={`D'après « ${rc.origine.morceau} »`} />
     : <Badge kind="genere" />;
 }
-const ORDER = ["oscillateur", "filtre", "modulation", "ampli", "ifx", "mfx", "motif", "partie", "pas"];
-const TITRES: Record<string, string> = { oscillateur: "Oscillator", filtre: "Filter", modulation: "Modulation", ampli: "Amp/EG", ifx: "Insert Fx", mfx: "Master Fx", motif: "Motif", partie: "Partie", pas: "Pas" };
 
 function origineDe(rc: Recette): SeqData {
   const knobs: Record<string, number> = {};
@@ -49,7 +51,16 @@ const SOURCES: { id: SourceRc; nom: string }[] = [
   { id: "pratique", nom: "Pratique (recettes de l'app)" }, { id: "mes", nom: "Mes recettes (testées ou avec ma version)" }, { id: "generees", nom: "Générées (🎲 gardées)" }, { id: "reference", nom: "D'après une référence (🔍)" },
 ];
 const catDe = (x: Recette) => (x.element ? ELEMENTS.get(x.element)?.categorie : undefined);
-const FILTRES0: FmValeur = { style: [], cat: [], el: [], source: [], favoris: [] };
+const FILTRES0: FmValeur = { style: [], cat: [], el: [], source: [], favoris: [], mod: [] };
+// Filtre « par modulation » : numéro du type (1 à 72), ou « aucune » (pas de modulation, ou Depth = 0).
+const modId = (x: Recette) => {
+  const t = x.reglages.find((y) => y.param === "mod.type")?.valeur;
+  const d = x.reglages.find((y) => y.param === "mod.depth")?.valeur;
+  const m = modParNom(t);
+  return !m || d === "0" ? "aucune" : String(m.n);
+};
+const MODS_LISTE = MODS;
+const SECTION_MOD = (src: string) => (src.startsWith("Enveloppe") ? "Enveloppes (EG)" : src.includes("sample") || src.includes("aléatoire") ? "Hasard (S&H, Random)" : "LFO");
 
 export default function Recettes({ focus }: { focus?: string }) {
   const st = useStore();
@@ -65,30 +76,35 @@ export default function Recettes({ focus }: { focus?: string }) {
   const corbeille = toutes.filter((x) => etatDe(st, x.id) === "corbeille");
   const depart = focus ? actives.find((x) => x.id === focus) : undefined;
 
-  const [f, setF] = useState<FmValeur>(() => {
+  const [f, setF] = useEtatPage<FmValeur>("recettes.filtres", () => {
     // « Voir les recettes Hardtek » depuis une fiche de style.
     let style: string[] = [];
     try { const x = sessionStorage.getItem("e2academy.recettes.style"); if (x) { style = [x]; sessionStorage.removeItem("e2academy.recettes.style"); } } catch { /* */ }
-    return { ...FILTRES0, style, cat: depart ? [catDe(depart)!] : [] };
+    return { ...FILTRES0, style, cat: depart ? [catDe(depart)!] : [], mod: [] };
   });
-  const [vue, setVue] = useState<"liste" | "corbeille">("liste");
-  const [ouverts, setOuverts] = useState<Set<string>>(() => new Set(depart ? [depart.element] : []));
-  const [onglet, setOnglet] = useState<Record<string, "recettes" | "generer">>({});
+  const [vue, setVue] = useEtatPage<"liste" | "corbeille">("recettes.vue", "liste");
+  const [ouverts, setOuverts] = useEtatPage<Set<string>>("recettes.ouverts", () => new Set(depart ? [depart.element] : []));
+  const [onglet, setOnglet] = useEtatPage<Record<string, "recettes" | "generer">>("recettes.onglets", {});
   const [sel, setSel] = useState<string | null>(depart ? depart.id : null);
   const [brouillon, setBrouillon] = useState<RecetteEl | null>(null);
   const [confirm, setConfirm] = useState<null | { texte: string; detail?: string; faire: () => void }>(null);
   const [annonce, setAnnonce] = useState<null | { texte: string; annuler?: () => void }>(null);
-  const detailRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { if (sel) detailRef.current?.scrollTo({ top: 0 }); }, [sel]);
+  // Retour du navigateur ou geste retour : la fenêtre suit l'adresse (#recettes = fermée, #recettes/<id> = ouverte).
+  useEffect(() => {
+    const suivre = () => { const [m, id] = location.hash.replace("#", "").split("/"); if (m === "recettes") setSel(id ? decodeURIComponent(id) : null); };
+    window.addEventListener("popstate", suivre);
+    return () => window.removeEventListener("popstate", suivre);
+  }, []);
   useEffect(() => { if (!annonce) return; const t = setTimeout(() => setAnnonce(null), 6000); return () => clearTimeout(t); }, [annonce]);
 
   const sourcesDe = (x: Recette): SourceRc[] => [genIds.has(x.id) ? (x.origine?.type === "reference" ? "reference" : "generees") : "pratique", ...(st.faits[`recette:${x.id}`] || st.observations[`recette:${x.id}`] ? ["mes" as const] : [])];
   // Filtres qui ne dépendent pas de la place (style, source, favoris).
   const passe = (x: Recette) => (!f.style.length || x.styles.some((s) => f.style.includes(s)))
+    && (!f.mod?.length || f.mod.includes(modId(x)))
     && (!f.source.length || sourcesDe(x).some((s) => f.source.includes(s)))
     && (!f.favoris.length || estFavori(st, idFavori("recette", x.id)));
   const filtrees = actives.filter(passe);
-  const autres = f.style.length + f.source.length + f.favoris.length + f.el.length > 0;
+  const autres = f.style.length + f.source.length + f.favoris.length + f.el.length + (f.mod?.length ?? 0) > 0;
   const elsDe = (c: (typeof CATEGORIES)[number]) => {
     const choisis = c.elements.filter((e) => f.el.includes(e.id));
     return choisis.length ? choisis : f.el.length && !f.cat.includes(c.id) ? [] : c.elements;
@@ -107,13 +123,18 @@ export default function Recettes({ focus }: { focus?: string }) {
       id: e.id, nom: e.nom, section: c.nom, couleur: COULEUR_CAT[c.id], n: filtrees.filter((x) => x.element === e.id).length }))) },
     { id: "source", titre: "Source", options: SOURCES.map((s) => ({ ...s, n: actives.filter((x) => sourcesDe(x).includes(s.id)).length })) },
     { id: "favoris", titre: "Favoris", options: [{ id: "oui", nom: "★ Favoris seulement", n: actives.filter((x) => estFavori(st, idFavori("recette", x.id))).length }] },
+    { id: "mod", titre: "Par modulation", options: [
+      { id: "aucune", nom: "Aucune (Depth : 0)", section: "Sans modulation", n: actives.filter((x) => modId(x) === "aucune").length },
+      ...MODS_LISTE.map((m) => ({ id: String(m.n), nom: `${m.n} ${m.nom}`, section: SECTION_MOD(m.source), n: actives.filter((x) => modId(x) === String(m.n)).length })),
+    ] },
   ];
 
-  const choose = (id: string) => { setSel(id); if (!brouillon || brouillon.id !== id) history.replaceState(null, "", `#recettes/${id}`); };
+  const choose = (id: string) => { setSel(id); ouvrirFenetre(!brouillon || brouillon.id !== id ? `#recettes/${encodeURIComponent(id)}` : "#recettes"); };
+  const fermer = () => fermerFenetre("#recettes", () => setSel(null));
   const basculer = (id: string) => setOuverts((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const jeter = (x: Recette) => {
     mettreALaCorbeille(x.id, x.nom);
-    if (sel === x.id) setSel(null);
+    if (sel === x.id) fermer();
     setAnnonce({ texte: `« ${x.nom} » est dans la Corbeille.`, annuler: () => restaurerRecette(x.id, x.nom) });
   };
   const supprimer = (x: Recette) => setConfirm({
@@ -130,8 +151,8 @@ export default function Recettes({ focus }: { focus?: string }) {
     if (brouillon) stopSi(brouillon.id);
     const x = { ...rc, element: rc.element ?? "kick" } as RecetteEl;
     setBrouillon(x);
-    // Sur ordinateur, la fiche s'ouvre à droite ; sur téléphone elle cacherait le générateur (bouton « Réglages… »).
-    if (window.matchMedia("(min-width: 1100px)").matches) setSel(x.id); else if (sel === brouillon?.id) setSel(null);
+    // La fiche s'ouvre avec le bouton « Réglages… » du générateur (une fenêtre cacherait le générateur).
+    if (sel === brouillon?.id) setSel(null);
     if (mode) ecouter(x, mode);
   };
   const garder = () => {
@@ -140,7 +161,7 @@ export default function Recettes({ focus }: { focus?: string }) {
     setAnnonce({ texte: `« ${brouillon.nom} » est gardée dans ${ELEMENTS.get(brouillon.element)?.nom} avec le badge « Générée ».` });
     setBrouillon(null);
   };
-  const jeterBrouillon = () => { if (brouillon) { stopSi(brouillon.id); if (sel === brouillon.id) setSel(null); setBrouillon(null); } };
+  const jeterBrouillon = () => { if (brouillon) { stopSi(brouillon.id); if (sel === brouillon.id) fermer(); setBrouillon(null); } };
 
   const rc = brouillon && sel === brouillon.id ? brouillon : actives.find((x) => x.id === sel);
   const carte = (x: RecetteEl, e: { nom: string }) => (
@@ -158,9 +179,10 @@ export default function Recettes({ focus }: { focus?: string }) {
   );
 
   return (
-    <div className={`map recettes ${rc ? "has-sel" : ""}`}>
+    <div className="map recettes sans-detail">
       <div className="map-main">
         <h2 className="page-title">Recettes</h2>
+        <p className="rc-approx">Les aperçus sonores sont des approximations : ce n'est pas le son réel de l'Electribe.</p>
         <Infos>
           <p>
             Des points de départ pour tes sons <Badge kind="pratique" />, sur 4 mesures (les 4 boutons Step). Les réglages et les listes viennent du manuel. Les valeurs de potard marquées « à vérifier sur l'écran » sont des propositions, et ta plage relevée s'affiche dès que tu l'as notée.
@@ -246,7 +268,7 @@ export default function Recettes({ focus }: { focus?: string }) {
                         {tab === "generer" ? (
                           <Generateur element={e.id} nomEl={e.nom} styleDefaut={(f.style.length === 1 ? f.style[0] as Style : "tous")} bases={(liste.some((x) => !x.kit) ? liste : actives.filter((x) => x.element === e.id)).filter((x) => !x.kit)}
                             brouillon={brouillon?.element === e.id ? brouillon : null} onBrouillon={nouveauBrouillon} onGarder={garder} onJeter={jeterBrouillon}
-                            onVoir={() => brouillon && setSel(brouillon.id)} ecouter={ecouter} />
+                            onVoir={() => brouillon && choose(brouillon.id)} ecouter={ecouter} />
                         ) : liste.length ? <div className="rc-grid">{liste.map((x) => carte(x, e))}</div>
                           : <p className="small muted">{(() => {
                               // Sous-catégorie laissée vide exprès pour ce style : on dit pourquoi.
@@ -262,18 +284,13 @@ export default function Recettes({ focus }: { focus?: string }) {
           );
         })}
       </div>
-      <aside className="detail" ref={detailRef} aria-live="polite">
-        {rc ? (
-          <Detail key={rc.id} rc={rc} generee={genIds.has(rc.id)} onClose={() => setSel(null)} onJeter={brouillon?.id === rc.id ? undefined : () => jeter(rc)}
+      {rc && (
+        <Fenetre sorte="recette" titre={rc.nom} label={`Recette ${rc.nom}`} onFermer={fermer}
+          etoile={brouillon?.id === rc.id ? undefined : <Etoile type="recette" cle={rc.id} titre={rc.nom} />}>
+          <Detail key={rc.id} rc={rc} generee={genIds.has(rc.id)} onClose={fermer} onJeter={brouillon?.id === rc.id ? undefined : () => jeter(rc)}
             brouillon={brouillon?.id === rc.id ? { onGarder: garder, onJeter: jeterBrouillon } : undefined} />
-        ) : (
-          <div className="empty">
-            <h2>Choisis une recette</h2>
-            <p>Chaque recette donne les réglages par section, comme sur ta machine, et une séquence de 4 mesures que tu peux écouter, modifier et recopier sur l'E2.</p>
-            <p className="muted small">Quand une recette te plaît, note ta version et marque-la « testée ».</p>
-          </div>
-        )}
-      </aside>
+        </Fenetre>
+      )}
       {confirm && <Confirmer texte={confirm.texte} detail={confirm.detail} onNon={() => setConfirm(null)} onOui={() => { confirm.faire(); setConfirm(null); }} />}
     </div>
   );
@@ -418,7 +435,7 @@ function DetailSimple({ rc, onClose, onJeter, brouillon, generee }: { rc: Recett
   const reglages = useMemo(() => fusion(rc.reglages, variante?.reglages), [rc, variante]);
   const origine = useMemo(() => origineDe(rc), [rc]);
   const edit = useSeqEdit(origine, brouillon ? undefined : `e2academy.recette.${rc.id}`);
-  const groups = ORDER.map((g) => ({ g, items: reglages.filter((x) => paramById.get(x.param)?.groupe === g) })).filter((x) => x.items.length);
+  const blocs = useMemo(() => blocsComplets(reglages), [reglages]);
   const exs = (rc.exercices ?? []).map((id) => exerciseById.get(id)).filter(Boolean) as Exercise[];
   const knobParams = KNOBS_APERCU.filter((k) => reglages.some((x) => x.param === k) || k === "amp.decay");
   const percu = SONS_PERCU.includes(rc.apercu.son);
@@ -470,28 +487,27 @@ function DetailSimple({ rc, onClose, onJeter, brouillon, generee }: { rc: Recett
       {!brouillon && <MonEnregistrement id={rc.id} titre={rc.nom} bpm={edit.ed.bpm} />}
 
       <div className="block">
-        <h3>Réglages, section par section{variante ? ` (variante « ${variante.nom} »)` : ""}</h3>
-        <div className="rc-sections">
-          {groups.map(({ g, items }) => (
-            <div key={g} className="rc-sec">
-              <h4>{TITRES[g] ?? parameterGroups[g]}</h4>
-              {items.map((x) => {
-                const p = paramById.get(x.param)!;
-                const ctl = CTL.get(x.param);
-                const changed = variante?.reglages.some((y) => y.param === x.param);
-                return (
-                  <div key={x.param} className={`rc-set ${changed ? "changed" : ""}`}>
-                    {ctl ? <a href={`#carte/${ctl}`} className="rc-name">{p.nom} ↗</a> : <span className="rc-name">{p.nom}</span>}
-                    {x.aVerifier
-                      ? <StartValueChip nom={p.nom} valeur={x.valeur} aVerifier param={x.param} />
-                      : <span className="startval"><kbd>{x.valeur}</kbd> <SourceRef src={listPage(x.param, x.valeur)} compact /></span>}
-                  </div>
-                );
-              })}
+        <h3>Tous les réglages de la partie{variante ? ` (variante « ${variante.nom} »)` : ""}</h3>
+        <p className="small muted rc-legende"><span className="rc-leg-regle">en couleur</span> = réglé par la recette · <span className="rc-leg-defaut">en gris</span> = laissé au réglage de départ du motif vide (« défaut »)</p>
+        <div className="rc-sections rc-complet">
+          {blocs.map((b) => (
+            <div key={b.id} className={`rc-sec rc-bloc-${b.id}`}>
+              <h4>{b.titre} <SourceRef src={b.src} compact /></h4>
+              {b.lignes.map((l) => <LigneReglage key={l.param} l={l} changed={variante?.reglages.some((y) => y.param === l.param) ?? false} />)}
+              {b.id === "modulation" && (() => {
+                const t = val(reglages, "mod.type");
+                const m = modParNom(t);
+                const actif = m && val(reglages, "mod.depth") !== "0";
+                return actif
+                  ? <p className="small rc-mod-pourquoi"><Badge kind="pratique" /> {pourquoiMod(t)} <a href={`#effets/mod-${m.n}`}>fiche de la modulation ↗</a></p>
+                  : <p className="small muted rc-mod-pourquoi">Modulation : aucune (Depth : 0). Cette recette n'en a pas besoin : le son reste stable.</p>;
+              })()}
             </div>
           ))}
         </div>
       </div>
+
+      <Pads rc={rc} reglages={reglages} data={edit.ed} />
 
       {rc.variantes.length > 0 && <div className="block">
         <h3>Variantes</h3>
@@ -535,6 +551,68 @@ function DetailSimple({ rc, onClose, onJeter, brouillon, generee }: { rc: Recett
         <ObservationBox id={`recette:${rc.id}`} titre={`Recette · ${rc.nom}`} placeholder="Mes valeurs qui marchent, ce que j'ai changé…" />
         <DoneToggle id={`recette:${rc.id}`} />
       </div>}
+    </div>
+  );
+}
+
+// ---------- Une ligne de réglage (réglé par la recette, ou « défaut ») ----------
+const NOMS_LIGNE: Record<string, string> = {
+  "osc.type": "Oscillator (type)", "filter.lpf": "Filter (type)", "filter.hpf": "Filter (type)", "filter.bpf": "Filter (type)",
+  "mod.type": "Modulation (type)", "synchro-mod": "Synchro tempo (BPM)", "ifx.type": "Insert FX (type)", "pat.mfxtype": "MFX TYPE",
+};
+function LigneReglage({ l, changed }: { l: LigneParam; changed: boolean }) {
+  const p = paramById.get(l.param);
+  const nom = NOMS_LIGNE[l.param] ?? p?.nom ?? l.param;
+  const ctl = CTL.get(l.param);
+  const liste = !l.aVerifier && !l.defaut && l.valeur !== "aucune" && p && /^(osc\.type|mod\.type|filter\.|ifx\.type|pat\.mfxtype)/.test(l.param);
+  return (
+    <div className={`rc-set ${l.defaut ? "defaut" : "regle"} ${changed ? "changed" : ""}`}>
+      {ctl ? <a href={`#carte/${ctl}`} className="rc-name">{nom} ↗</a> : <span className="rc-name">{nom}</span>}
+      <span className="rc-val">
+        {l.defaut ? (
+          <><kbd>{l.valeur}</kbd> <span className="rc-defaut-txt">défaut</span>{l.aVerifier && <span className="verify">à vérifier sur l'écran</span>}</>
+        ) : l.aVerifier ? (
+          <StartValueChip nom={nom} valeur={l.valeur} aVerifier param={l.param} />
+        ) : (
+          <span className="startval"><kbd>{l.valeur}</kbd>{liste && <> <SourceRef src={listPage(l.param, l.valeur)} compact /></>}</span>
+        )}
+        {l.note && <small className="rc-note">{l.note}</small>}
+      </span>
+    </div>
+  );
+}
+
+// ---------- Les pads : 16 pas par mesure, pad tactile, réglages de pas ----------
+function Pads({ rc, reglages, data }: { rc: Recette; reglages: Reglage[]; data: SeqData }) {
+  const percu = SONS_PERCU.includes(rc.apercu.son);
+  const b = data.base ?? { key: data.key, scale: data.scale };
+  const lignes = lignesSequence(data.mesures, percu, gammeByN.get(b.scale)!, b.key, rc.apercu.octave);
+  const tactile = padTactile(reglages);
+  const pasR = reglagesPas(rc, reglages, data.mesures);
+  return (
+    <div className="block rc-padsreg">
+      <h3>Réglages des pads</h3>
+      <h4>Les 16 pads, mesure par mesure <SourceRef src={{ doc: "OM", page: 30 }} compact /></h4>
+      <p className="small muted">Sequencer allumé, choisis le bloc avec les boutons Step 1 à 4, puis allume les pads en couleur.</p>
+      <div className="rc-padgrille">
+        {data.mesures.map((m, bar) => (
+          <div key={bar} className="rc-padligne">
+            <span className="rc-padstep">Step {bar + 1}</span>
+            <span className="rc-padcases">
+              {m.map((p, i) => <i key={i} className={p === null ? "" : p === "~" ? "tie" : "on"} title={`Pad ${i + 1}`}>{i + 1}</i>)}
+            </span>
+          </div>
+        ))}
+      </div>
+      <ul className="facts small">{lignes.map((l) => <li key={l.texte}>{l.texte}</li>)}</ul>
+      <h4>Pad tactile</h4>
+      {tactile.utilise ? (
+        <ul className="facts small">{tactile.lignes.map((l) => <li key={l.texte}>{l.texte} {l.aVerifier && <span className="verify">à vérifier sur l'écran</span>} {l.ref && <SourceRef src={l.ref} compact />}</li>)}</ul>
+      ) : <p className="small">Pad tactile : non utilisé.</p>}
+      <h4>Réglages de pas</h4>
+      {pasR.length ? (
+        <ul className="facts small">{pasR.map((l) => <li key={l.texte}>{l.texte} {l.ref && <SourceRef src={l.ref} compact />}</li>)}</ul>
+      ) : <p className="small">Aucun réglage de pas particulier : Gate Time, vélocité et Trigger restent comme ils sont.</p>}
     </div>
   );
 }

@@ -93,7 +93,7 @@ export default function Morceau({ focus }: { focus?: string }) {
   const maj = (f: (x: Morceau) => Morceau) => setM((x) => ({ ...f(x), majLe: new Date().toISOString() }));
   const etape = pos > 0 ? ETAPES[pos - 1] : null;
   const aller = (i: number) => { setPos(i); setVue("assistant"); window.scrollTo({ top: 0, behavior: "smooth" }); };
-  const changerVue = (v: Vue) => { engine.stop(); setVue(v); history.replaceState(null, "", v === "assistant" ? "#morceau" : `#morceau/${v}`); };
+  const changerVue = (v: Vue) => { engine.stop(); setVue(v); history.replaceState(history.state, "", v === "assistant" ? "#morceau" : `#morceau/${v}`); };
   const ouvrir = (x: Morceau, v: Vue = "assistant") => { engine.stop(); setM({ ...x, majLe: new Date().toISOString() }); setPos(0); changerVue(v); };
 
   return (

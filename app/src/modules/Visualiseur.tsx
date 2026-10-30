@@ -111,7 +111,7 @@ export default function Visualiseur({ focus }: { focus?: string }) {
   const valeur: FmValeur = { vues: p.vues, vitesse: [p.vitesse], echelle: [p.echelle] };
   const changerFiltres = (v: FmValeur) => maj({ vues: (v.vues?.length ? v.vues : ["spectre"]) as Vue[], vitesse: (v.vitesse?.[0] ?? "lisse") as PrefsVisu["vitesse"], echelle: (v.echelle?.[0] ?? "log") as Echelle });
 
-  if (video) return <ModeVideo p={p} maj={maj} r={r} onSortir={() => { setVideo(false); setOn(true); if (focus === "video") history.replaceState(null, "", "#visualiseur"); }} />;
+  if (video) return <ModeVideo p={p} maj={maj} r={r} onSortir={() => { setVideo(false); setOn(true); if (focus === "video") history.replaceState(history.state, "", "#visualiseur"); }} />;
 
   return (
     <div className="visu-page">

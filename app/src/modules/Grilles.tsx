@@ -26,7 +26,7 @@ export default function Grilles({ focus }: { focus?: string }) {
   const [sel, setSel] = useState<string | null>(() => (focus && TOUTES.some((g) => g.id === focus) ? focus : GRILLES[0].id));
   const [style, setStyle] = useState<string>("tous");
   const g = TOUTES.find((x) => x.id === sel);
-  const choose = (id: string | null) => { setSel(id); history.replaceState(null, "", id ? `#grilles/${id}` : "#grilles"); };
+  const choose = (id: string | null) => { setSel(id); history.replaceState(history.state, "", id ? `#grilles/${id}` : "#grilles"); };
   const liste = [...GRILLES.filter((x) => style === "tous" || x.style === style), GRILLE_VIDE];
   return (
     <div className="grilles">

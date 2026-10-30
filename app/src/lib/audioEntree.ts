@@ -40,11 +40,12 @@ export interface EtatEntree {
   paireDispo: boolean;         // la paire choisie existe vraiment sur cet appareil
   latenceMs: number | null;    // retard estimé de l'entrée jusqu'aux mesures de l'app
   traitementsCoupes: boolean | null; // le navigateur a bien coupé anti-écho, réduction de bruit et gain auto
+  bloque: boolean;             // le moteur audio ne progresse plus (affichages et enregistrement figés)
 }
 
 let etat: EtatEntree = {
   reglages: lireReglages(), statut: "arret", erreur: null, appareils: [], nomAppareil: "",
-  srEntree: null, srApp: null, canauxRecus: 0, paireDispo: true, latenceMs: null, traitementsCoupes: null,
+  srEntree: null, srApp: null, canauxRecus: 0, paireDispo: true, latenceMs: null, traitementsCoupes: null, bloque: false,
 };
 const ecoute = new Set<() => void>();
 function maj(x: Partial<EtatEntree>) { etat = { ...etat, ...x }; ecoute.forEach((f) => f()); }
@@ -75,8 +76,88 @@ interface Graphe {
   sortie: GainNode;
   aL: AnalyserNode; aR: AnalyserNode;                        // pour le vumètre
   nul: GainNode;                                             // sortie muette (fait tourner l'enregistreur)
+  prise: AudioWorkletNode | ScriptProcessorNode | null;      // la prise de son de l'enregistreur, branchée dès l'ouverture
 }
 let graphe: Graphe | null = null;
+
+// ---------------------------------------------------------------- Prise de son pour l'enregistreur
+// Branchée une fois pour toutes à l'ouverture de l'entrée, sur la même `sortie` que le vumètre et le visualiseur :
+// lancer « REC » ne touche plus au graphe audio (avant, le module de capture se chargeait au moment du REC,
+// ce qui redémarrait le moteur audio du navigateur sur PC et figeait tous les affichages).
+const CODE_PRISE = `
+class E2Prise extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.on = false; this.n = 0; this.taille = 4096;
+    this.l = new Float32Array(this.taille); this.r = new Float32Array(this.taille);
+    this.port.onmessage = (e) => {
+      if (e.data === "on") { if (!this.on) this.n = 0; this.on = true; }
+      else if (e.data === "vider") { this.envoyer(); this.port.postMessage({ fin: true }); }
+      else if (e.data === "off") { this.on = false; this.n = 0; }
+    };
+  }
+  envoyer() {
+    if (!this.n) return;
+    const l = this.l.slice(0, this.n), r = this.r.slice(0, this.n);
+    this.port.postMessage({ l, r }, [l.buffer, r.buffer]);
+    this.n = 0;
+  }
+  process(inputs) {
+    if (!this.on) return true;
+    const i = inputs[0];
+    if (i && i.length) {
+      const l = i[0], r = i[1] || i[0];
+      for (let k = 0; k < l.length; k++) {
+        this.l[this.n] = l[k]; this.r[this.n] = r[k]; this.n++;
+        if (this.n === this.taille) this.envoyer();
+      }
+    }
+    return true;
+  }
+}
+registerProcessor("e2-prise", E2Prise);
+`;
+const modulesCharges = new WeakSet<BaseAudioContext>();
+async function chargerPrise(ctx: AudioContext): Promise<boolean> {
+  if (modulesCharges.has(ctx)) return true;
+  if (!ctx.audioWorklet) return false;
+  try {
+    // Fichier ouvert en double-clic (file://) : seule une adresse « data: » est acceptée ; sur un site, « blob: » marche aussi.
+    try { await ctx.audioWorklet.addModule(`data:application/javascript;base64,${btoa(CODE_PRISE)}`); }
+    catch {
+      const url = URL.createObjectURL(new Blob([CODE_PRISE], { type: "application/javascript" }));
+      try { await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
+    }
+    modulesCharges.add(ctx);
+    return true;
+  } catch { return false; }
+}
+type Recepteur = (l: Float32Array, r: Float32Array) => void;
+const recepteurs = new Set<Recepteur>();
+let finsEnAttente: (() => void)[] = [];
+const recevoirBloc = (l: Float32Array, r: Float32Array) => recepteurs.forEach((f) => f(l, r));
+const blocFini = () => { const f = finsEnAttente; finsEnAttente = []; f.forEach((x) => x()); };
+
+/** Commence à recevoir le son de l'entrée (blocs gauche / droite). Rend la fonction qui arrête, après avoir reçu la fin. */
+export function capterEntree(f: Recepteur): (() => Promise<void>) | null {
+  const p = graphe?.prise;
+  if (!p) return null;
+  recepteurs.add(f);
+  if (p instanceof AudioWorkletNode) p.port.postMessage("on");
+  return () => new Promise<void>((ok) => {
+    let fait = false;
+    const fini = () => {
+      if (fait) return; fait = true;
+      window.clearTimeout(t);
+      recepteurs.delete(f);
+      if (!recepteurs.size && p instanceof AudioWorkletNode) p.port.postMessage("off");
+      ok();
+    };
+    const t = window.setTimeout(fini, 800);
+    if (p instanceof AudioWorkletNode && graphe?.prise === p) { finsEnAttente.push(fini); p.port.postMessage("vider"); }
+    else fini();
+  });
+}
 let ouverture: Promise<void> | null = null;
 const utilisateurs = new Set<string>();
 let minuterieFermeture = 0;
@@ -227,7 +308,28 @@ async function ouvrir(): Promise<void> {
   split2.connect(aL, 0); split2.connect(aR, 1);
   const nul = ctx.createGain(); nul.gain.value = 0; nul.connect(ctx.destination);
   entreeOuverte("entree", true);
-  graphe = { ctx, stream, source, split, merge, gL: mk(), gR: mk(), gL2: mk(), gR2: mk(), sortie, aL, aR, nul };
+  // la prise de son de l'enregistreur : AudioWorklet (sans trous), sinon ScriptProcessor (ancien mais partout)
+  let prise: Graphe["prise"] = null;
+  if (await chargerPrise(ctx)) {
+    try {
+      const w = new AudioWorkletNode(ctx, "e2-prise", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1], channelCount: 2, channelCountMode: "explicit", channelInterpretation: "discrete" });
+      w.port.onmessage = (e: MessageEvent) => {
+        const d = e.data as { l?: Float32Array; r?: Float32Array; fin?: boolean };
+        if (d.l && d.r) recevoirBloc(d.l, d.r);
+        if (d.fin) blocFini();
+      };
+      prise = w;
+    } catch { prise = null; }
+  }
+  if (!prise) {
+    const sp = ctx.createScriptProcessor(4096, 2, 1);
+    sp.onaudioprocess = (e) => { const b = e.inputBuffer; if (recepteurs.size) recevoirBloc(b.getChannelData(0).slice(), (b.numberOfChannels > 1 ? b.getChannelData(1) : b.getChannelData(0)).slice()); };
+    prise = sp;
+  }
+  sortie.connect(prise); prise.connect(nul);
+  // entrée rouverte pendant un enregistrement : la prise continue sur le nouveau branchement
+  if (recepteurs.size && prise instanceof AudioWorkletNode) prise.port.postMessage("on");
+  graphe = { ctx, stream, source, split, merge, gL: mk(), gR: mk(), gL2: mk(), gR2: mk(), sortie, aL, aR, nul, prise };
   const appareils = await listerAppareils();
   const id = s.deviceId ?? r.deviceId;
   const nomAppareil = piste?.label || appareils.find((a) => a.id === id)?.label || "Entrée par défaut";
@@ -240,7 +342,28 @@ async function ouvrir(): Promise<void> {
   cabler();
   piste?.addEventListener("ended", () => { fermer(); maj({ statut: "erreur", erreur: { code: "debranche", titre: "L'entrée audio s'est coupée (Scarlett débranchée ou prise par un autre logiciel).", aides: ["Vérifie le câble USB.", "Ferme FL Studio s'il utilise la Scarlett en ASIO, puis « Réessayer »."] } }); });
   if (ctx.state === "suspended") { try { await ctx.resume(); } catch { /* */ } }
-  maj({ statut: "ouvert", erreur: null, appareils, nomAppareil, srEntree, srApp: ctx.sampleRate, canauxRecus, paireDispo: paireOk(), latenceMs, traitementsCoupes });
+  maj({ statut: "ouvert", erreur: null, appareils, nomAppareil, srEntree, srApp: ctx.sampleRate, canauxRecus, paireDispo: paireOk(), latenceMs, traitementsCoupes, bloque: false });
+  surveiller(ctx);
+}
+
+// ---------------------------------------------------------------- Surveillance
+// Toutes les secondes, tant que l'entrée est ouverte : le moteur audio doit avancer. S'il s'est mis en pause
+// (Windows, autre logiciel, mise en veille…), on le relance ; s'il reste figé, la barre de l'entrée le dit.
+let minuterieSurveillance = 0;
+function arreterSurveillance() { window.clearInterval(minuterieSurveillance); minuterieSurveillance = 0; }
+function surveiller(ctx: AudioContext) {
+  arreterSurveillance();
+  let dernier = ctx.currentTime, fige = 0;
+  ctx.addEventListener("statechange", () => { if (graphe?.ctx === ctx && ctx.state !== "running" && ctx.state !== "closed") void ctx.resume().catch(() => {}); });
+  minuterieSurveillance = window.setInterval(() => {
+    if (!graphe || graphe.ctx !== ctx) { arreterSurveillance(); return; }
+    if (ctx.state !== "running") void ctx.resume().catch(() => {});
+    const t = ctx.currentTime;
+    fige = t > dernier + 0.2 ? 0 : fige + 1;
+    dernier = t;
+    const bloque = fige >= 3;
+    if (bloque !== etat.bloque) maj({ bloque });
+  }, 1000);
 }
 
 function fermer() {
@@ -248,8 +371,12 @@ function fermer() {
   const g = graphe;
   g.stream.getTracks().forEach((t) => t.stop());
   // Le contexte est partagé avec toute l'app : on débranche seulement les nœuds de l'entrée.
-  for (const n of [g.source, g.split, g.merge, g.gL, g.gR, g.gL2, g.gR2, g.sortie, g.aL, g.aR, g.nul]) { try { n.disconnect(); } catch { /* */ } }
+  if (g.prise instanceof AudioWorkletNode) g.prise.port.onmessage = null;
+  else if (g.prise) g.prise.onaudioprocess = null;
+  for (const n of [g.source, g.split, g.merge, g.gL, g.gR, g.gL2, g.gR2, g.sortie, g.aL, g.aR, g.nul, g.prise]) { try { n?.disconnect(); } catch { /* */ } }
   graphe = null;
+  blocFini();
+  arreterSurveillance();
   entreeOuverte("entree", false);
 }
 // Si le contexte partagé est recréé (Mastering à une autre fréquence), l'entrée se referme proprement.

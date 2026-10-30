@@ -8,6 +8,7 @@ import { StylesCss } from "./components/Styles";
 import { PixelArt } from "./components/PixelArt";
 import { MenuMachines, Repere } from "./components/MenuMachines";
 import { positionDe } from "./machines";
+import { etatHisto, peutRevenir, retrouverPosition, suivrePosition } from "./lib/retour";
 
 // Chaque module se charge seulement quand tu l'ouvres (l'accueil est prêt tout de suite).
 const MachineMap = lazy(() => import("./modules/MachineMap"));
@@ -105,15 +106,22 @@ export default function App() {
   const [{ mod, arg }, setRoute] = useState(readHash);
   const [menuOuvert, setMenuOuvert] = useState(false);
   const modPrec = useRef(readHash().mod);
+  const [retour, setRetour] = useState(() => { etatHisto(); return peutRevenir(); });
   useEffect(() => {
+    suivrePosition();
     const on = () => {
       // Changer de page arrête tous les sons (seule l'alerte de Session peut encore sonner).
       if (readHash().mod !== modPrec.current) toutArreter();
       modPrec.current = readHash().mod;
-      setRoute(readHash()); setMenuOuvert(false); window.scrollTo({ top: 0 });
+      etatHisto();
+      setRoute(readHash()); setMenuOuvert(false); setRetour(peutRevenir());
+      // même endroit qu'avant si on revient en arrière, sinon le haut de la page
+      requestAnimationFrame(retrouverPosition);
     };
+    const pop = () => setRetour(peutRevenir());
     window.addEventListener("hashchange", on);
-    return () => window.removeEventListener("hashchange", on);
+    window.addEventListener("popstate", pop);
+    return () => { window.removeEventListener("hashchange", on); window.removeEventListener("popstate", pop); };
   }, []);
   const current = MODULES.find((m) => m.id === mod)!;
   const pos = positionDe(mod);
@@ -153,6 +161,11 @@ export default function App() {
       {pos?.sousPage && pos.module?.id === "labo" && <LaboTabs mod={mod} />}
       <PlusTard><Suspense fallback={null}><RecupPrises /></Suspense></PlusTard>
       <RappelExport />
+      {retour && (
+        <div className="retour-barre">
+          <button type="button" className="retour-btn" onClick={() => history.back()} title="Revenir à l'endroit d'avant (même page, mêmes filtres, même position)">← Retour</button>
+        </div>
+      )}
       <main>
         <ErreurModule key={mod}>
         <Suspense fallback={<div className="chargement-module" role="status">Chargement…</div>}>

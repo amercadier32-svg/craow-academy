@@ -3,6 +3,8 @@
 // liens vers les recettes, les fiches d'effets, les leçons et les étapes de « Construire un morceau ».
 import { lireJson, ecrireJson } from "../lib/stockage";
 import { Etoile } from "../components/Etoile";
+import { Fenetre } from "../components/Fenetre";
+import { fermerFenetre, ouvrirFenetre, useEtatPage } from "../lib/retour";
 import { useEffect, useMemo, useState } from "react";
 import { CATS_LEX, CLE_QUIZ_LEX, LEXIQUE, lexById, type Cat, type Mot } from "../content/lexique";
 import { ELEMENTS, RECETTES } from "../content/recettes";
@@ -171,17 +173,25 @@ export default function Glossaire({ focus }: { focus?: string }) {
   const all = useMemo(index, []);
   const sel = useSelection();
   const f0 = focus && !focus.startsWith("q=") ? lexById.get(focus) : undefined;
-  const [q, setQ] = useState(focus?.startsWith("q=") ? decodeURIComponent(focus.slice(2)) : "");
-  const [cat, setCat] = useState<Cat | null>(f0?.cat ?? null);
+  const [q, setQ] = useEtatPage("glossaire.recherche", focus?.startsWith("q=") ? decodeURIComponent(focus.slice(2)) : "");
+  const [cat, setCat] = useEtatPage<Cat | null>("glossaire.cat", f0?.cat ?? null);
   const [el, setEl] = useState<string | null>(f0?.id ?? null);
   const [open, setOpen] = useState<string | null>(null);
-  const [fl, setFl] = useState<FmValeur>({ cat: [], source: [], ecoute: [], favoris: [] });
+  const [fl, setFl] = useEtatPage<FmValeur>("glossaire.filtres", { cat: [], source: [], ecoute: [], favoris: [] });
+  const voir = (id: string | null) => { setEl(id); if (id) ouvrirFenetre(`#glossaire/${id}`); };
+  const fermer = () => fermerFenetre("#glossaire", () => setEl(null));
+  // Retour du navigateur : la fenêtre suit l'adresse (#glossaire = fermée, #glossaire/<terme> = ouverte).
+  useEffect(() => {
+    const suivre = () => { const [m, id] = location.hash.replace("#", "").split("/"); if (m === "glossaire") setEl(id && lexById.has(id) ? id : null); };
+    window.addEventListener("popstate", suivre);
+    return () => window.removeEventListener("popstate", suivre);
+  }, []);
   const st = useStore();
   const passe = (m: Mot) => (!fl.cat.length || fl.cat.includes(m.cat)) && (!fl.source.length || fl.source.includes(m.kind)) && (!fl.ecoute.length || Boolean(m.ec))
     && (!fl.favoris.length || estFavori(st, idFavori("lex", m.id)));
   const filtre = fl.cat.length + fl.source.length + fl.ecoute.length + fl.favoris.length > 0;
   const filtres = LEXIQUE.filter(passe).sort((a, b) => a.fr.localeCompare(b.fr, "fr"));
-  const ouvrir = (id: string) => { const t = lexById.get(id); if (!t) return; setQ(""); setCat(t.cat); setEl(t.id); };
+  const ouvrir = (id: string) => { const t = lexById.get(id); if (!t) return; setQ(""); setCat(t.cat); voir(t.id); };
 
   const qn = norm(q.trim());
   const mots = qn.split(/\s+/).filter(Boolean);
@@ -191,7 +201,6 @@ export default function Glossaire({ focus }: { focus?: string }) {
   const termes = cat ? LEXIQUE.filter((m) => m.cat === cat && passe(m)).sort((a, b) => a.fr.localeCompare(b.fr, "fr")) : [];
   const fiche = el ? lexById.get(el) : undefined;
   const lancerQuiz = () => { location.hash = "#quiz/lexique"; };
-  useEffect(() => { if (el) document.querySelector(".lx-fiche")?.scrollIntoView({ behavior: "smooth", block: "start" }); }, [el]);
 
   return (
     <div className="glossaire">
@@ -204,7 +213,7 @@ export default function Glossaire({ focus }: { focus?: string }) {
 
       <div className="lx-quizbar">
         <span><b>{sel.sel.length}</b> terme{sel.sel.length > 1 ? "s" : ""} pour le quiz</span>
-        {cat && !mots.length && !fiche && <button type="button" className="chipbtn" onClick={() => sel.setSel((s) => [...new Set([...s, ...termes.map((t) => t.id)])])}>Cocher toute la catégorie</button>}
+        {cat && !mots.length && <button type="button" className="chipbtn" onClick={() => sel.setSel((s) => [...new Set([...s, ...termes.map((t) => t.id)])])}>Cocher toute la catégorie</button>}
         {sel.sel.length > 0 && <button type="button" className="chipbtn" onClick={() => sel.setSel([])}>Tout décocher</button>}
         <button type="button" className="e2-ui-btn" onClick={lancerQuiz} disabled={!sel.sel.length}>▶ Quiz</button>
       </div>
@@ -248,7 +257,7 @@ export default function Glossaire({ focus }: { focus?: string }) {
           <Rangement racine="Glossaire" sansAriane cats={fl.cat} labelCategorie="Catégorie" labelElement="Terme" feuille={fiche && !cat ? fiche.fr : undefined}
             categories={CATS_LEX.map((c) => ({ id: c.id, nom: c.nom, icone: c.icone, couleur: c.couleur, texte: c.texte, n: LEXIQUE.filter((m) => m.cat === c.id).length,
               elements: LEXIQUE.filter((m) => m.cat === c.id).sort((a, b) => a.fr.localeCompare(b.fr, "fr")).map((m) => ({ id: m.id, nom: m.fr })) }))}
-            cat={cat} onCat={(c) => { setCat(c as Cat | null); setEl(null); setFl((v) => ({ ...v, cat: [] })); }} element={el} onElement={setEl} />
+            cat={cat} onCat={(c) => { setCat(c as Cat | null); setEl(null); setFl((v) => ({ ...v, cat: [] })); }} element={el} onElement={voir} />
           <FiltreMenu valeur={fl} onChange={(v) => { setFl(v); setEl(null); if (v.cat.length) setCat(null); }} resultat={`${cat ? termes.length : filtres.length} terme${(cat ? termes.length : filtres.length) > 1 ? "s" : ""}`}
             groupes={[
               { id: "cat", titre: "Catégorie", options: CATS_LEX.map((c) => ({ id: c.id, nom: c.nom, couleur: c.couleur, n: LEXIQUE.filter((m) => m.cat === c.id).length })) },
@@ -258,10 +267,14 @@ export default function Glossaire({ focus }: { focus?: string }) {
             ]}
             autres={cat ? [{ id: cat, nom: catById.get(cat)!.nom, couleur: catById.get(cat)!.couleur, retirer: () => { setCat(null); setEl(null); } }] : []}
             onToutEffacer={() => { setCat(null); setEl(null); }} />
-          {fiche ? (
-            <Fiche key={fiche.id} m={fiche} sel={sel} onVoir={ouvrir} />
-          ) : cat ? (
-            <ul className="lx-cartes">{termes.map((m) => <Carte key={m.id} m={m} sel={sel} onOpen={() => setEl(m.id)} />)}</ul>
+          {fiche && (
+            <Fenetre sorte="fiche" titre={fiche.fr} label={fiche.fr} onFermer={fermer}
+              etoile={fiche.ec ? <Etoile type="lex" cle={fiche.id} titre={fiche.fr} /> : undefined}>
+              <Fiche key={fiche.id} m={fiche} sel={sel} onVoir={ouvrir} />
+            </Fenetre>
+          )}
+          {cat ? (
+            <ul className="lx-cartes">{termes.map((m) => <Carte key={m.id} m={m} sel={sel} onOpen={() => voir(m.id)} />)}</ul>
           ) : filtre ? (
             filtres.length ? <ul className="lx-cartes">{filtres.map((m) => <Carte key={m.id} m={m} sel={sel} avecCat onOpen={() => ouvrir(m.id)} />)}</ul>
               : <p className="rg-hint">Aucun terme pour ces filtres.</p>

@@ -308,7 +308,7 @@ class Engine {
     return t + attack + hold + decay * 1.2 + 0.05;
   }
 
-  private kick(t: number, decay: number, peak: number, out: AudioNode) {
+  private kick(t: number, decay: number, peak: number, out: AudioNode, st?: SeqState) {
     const c = this.c!;
     const o = c.createOscillator();
     o.frequency.setValueAtTime(170, t);
@@ -317,14 +317,29 @@ class Engine {
     const end = this.env(g, t, peak, 0.002, 0, 0.1 + decay * 0.5);
     o.connect(g).connect(out);
     o.start(t); o.stop(end);
+    const md = st ? modDe(st) : null;
+    if (st && md?.cible === "pitch") this.moduler(st, md, t, end, { pitch: [o.detune] });
   }
 
   /** Une note : elle passe par son propre gain, pour que le moteur puisse limiter le nombre de voix. */
   private voice(st: SeqState, g: Gamme, p: number | "O", t: number, dur: number, out: AudioNode, ti = 0) {
-    const vg = this.c!.createGain();
-    vg.connect(out);
+    const c = this.c!;
+    const vg = c.createGain();
+    // Modulation vers Level ou Pan : appliquée à la voix entière (tous les sons, percussions comprises).
+    const md = modDe(st);
+    const mg = md && md.cible === "level" ? c.createGain() : null;
+    const pn = md && md.cible === "pan" ? c.createStereoPanner() : null;
+    // percussions sans filtre propre : un filtre de voix rend audibles les modulations Filter, OSC et IFX
+    const fv = md && (md.cible === "filter" || md.cible === "osc" || md.cible === "ifx") && PERCU_SANS_FILTRE.includes(st.son) ? c.createBiquadFilter() : null;
+    let x: AudioNode = vg;
+    if (fv) { fv.type = "lowpass"; fv.frequency.value = 5000; fv.Q.value = 2; vg.connect(fv); x = fv; }
+    if (mg) { x.connect(mg); x = mg; }
+    if (pn) { x.connect(pn); x = pn; }
+    x.connect(out);
     this.finVoix = t + dur;
     this.voixInterne(st, g, p, t, dur, vg, ti);
+    if (md && fv) this.moduler(st, { ...md, cible: "filter" }, t, Math.min(this.finVoix + 0.6, t + 8.6), { filter: fv.frequency, base: 2500 });
+    if (md && (mg || pn)) this.moduler(st, md, t, Math.min(this.finVoix + 0.6, t + 8.6), mg ? { level: mg.gain } : { pan: pn!.pan });
     nouvelleVoix(vg, Math.min(this.finVoix + 0.6, t + 8.6));
   }
 
@@ -336,7 +351,7 @@ class Engine {
     const midi = midiOf(st, g, p);
 
     // Percussions
-    if (st.son === "kick") { this.kick(t, dec, 0.95, out); return; }
+    if (st.son === "kick") { this.kick(t, dec, 0.95, out, st); return; }
     if (st.son === "hat" || st.son === "openhat" || st.son === "shaker") {
       const s = this.noiseSrc(t);
       const f = c.createBiquadFilter();
@@ -410,7 +425,7 @@ class Engine {
         o.connect(og).connect(f); o.start(t); o.stop(end); os.push(o);
       }
       f.connect(gg).connect(out);
-      if (!/^EG/.test(name)) this.lfo(st, t, end, { filter: f.frequency, base: f.frequency.value, pitch: os.map((o) => o.detune), level: gg });
+      if (!/^EG/.test(name)) this.lfo(st, t, end, { filter: f.frequency, base: f.frequency.value, pitch: os.map((o) => o.detune) });
       return;
     }
     if (st.son === "perc") {
@@ -510,36 +525,86 @@ class Engine {
     f.connect(amp).connect(out);
     end = Math.min(end, t + 8);
     srcs.forEach((s) => { if (s instanceof OscillatorNode) s.start(t); s.stop(end); });
-    this.lfo(st, t, end, { filter: f.frequency, base, pitch: detunes, level: amp });
+    this.lfo(st, t, end, { filter: f.frequency, base, pitch: detunes });
   }
 
-  /** LFO de la modulation choisie : seulement les cibles Filter, Pitch et Level sont imitées. */
-  private lfo(st: SeqState, t: number, end: number, to: { filter?: AudioParam; base?: number; pitch?: AudioParam[]; level?: GainNode }) {
-    const name = st.mod ?? "";
-    const depth = clamp(st.knobs["mod.depth"] ?? 0.3);
-    if (!name || depth < 0.01) return;
+  /** Modulation vers le filtre, la hauteur, OSC Edit ou IFX Edit (Level et Pan : voir voice()). */
+  private lfo(st: SeqState, t: number, end: number, to: { filter?: AudioParam; base?: number; pitch?: AudioParam[] }) {
+    const md = modDe(st);
+    if (!md || md.cible === "level" || md.cible === "pan") return;
+    this.moduler(st, md, t, end, md.cible === "pitch" ? { pitch: to.pitch } : { filter: to.filter, base: to.base, pitch: md.cible === "osc" ? to.pitch : undefined });
+  }
+
+  /** Applique la modulation (approximation) : enveloppe EG+ / EG-, ou LFO triangle, dent de scie, carré, S&H, aléatoire.
+   *  Les types « BPM » suivent le tempo (Speed = durée en pas, de 4 mesures à 1/32) ; les autres ont une vitesse libre. */
+  private moduler(st: SeqState, md: Mod, t: number, end: number, to: { filter?: AudioParam; base?: number; pitch?: AudioParam[]; level?: AudioParam; pan?: AudioParam }) {
     const c = this.c!;
-    const target = /Filter/.test(name) ? "filter" : /Pitch/.test(name) ? "pitch" : /Level/.test(name) ? "level" : null;
-    if (!target) return;
-    const amount = target === "filter" ? (to.base ?? 800) * depth * 3 : target === "pitch" ? depth * 120 : depth * 0.2;
-    if (/Random|S&H/.test(name)) {
-      const r = (Math.random() * 2 - 1) * amount;
-      if (target === "filter" && to.filter) to.filter.setValueAtTime(Math.max(40, (to.base ?? 800) + r), t + 0.01);
-      if (target === "pitch") to.pitch?.forEach((d) => d.setValueAtTime(d.value + r, t));
+    const depth = clamp(st.knobs["mod.depth"] ?? 0.3), speed = clamp(st.knobs["mod.speed"] ?? 0.5);
+    if (depth < 0.01) return;
+    const base = to.base ?? 800;
+    // ampleur selon la cible : filtre en Hz, hauteur en cents, OSC / IFX en petite couleur du filtre, niveau, pan
+    const amp = md.cible === "pitch" ? depth * 1200 : md.cible === "osc" || md.cible === "ifx" ? base * depth * 1.2 : md.cible === "filter" ? base * depth * 4 : md.cible === "level" ? depth : depth;
+    const params: AudioParam[] = md.cible === "pitch" ? to.pitch ?? [] : md.cible === "level" ? (to.level ? [to.level] : []) : md.cible === "pan" ? (to.pan ? [to.pan] : [])
+      : [...(to.filter ? [to.filter] : [])];
+    const detunesOsc = md.cible === "osc" ? to.pitch ?? [] : [];
+    if (!params.length && !detunesOsc.length) return;
+    const pas = stepSec(st.bpm);
+    if (md.forme === "eg+" || md.forme === "eg-") {
+      // EG : un coup d'enveloppe au début de chaque note, qui revient au réglage du potard
+      const signe = md.forme === "eg+" ? 1 : -1;
+      const duree = md.bpm ? pas * Math.pow(2, Math.round(speed * 6)) : 0.02 + speed * speed * 1.5;
+      for (const a of params) {
+        const v0 = a.value;
+        if (md.cible === "level") { a.setValueAtTime(signe > 0 ? 1 : Math.max(0, 1 - depth), t); a.setTargetAtTime(signe > 0 ? Math.max(0, 1 - depth * 0.8) : 1, t + 0.005, duree / 3); }
+        else if (md.cible === "pan") { a.setValueAtTime(Math.max(-1, Math.min(1, signe * depth)), t); a.setTargetAtTime(0, t + 0.005, duree / 3); }
+        else if (md.cible === "pitch") { a.setValueAtTime(v0 + signe * amp, t); a.setTargetAtTime(v0, t + 0.002, duree / 3); }
+        else { a.setValueAtTime(Math.max(30, Math.min(18000, v0 + signe * amp)), t); a.setTargetAtTime(v0, t + 0.002, duree / 3); }
+      }
+      for (const d of detunesOsc) { d.setValueAtTime(d.value + signe * depth * 25, t); d.setTargetAtTime(d.value, t + 0.002, duree / 3); }
       return;
     }
-    if (/^EG/.test(name)) return;
+    // LFO : vitesse libre (0,1 à 13 Hz) ou calée sur le tempo (de 4 mesures à 1/32 de note)
+    const hz = md.bpm ? 1 / (pas * Math.pow(2, 6 - Math.round(speed * 7))) : 0.1 * Math.pow(2, speed * 7);
+    if (md.forme === "sh" || md.forme === "random") {
+      // paliers au hasard (S&H, au rythme du tempo) ou glissement au hasard (Random)
+      const n = Math.min(64, Math.ceil((end - t) * hz) + 1);
+      for (const a of params) {
+        const v0 = a.value;
+        for (let i = 0; i < n; i++) {
+          const r = Math.random() * 2 - 1, ti = t + i / hz;
+          const v = md.cible === "level" ? Math.max(0, 1 - depth * (r + 1) / 2) : md.cible === "pan" ? r * depth : md.cible === "pitch" ? v0 + r * amp * 0.5 : Math.max(30, Math.min(18000, v0 + r * amp));
+          if (md.forme === "sh" || i === 0) a.setValueAtTime(v, ti); else a.linearRampToValueAtTime(v, ti);
+        }
+      }
+      return;
+    }
     const o = c.createOscillator();
-    o.type = /Saw/.test(name) ? "sawtooth" : /Squ/.test(name) ? "square" : "triangle";
-    o.frequency.value = 0.1 * Math.pow(2, clamp(st.knobs["mod.speed"] ?? 0.5) * 7);
+    o.type = md.forme === "saw-up" || md.forme === "saw-down" ? "sawtooth" : md.forme === "square-up" || md.forme === "square-down" ? "square" : "triangle";
+    o.frequency.value = hz;
     const g = c.createGain();
-    g.gain.value = amount;
+    const inv = md.forme === "saw-down" || md.forme === "square-down" ? -1 : 1;
+    g.gain.value = inv * (md.cible === "level" ? depth * 0.5 : md.cible === "pan" ? depth : md.cible === "pitch" ? amp * 0.25 : amp * 0.5);
     o.connect(g);
-    if (target === "filter" && to.filter) g.connect(to.filter);
-    if (target === "pitch") to.pitch?.forEach((d) => g.connect(d));
-    if (target === "level" && to.level) g.connect(to.level.gain);
+    for (const a of params) {
+      if (md.cible === "level") a.setValueAtTime(1 - depth * 0.5, t);
+      g.connect(a);
+    }
+    if (detunesOsc.length) { const g2 = c.createGain(); g2.gain.value = depth * 20; o.connect(g2); detunesOsc.forEach((d) => g2.connect(d)); }
     o.start(t); o.stop(end);
   }
+}
+
+const PERCU_SANS_FILTRE: string[] = ["kick", "hat", "openhat", "shaker", "ride", "crash", "clap", "snare"];
+type Mod = { cible: "filter" | "pitch" | "osc" | "level" | "pan" | "ifx"; forme: "eg+" | "eg-" | "tri" | "saw-up" | "saw-down" | "square-up" | "square-down" | "sh" | "random"; bpm: boolean };
+/** Lit le nom du type de modulation (« 37 SawUpB Filter ») : source, destination, tempo. */
+export function modDe(st: { mod?: string; knobs: Record<string, number> }): Mod | null {
+  const n = (st.mod ?? "").replace(/^\d+ /, "");
+  if (!n || (st.knobs["mod.depth"] ?? 0.3) < 0.01) return null;
+  const cible = /Filter$/.test(n) ? "filter" : /Pitch$/.test(n) ? "pitch" : /OSC$/.test(n) ? "osc" : /Level$/.test(n) ? "level" : /Pan$/.test(n) ? "pan" : /IFX$/.test(n) ? "ifx" : null;
+  if (!cible) return null;
+  const forme = /^EG\+/.test(n) ? "eg+" : /^EG-/.test(n) ? "eg-" : /^SawUp/.test(n) ? "saw-up" : /^SawDwn/.test(n) ? "saw-down" : /^SquUp/.test(n) ? "square-up" : /^SquDwn/.test(n) ? "square-down" : /^S&H/.test(n) ? "sh" : /^Random/.test(n) ? "random" : "tri";
+  const bpm = /BPM|TriB|UpB|DwnB/.test(n);
+  return { cible, forme, bpm };
 }
 
 export const engine = new Engine();

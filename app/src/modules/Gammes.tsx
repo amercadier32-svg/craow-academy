@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Etoile } from "../components/Etoile";
+import { Fenetre } from "../components/Fenetre";
+import { fermerFenetre, ouvrirFenetre, useEtatPage } from "../lib/retour";
 import { BPM, INFO, MOTIFS, NOTES12, OM, PG } from "../content/gammes";
 import { FICHE, STYLE_NOM, rangerVisibles, stylesGamme, useStyles } from "../content/styles";
 import { GAMMES, KEYS, degreeSemi, ecarts, enDiese, gammeByN, nomMidi, notesIn, play, stop, type Gamme, type Note } from "../lib/music";
@@ -45,10 +47,11 @@ export const FAMILLES_G: { id: string; nom: string; texte: string; icone: string
 
 export default function Gammes({ focus }: { focus?: string }) {
   const [sel, setSel] = useState<number>(() => (focus && gammeByN.has(Number(focus)) ? Number(focus) : 7));
-  const [fl, setFl] = useState<FmValeur>({ style: [], favoris: [] });
+  const [ouverte, setOuverte] = useState(() => Boolean(focus && gammeByN.has(Number(focus))));
+  const [fl, setFl] = useEtatPage<FmValeur>("gammes.filtres", { style: [], favoris: [] });
   const st = useStore();
-  const [cat, setCat] = useState<string | null>(() => (focus && gammeByN.has(Number(focus)) ? FAMILLES_G.find((f) => f.n.includes(Number(focus)))!.id : null));
-  const [el, setEl] = useState<string | null>(() => (focus && gammeByN.has(Number(focus)) ? focus : null));
+  const [cat, setCat] = useEtatPage<string | null>("gammes.cat", () => (focus && gammeByN.has(Number(focus)) ? FAMILLES_G.find((f) => f.n.includes(Number(focus)))!.id : null));
+  const [el, setEl] = useEtatPage<string | null>("gammes.el", () => (focus && gammeByN.has(Number(focus)) ? focus : null));
   const player = usePlayer();
   // Styles d'une gamme : repères de la page (INFO) plus les gammes conseillées par les fiches de style.
   const aStyle = (n: number, s: string) => (stylesGamme(n, INFO[n]?.styles ?? []) as string[]).includes(s);
@@ -56,11 +59,18 @@ export default function Gammes({ focus }: { focus?: string }) {
   const fav = (n: number) => estFavori(st, idFavori("gamme", String(n)));
   const duStyle = (n: number) => (!fl.style.length || fl.style.some((s) => aStyle(n, s))) && (!fl.favoris.length || fav(n));
   const nb = GAMMES.filter((g) => duStyle(g.n)).length;
-  const choose = (n: number) => {
-    setSel(n);
-    history.replaceState(null, "", `#gammes/${n}`);
-    document.getElementById("fiche")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const choose = (n: number) => { setSel(n); setOuverte(true); ouvrirFenetre(`#gammes/${n}`); };
+  const fermer = () => fermerFenetre("#gammes", () => setOuverte(false));
+  // Retour du navigateur : la fenêtre suit l'adresse (#gammes = fermée, #gammes/<n> = ouverte).
+  useEffect(() => {
+    const suivre = () => {
+      const [m, id] = location.hash.replace("#", "").split("/");
+      if (m !== "gammes") return;
+      if (id && gammeByN.has(Number(id))) { setSel(Number(id)); setOuverte(true); } else setOuverte(false);
+    };
+    window.addEventListener("popstate", suivre);
+    return () => window.removeEventListener("popstate", suivre);
+  }, []);
 
   return (
     <div className="gammes">
@@ -86,7 +96,7 @@ export default function Gammes({ focus }: { focus?: string }) {
           elements: f.n.filter(duStyle).map((n) => ({ id: String(n), nom: label(gammeByN.get(n)!) })),
         }))}
         cat={cat} onCat={setCat} element={el} boutonTout={false}
-        onElement={(id) => { setEl(id); if (id) choose(Number(id)); }}
+        onElement={(id) => { setEl(id ?? el); if (id ?? el) choose(Number(id ?? el)); }}
         labelCategorie="Famille de gammes" labelElement="Gamme"
       />
       <FiltreMenu valeur={fl} onChange={setFl} resultat={`${nb} gamme${nb > 1 ? "s" : ""}`}
@@ -97,7 +107,12 @@ export default function Gammes({ focus }: { focus?: string }) {
         autres={cat ? [{ id: cat, nom: FAMILLES_G.find((f) => f.id === cat)?.nom ?? cat, couleur: FAMILLES_G.find((f) => f.id === cat)?.couleur, retirer: () => { setCat(null); setEl(null); } }] : []}
         onToutEffacer={() => { setCat(null); setEl(null); }} />
 
-      <Fiche g={gammeByN.get(sel)!} player={player} />
+      {ouverte && (
+        <Fenetre sorte="fiche" titre={`${sel} · ${gammeByN.get(sel)!.nom}`} label={gammeByN.get(sel)!.nom} onFermer={fermer}
+          etoile={<Etoile type="gamme" cle={String(sel)} titre={`${sel} · ${gammeByN.get(sel)!.nom}`} />}>
+          <Fiche g={gammeByN.get(sel)!} player={player} />
+        </Fenetre>
+      )}
 
       <Comparateur />
     </div>

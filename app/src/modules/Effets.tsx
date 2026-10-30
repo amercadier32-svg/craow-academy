@@ -3,6 +3,9 @@
 import { BoutonLecture, ChoixMode } from "../components/Lecteur";
 import { Etoile } from "../components/Etoile";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Fenetre } from "../components/Fenetre";
+import { fermerFenetre, ouvrirFenetre, useEtatPage } from "../lib/retour";
+import "./recettes-fenetre.css";
 import { COULEURS, Infos, Rangement } from "../components/Rangement";
 import { FiltreMenu, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
 import {
@@ -62,17 +65,21 @@ const palPedale = (c: string) => ({ m: c, M: `color-mix(in srgb, ${c} 60%, #000)
 
 export default function Effets({ focus }: { focus?: string }) {
   const f0 = focus ? ficheById.get(focus) : undefined;
-  const [kind, setKind] = useState<Kind>(f0?.kind ?? "ifx");
-  const [cat, setCat] = useState<string | null>(f0 ? (f0.kind === "mod" ? f0.info.source : f0.famille) : null);
-  const [fl, setFl] = useState<FmValeur>({ style: [], dest: [], favoris: [] });
+  const [kind, setKind] = useEtatPage<Kind>("effets.type", f0?.kind ?? "ifx");
+  const [cat, setCat] = useEtatPage<string | null>("effets.cat", f0 ? (f0.kind === "mod" ? f0.info.source : f0.famille) : null);
+  const [fl, setFl] = useEtatPage<FmValeur>("effets.filtres", { style: [], dest: [], favoris: [] });
   const [sel, setSel] = useState<string | null>(f0?.id ?? null);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useEtatPage("effets.recherche", "");
   const favOnly = fl.favoris.length > 0;
   const { tous, visibles } = useStyles();
   const [fav] = useFavoris();
   const { faits } = useStore();
-  const detailRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { if (sel) detailRef.current?.scrollTo({ top: 0 }); }, [sel]);
+  // Retour du navigateur : la fenêtre suit l'adresse (#effets = fermée, #effets/<id> = ouverte).
+  useEffect(() => {
+    const suivre = () => { const [m, id] = location.hash.replace("#", "").split("/"); if (m === "effets") setSel(id && ficheById.has(id) ? id : null); };
+    window.addEventListener("popstate", suivre);
+    return () => window.removeEventListener("popstate", suivre);
+  }, []);
 
   const mots = norm(q).split(/\s+/).filter(Boolean);
   const affine = (f: Fiche) => (!fl.style.length || stylesDe(f).some((s) => fl.style.includes(s))) && (!favOnly || fav.includes(f.id))
@@ -83,7 +90,8 @@ export default function Effets({ focus }: { focus?: string }) {
     ? FICHES.filter((f) => affine(f) && mots.every((m) => texteFiche(f).includes(m)))
     : duType.filter((f) => cat && catDe(f) === cat);
   const fiche = sel ? ficheById.get(sel) : undefined;
-  const choose = (id: string) => { setSel(id); history.replaceState(null, "", `#effets/${id}`); };
+  const choose = (id: string) => { setSel(id); ouvrirFenetre(`#effets/${id}`); };
+  const fermer = () => fermerFenetre("#effets", () => setSel(null));
   const changerType = (k: string) => { setKind(k as Kind); setCat(null); setFl((v) => ({ ...v, dest: [] })); setQ(""); };
   const avantFiltre = FICHES.filter((f) => f.kind === kind);
   const groupesF: FmGroupe[] = [
@@ -124,7 +132,7 @@ export default function Effets({ focus }: { focus?: string }) {
   };
 
   return (
-    <div className={`map recettes effets ${fiche ? "has-sel" : ""}`}>
+    <div className="map recettes effets sans-detail">
       <div className="map-main">
         <h2 className="page-title">Effets et modulations</h2>
         <Infos>
@@ -157,15 +165,13 @@ export default function Effets({ focus }: { focus?: string }) {
         ))}
         {(mots.length > 0 || cat) && list.length === 0 && <p className="muted">Aucune fiche pour ce choix.</p>}
       </div>
-      <aside className="detail" ref={detailRef} aria-live="polite">
-        {fiche ? <Detail key={fiche.id} f={fiche} onClose={() => setSel(null)} /> : (
-          <div className="empty">
-            <h2>Choisis un effet</h2>
-            <p>Chaque fiche explique l'effet en mots simples, montre un schéma, fait écouter le même motif de 4 mesures sans puis avec l'effet, et donne les gestes sur ta machine.</p>
-            <p className="muted small">Marque une fiche ★ pour la retrouver dans tes favoris.</p>
-          </div>
-        )}
-      </aside>
+      {fiche && (
+        <Fenetre sorte="fiche" titre={`${fiche.kind === "mod" ? "Modulation" : fiche.kind.toUpperCase()} ${fiche.kind === "mfx" ? String(fiche.n).padStart(2, "0") : fiche.n} · ${fiche.nom}`}
+          label={fiche.nom} onFermer={fermer}
+          etoile={<Etoile type="fx" cle={fiche.id} titre={`${fiche.kind === "mod" ? "Modulation" : fiche.kind.toUpperCase()} ${fiche.n} · ${fiche.nom}`} />}>
+          <Detail key={fiche.id} f={fiche} onClose={fermer} />
+        </Fenetre>
+      )}
     </div>
   );
 }

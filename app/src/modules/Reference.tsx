@@ -161,7 +161,7 @@ export default function Reference({ focus }: { focus?: string }) {
     maj({ id, enregistre: a, zones, zoneActive });
     setMsg(`Analyse « ${a.nom} » enregistrée dans « Mes analyses ». L'audio du morceau n'est pas gardé.`);
   };
-  const nouvelle = () => { arreterRef(); setP({ ...VIDE, style: p.style }); history.replaceState(null, "", "#reference"); setMsg(""); };
+  const nouvelle = () => { arreterRef(); setP({ ...VIDE, style: p.style }); history.replaceState(history.state, "", "#reference"); setMsg(""); };
 
   const ids = ["ref.charger", "ref.morceau", "ref.son", "ref.recettes", "ref.comparer", "ref.garder", "ref.mes"];
   const aDonnees = Boolean(p.son || p.enregistre);

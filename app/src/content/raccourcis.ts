@@ -7,6 +7,8 @@ export const RACCOURCIS: { groupe: string; liste: Raccourci[] }[] = [
     groupe: "Partout",
     liste: [
       { touches: ["Échap"], action: "Fermer le menu ☰, le menu Machines, le menu Plus ou un panneau de filtres", ou: "Toute l'app", fichier: "components/useFermeture.ts" },
+      { touches: ["Échap"], action: "Fermer la fenêtre d'une recette, d'un effet, d'une gamme ou d'un terme du glossaire", ou: "Recettes, Effets, Gammes, Glossaire", lien: "#recettes", fichier: "components/Fenetre.tsx" },
+      { touches: ["Double-clic"], action: "Agrandir ou réduire la fenêtre (sur sa barre de titre)", ou: "Recettes, Effets, Gammes, Glossaire", lien: "#recettes", fichier: "components/Fenetre.tsx" },
       { touches: ["Entrée"], action: "Voir tous les résultats de la recherche", ou: "Accueil (barre de recherche)", lien: "#accueil", fichier: "modules/Accueil.tsx" },
     ],
   },

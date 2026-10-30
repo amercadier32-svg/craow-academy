@@ -4,39 +4,9 @@
 // Si l'onglet se ferme ou plante, les morceaux déjà écrits sont récupérés au prochain lancement (RecupPrises).
 // Tout reste dans le navigateur.
 import { contexte, declarerLecteur, liberer, prendreLaMain, sortieDirecte } from "./moteurAudio";
-import { contexteEntree, getEntree, nulEntree, sortieEntree } from "./audioEntree";
+import { capterEntree, contexteEntree, getEntree } from "./audioEntree";
 import { ajouterEnregistrement, ecrireMetaPrise, ecrireMorceau, effacerPrise, lireMorceaux, type MetaPrise, type Morceau } from "./recordings";
 
-const CODE_WORKLET = `
-class E2Rec extends AudioWorkletProcessor {
-  constructor() {
-    super();
-    this.on = true; this.n = 0; this.taille = 4096;
-    this.l = new Float32Array(this.taille); this.r = new Float32Array(this.taille);
-    this.port.onmessage = (e) => { if (e.data === "stop") { this.envoyer(); this.port.postMessage({ fin: true }); this.on = false; } };
-  }
-  envoyer() {
-    if (!this.n) return;
-    const l = this.l.slice(0, this.n), r = this.r.slice(0, this.n);
-    this.port.postMessage({ l, r }, [l.buffer, r.buffer]);
-    this.n = 0;
-  }
-  process(inputs) {
-    if (!this.on) return false;
-    const i = inputs[0];
-    if (i && i.length) {
-      const l = i[0], r = i[1] || i[0];
-      for (let k = 0; k < l.length; k++) {
-        this.l[this.n] = l[k]; this.r[this.n] = r[k]; this.n++;
-        if (this.n === this.taille) this.envoyer();
-      }
-    }
-    return true;
-  }
-}
-registerProcessor("e2-rec", E2Rec);
-`;
-const workletsCharges = new WeakSet<BaseAudioContext>();
 
 /** Une prise : le son est sur le disque (Blob PCM 24 bits entrelacé, sans en-tête), les crêtes en mémoire. */
 export interface Prise {
@@ -96,8 +66,8 @@ const encoder24 = (out: Uint8Array, o: number, x: number) => {
 
 /** Commence à enregistrer la sortie de l'entrée audio (déjà ouverte). */
 export async function demarrerCapture(opt: OptionsCapture): Promise<Capture> {
-  const ctx = contexteEntree(), sortie = sortieEntree(), nul = nulEntree();
-  if (!ctx || !sortie || !nul) throw new Error("L'entrée audio n'est pas ouverte.");
+  const ctx = contexteEntree();
+  if (!ctx) throw new Error("L'entrée audio n'est pas ouverte.");
   const sr = ctx.sampleRate;
   const canaux: 1 | 2 = getEntree().reglages.mode === "mono" ? 1 : 2;
   const id = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
@@ -168,46 +138,14 @@ export async function demarrerCapture(opt: OptionsCapture): Promise<Capture> {
     id, apercu, duree: () => n / sr, saturations: () => sat, taille: () => tailleWav(n, canaux), erreurDisque: () => disqueKo,
   };
 
-  // AudioWorklet (sans trous), sinon ScriptProcessor (ancien mais partout)
-  let node: AudioWorkletNode | null = null;
-  try {
-    if (!workletsCharges.has(ctx)) {
-      // Fichier ouvert en double-clic (file://) : seule une adresse « data: » est acceptée ; sur un site, « blob: » marche aussi.
-      try { await ctx.audioWorklet.addModule(`data:application/javascript;base64,${btoa(CODE_WORKLET)}`); }
-      catch {
-        const url = URL.createObjectURL(new Blob([CODE_WORKLET], { type: "application/javascript" }));
-        try { await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
-      }
-      workletsCharges.add(ctx);
-    }
-    node = new AudioWorkletNode(ctx, "e2-rec", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1], channelCount: 2, channelCountMode: "explicit", channelInterpretation: "discrete" });
-  } catch { node = null; }
-
-  if (node) {
-    const w = node;
-    let fin: (() => void) | null = null;
-    w.port.onmessage = (e: MessageEvent) => {
-      const d = e.data as { l?: Float32Array; r?: Float32Array; fin?: boolean };
-      if (d.l && d.r) recevoir(d.l, d.r);
-      if (d.fin) fin?.();
-    };
-    sortie.connect(w); w.connect(nul);
-    return {
-      ...base,
-      arreter: () => new Promise<Prise>((ok) => {
-        const t = window.setTimeout(() => f(), 800);
-        const f = () => { window.clearTimeout(t); fin = null; try { sortie.disconnect(w); w.disconnect(); } catch { /* */ } w.port.onmessage = null; void finir().then(ok); };
-        fin = f;
-        w.port.postMessage("stop");
-      }),
-    };
-  }
-  const sp = ctx.createScriptProcessor(4096, 2, 1);
-  sp.onaudioprocess = (e) => { const b = e.inputBuffer; recevoir(b.getChannelData(0).slice(), (b.numberOfChannels > 1 ? b.getChannelData(1) : b.getChannelData(0)).slice()); };
-  sortie.connect(sp); sp.connect(nul);
+  // La prise de son est branchée dès l'ouverture de l'entrée, avec le vumètre et le visualiseur (audioEntree.ts) :
+  // on s'y abonne, sans toucher au graphe audio.
+  const arret = capterEntree(recevoir);
+  if (!arret) throw new Error("L'entrée audio n'est pas ouverte.");
+  let fini: Promise<Prise> | null = null;
   return {
     ...base,
-    arreter: async () => { try { sortie.disconnect(sp); sp.disconnect(); } catch { /* */ } sp.onaudioprocess = null; return finir(); },
+    arreter: () => (fini ??= arret().then(finir)),
   };
 }
 

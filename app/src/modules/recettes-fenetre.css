@@ -1,0 +1,28 @@
+/* Recettes : liste pleine largeur (la recette s'ouvre dans une fenêtre), tous les réglages, pads */
+.map.sans-detail { display: block; }
+.rc-approx { margin: -4px 0 12px; color: var(--muted); font-size: 0.95rem; }
+.map.recettes:not(.effets) .seqp-honest, .fen-recette .seqp-honest { display: none; }
+.rc-legende { margin: -2px 0 8px; }
+.rc-leg-regle { color: #ffd84d; font-weight: 600; }
+.rc-leg-defaut { color: #8a91a0; }
+.rc-complet .rc-set.regle kbd { color: #ffd84d; border-color: #ffd84d88; background: #ffd84d14; }
+.rc-complet .rc-set.defaut .rc-name, .rc-complet .rc-set.defaut kbd { color: #8a91a0; }
+.rc-complet .rc-set.defaut kbd { background: transparent; border-color: #3a3e4a; }
+.rc-defaut-txt { color: #8a91a0; font-size: 0.8rem; font-style: italic; }
+.rc-val { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.rc-note { color: var(--muted); }
+.rc-mod-pourquoi { margin: 6px 0 0; }
+.rc-bloc-modulation { border-left-color: #e255c8; }
+.rc-padsreg h4 { margin: 12px 0 6px; font-size: 0.9rem; color: #9cc4ff; }
+.rc-padgrille { display: grid; gap: 4px; margin: 6px 0 8px; }
+.rc-padligne { display: grid; grid-template-columns: 54px 1fr; gap: 6px; align-items: center; }
+.rc-padstep { font-family: var(--px); font-size: 1.05rem; color: var(--muted); }
+.rc-padcases { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; }
+.rc-padcases i {
+  font-style: normal; text-align: center; font-size: 0.7rem; line-height: 22px; height: 22px; color: #6b7384;
+  background: #0c0d11; border: 1px solid #2a2e38;
+}
+.rc-padcases i:nth-child(4n + 1) { border-left-color: #4a5060; }
+.rc-padcases i.on { background: #ff6a3d; border-color: #ffb08f; color: #1a0b05; font-weight: 700; }
+.rc-padcases i.tie { background: #ff6a3d55; border-color: #ff6a3d; color: #ffd8c8; }
+@media (max-width: 560px) { .rc-padcases i { font-size: 0.6rem; } .rc-padligne { grid-template-columns: 44px 1fr; } }

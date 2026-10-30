@@ -50,6 +50,18 @@ export function BarreEntree({ qui }: { qui: string }) {
       </div>
     );
   }
+  if (e.statut === "ouvert" && e.bloque) {
+    return (
+      <div className="audio-alerte orange rec-erreur" role="alert">
+        <b>Le moteur audio du navigateur est à l'arrêt : les affichages et l'enregistrement sont figés.</b>
+        <ul>
+          <li>Vérifie que la sortie son de Windows (Paramètres → Son → Sortie) n'est pas prise en mode exclusif par un autre logiciel.</li>
+          <li>Clique sur « Réessayer » : l'entrée se rouvre et l'enregistrement en cours continue.</li>
+        </ul>
+        <div className="rec-btns"><button type="button" className="e2-ui-btn" onClick={() => void reessayer(qui)}>↻ Réessayer</button><a className="e2-ui-btn" href="#audio">⚙ Réglages audio</a></div>
+      </div>
+    );
+  }
   return (
     <p className="audio-mini">
       {e.statut === "ouvert" ? <span className="rec-led on" aria-hidden /> : <span className="rec-led" aria-hidden />}

@@ -1,0 +1,45 @@
+/* Fenêtre par-dessus la page (components/Fenetre.tsx) */
+.fen-fond { position: fixed; inset: 0; z-index: 200; background: #000b; }
+.fen {
+  position: fixed; display: flex; flex-direction: column; outline: none;
+  background: var(--panel); border: 2px solid var(--edge); box-shadow: 0 0 0 1px var(--line), 0 18px 50px #000c;
+}
+.fen.pleine { inset: 8px; }
+.fen.tel { inset: 0; border: 0; }
+.fen-barre {
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 14px; flex: none; cursor: move; user-select: none;
+  background: linear-gradient(#2a3b62, #1d2a47); border-bottom: 2px solid var(--edge); touch-action: none;
+}
+.fen.pleine .fen-barre { cursor: default; }
+.fen-titre { flex: 1; min-width: 0; font-family: var(--px); font-size: 1.35rem; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fen-etoile { flex: none; }
+.fen-btn {
+  flex: none; min-width: 40px; height: 36px; padding: 0 10px; cursor: pointer; font-size: 1.05rem;
+  background: var(--panel); color: var(--text); border: 2px solid var(--edge); border-radius: 0;
+}
+.fen-btn:hover { background: #2e3240; }
+.fen-fermer:hover { background: #a3262c; }
+.fen-btn span { font-family: var(--px); font-size: 1.1rem; }
+.fen-corps { flex: 1; min-height: 0; overflow-y: auto; padding: 12px 18px 28px; overscroll-behavior: contain; }
+.fen.tel .fen-corps { padding: 10px 12px 40px; }
+.fen.tel .fen-btn { min-width: 44px; height: 44px; }
+/* bords pour redimensionner */
+.fen-bord { position: absolute; z-index: 2; }
+.fen-bord.b-n, .fen-bord.b-s { left: 10px; right: 10px; height: 9px; cursor: ns-resize; }
+.fen-bord.b-n { top: -5px; } .fen-bord.b-s { bottom: -5px; }
+.fen-bord.b-e, .fen-bord.b-w { top: 10px; bottom: 10px; width: 9px; cursor: ew-resize; }
+.fen-bord.b-e { right: -5px; } .fen-bord.b-w { left: -5px; }
+.fen-bord.b-ne, .fen-bord.b-nw, .fen-bord.b-se, .fen-bord.b-sw { width: 16px; height: 16px; }
+.fen-bord.b-ne { top: -5px; right: -5px; cursor: nesw-resize; } .fen-bord.b-sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.fen-bord.b-nw { top: -5px; left: -5px; cursor: nwse-resize; } .fen-bord.b-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+body.fen-ouverte { overflow: hidden; }
+/* Dans une fenêtre, la fiche n'a plus son propre bouton Fermer ni son titre en double (ils sont dans la barre). */
+.fen .detail-top .close[aria-label="Fermer"] { display: none; }
+.fen .detail-top h2 > .etoile, .fen .fx-top-btns > .etoile { display: none; }
+.fen .detail-inner { max-width: none; }
+.fen .block:first-of-type { border-top: 0; }
+@media (min-width: 900px) {
+  .fen .rc-sections { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+}
+.fen .fiche-title > .etoile, .fen .lx-fiche-h h3 > .etoile { display: none; }
+.fen-recette .detail-top h2, .fen-fiche .detail-top h2, .fen-fiche .fiche-title, .fen-fiche .lx-fiche-h h3 { display: none; }

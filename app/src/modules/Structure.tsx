@@ -41,7 +41,7 @@ export default function Structure({ focus }: { focus?: string }) {
   const [sel, setSel] = useState<string | null>(() => (focus && GRILLES.some((g) => g.id === focus) ? focus : GRILLES[0].id));
   const [style, setStyle] = useState<string>("tous");
   const g = GRILLES.find((x) => x.id === sel);
-  const choose = (id: string | null) => { setSel(id); history.replaceState(null, "", id ? `#structure/${id}` : "#structure"); };
+  const choose = (id: string | null) => { setSel(id); history.replaceState(history.state, "", id ? `#structure/${id}` : "#structure"); };
   return (
     <div className="structure">
       <h2 className="page-title">Structure de morceau</h2>

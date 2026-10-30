@@ -18,6 +18,7 @@ import { RECETTES_TRANSITIONS } from "./recettesTransitions";
 import { RECETTES_TOMS } from "./recettesToms";
 import { RECETTES_RYTHME_STYLES } from "./recettesStylesRythme";
 import { RECETTES_STYLES_SUITE } from "./recettesStylesSuite";
+import { MODS_AJOUTEES } from "./modulations";
 
 /** Réglage d'un paramètre. `aVerifier` : valeur de potard proposée, le manuel ne donne pas la plage. */
 export interface Reglage { param: string; valeur: string; aVerifier?: boolean }
@@ -658,7 +659,13 @@ const ELEMENT_DES_PREMIERES: Record<string, ElementId> = {
 };
 
 export const RECETTES: (Recette & { element: ElementId })[] = [...PREMIERES, ...RECETTES_RYTHME, ...RECETTES_RYTHME_STYLES, ...RECETTES_TOMS, ...RECETTES_BASSE, ...RECETTES_MELODIE, ...RECETTES_AMBIANCE, ...RECETTES_TRANSITIONS, ...RECETTES_STYLES_SUITE]
-  .map((x) => ({ ...x, element: x.element ?? ELEMENT_DES_PREMIERES[x.id] ?? "fill" }));
+  .map((x) => ({ ...x, element: x.element ?? ELEMENT_DES_PREMIERES[x.id] ?? "fill" }))
+  .map((x) => {
+    // modulation ajoutée (content/modulations.ts) : placée juste après le filtre, comme sur la machine
+    const m = MODS_AJOUTEES[x.id];
+    if (!m || x.reglages.some((y) => y.param === "mod.type")) return x;
+    return { ...x, reglages: [...x.reglages, r("mod.type", m.type), v("mod.depth", m.depth), v("mod.speed", m.speed)] };
+  });
 
 
 /** Potards que l'aperçu sait imiter. */

@@ -612,3 +612,12 @@ h2 .etoile, h3 .etoile { font-size: 1.05rem; }
 .drl-session { display: grid; gap: 10px; }
 .drl-session-btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .drl-lancer { margin-left: auto; }
+
+/* Flèche « ← Retour » en haut de chaque page (lib/retour.ts) */
+.retour-barre { max-width: 1400px; margin: 10px auto -4px; padding: 0 16px; }
+.retour-btn {
+  font-family: var(--px); font-size: 1.15rem; cursor: pointer; padding: 4px 14px; min-height: 36px;
+  background: var(--panel); color: var(--text); border: 2px solid var(--edge); box-shadow: 0 3px 0 var(--edge);
+}
+.retour-btn:hover { background: #2a3b62; }
+.retour-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--edge); }
