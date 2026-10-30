@@ -120,8 +120,10 @@ export default function ReglagesAudio() {
       <section className="audio-carte audio-infos">
         <h3>3. Ce que l'app reçoit</h3>
         <dl className="audio-dl">
-          <div className="gros"><dt>Fréquence d'échantillonnage</dt><dd>{e.srApp ? fmtHz(e.srApp) : "— (clique sur Tester)"}</dd>
-            <small>{e.srApp ? (e.srEntree && e.srEntree !== e.srApp ? `Attention : la Scarlett annonce ${fmtHz(e.srEntree)}, l'app travaille à ${fmtHz(e.srApp)} (conversion par le navigateur).` : "Celle que Windows utilise pour ta Scarlett. L'app enregistre et analyse à cette fréquence, sans conversion.") : "Elle s'affiche dès que l'entrée est ouverte."}</small></div>
+          <div className="gros"><dt>Fréquence de l'entrée (carte son)</dt><dd>{e.statut === "ouvert" || e.statut === "erreur" ? (e.srEntree ? fmtHz(e.srEntree) : "non annoncée") : "— (clique sur Tester)"}</dd>
+            <small>{e.srEntree ? "Celle que Windows utilise pour ta carte son (Scarlett)." : e.statut === "ouvert" ? "Le navigateur ne la donne pas : l'app s'aligne sur son moteur audio." : "Elle s'affiche dès que l'entrée est ouverte."}</small></div>
+          <div className="gros"><dt>Fréquence du moteur audio de l'app</dt><dd>{e.srApp ? fmtHz(e.srApp) : "—"}</dd>
+            <small className={e.srApp && e.srEntree && e.srEntree !== e.srApp ? "audio-freq-ecart" : ""}>{e.srApp ? (e.srEntree && e.srEntree !== e.srApp ? `⚠ Différente de l'entrée (${fmtHz(e.srEntree)}) : le navigateur convertit. Si le visualiseur reste vide ou figé, mets la même fréquence dans Windows (voir l'aide plus bas).` : "✓ Le moteur audio est créé à la fréquence de l'entrée : l'app enregistre et analyse sans conversion.") : "Le moteur audio se règle tout seul sur la fréquence de l'entrée."}</small></div>
           <div><dt>Canaux reçus de l'appareil</dt><dd>{e.canauxRecus || "—"}</dd><small>{e.canauxRecus >= 4 ? "Les 4 entrées arrivent : l'app prend la paire choisie." : e.canauxRecus ? "Le navigateur reçoit au plus 2 entrées par appareil : une paire à la fois." : ""}</small></div>
           <div><dt>Paire utilisée</dt><dd>{e.statut === "ouvert" ? `Entrées ${paireEffective(e) === 0 ? "1-2" : "3-4"}` : "—"}</dd><small>{r.mode === "mono" ? "Mono" : "Stéréo"}</small></div>
           <div><dt>Retard estimé de l'entrée</dt><dd>{e.latenceMs !== null && e.statut === "ouvert" ? `≈ ${e.latenceMs} ms` : "—"}</dd><small>Pour le vumètre et le visualiseur. L'écoute, elle, passe par le direct monitor : sans retard.</small></div>
@@ -144,6 +146,21 @@ export default function ReglagesAudio() {
           <li><b>Windows</b> : Paramètres → Confidentialité et sécurité → Microphone → accès activé pour les applications de bureau.</li>
           <li><b>Fréquence</b> : si FL Studio est réglé à une autre fréquence que Windows, la Scarlett peut refuser l'un des deux. Mets la même dans les deux (par exemple 48 000 Hz). À vérifier dans Focusrite Control.</li>
         </ul>
+      </Deroulant>
+
+      <Deroulant id="audio.frequence" petit icone="visualiseur" couleur="#ffd84d" titre="Visualiseur vide ou figé : la fréquence" texte="Carte son et moteur audio à des fréquences différentes.">
+        <div className="audio-aides">
+          <p><b>Le problème.</b> La carte son (ta Scarlett) travaille à une fréquence d'échantillonnage (par exemple 44 100 ou 48 000 Hz), réglée dans Windows. Le moteur audio de l'app en a une aussi. Si les deux ne correspondent pas, certains navigateurs n'arrivent pas à faire passer le son de l'un à l'autre : le visualiseur reste vide ou se fige, et l'enregistrement aussi.</p>
+          <p><b>Ce que fait l'app.</b> Elle crée son moteur audio à la même fréquence que l'entrée choisie (affichées toutes les deux plus haut, dans « Ce que l'app reçoit »). Si le navigateur refuse, elle essaie les autres fréquences courantes. Si rien ne marche, elle affiche « La fréquence de ta carte son ne correspond pas : vérifie le réglage dans Windows » au lieu d'un écran vide.</p>
+          <p><b>La solution dans Windows.</b></p>
+          <ol>
+            <li>Clic droit sur le haut-parleur (en bas à droite) → Paramètres du son → Plus de paramètres de son.</li>
+            <li>Onglet « Enregistrement » → ta Scarlett → Propriétés → Avancé → Format par défaut : choisis <b>48000 Hz</b> (24 bits).</li>
+            <li>Onglet « Lecture » → ta Scarlett → même chose, <b>la même fréquence</b>.</li>
+            <li>Mets aussi cette fréquence dans FL Studio (Options → Audio settings) et dans Focusrite Control si tu l'utilises.</li>
+            <li>Ferme puis rouvre le navigateur, et clique sur « Tester » ou « Réessayer ».</li>
+          </ol>
+        </div>
       </Deroulant>
     </div>
   );

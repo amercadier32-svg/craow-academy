@@ -77,3 +77,7 @@
 .audio-mini { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.85rem; color: var(--muted); }
 .audio-mini a { color: var(--muted); }
 .audio-mini b { color: var(--text); }
+.audio-dl small.audio-freq-ecart { color: #ffb020; }
+div.audio-aides { padding: 4px 14px; }
+div.audio-aides p, div.audio-aides ol { margin: 0; }
+div.audio-aides ol { padding-left: 22px; display: grid; gap: 4px; }

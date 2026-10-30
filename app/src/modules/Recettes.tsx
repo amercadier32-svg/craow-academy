@@ -182,7 +182,7 @@ export default function Recettes({ focus }: { focus?: string }) {
     <div className="map recettes sans-detail">
       <div className="map-main">
         <h2 className="page-title">Recettes</h2>
-        <p className="rc-approx">Les aperçus sonores sont des approximations : ce n'est pas le son réel de l'Electribe.</p>
+        <p className="rc-approx" role="note"><span aria-hidden>⚠️</span> Les aperçus sonores sont des approximations : ce n'est pas le son réel de l'Electribe.</p>
         <Infos>
           <p>
             Des points de départ pour tes sons <Badge kind="pratique" />, sur 4 mesures (les 4 boutons Step). Les réglages et les listes viennent du manuel. Les valeurs de potard marquées « à vérifier sur l'écran » sont des propositions, et ta plage relevée s'affiche dès que tu l'as notée.

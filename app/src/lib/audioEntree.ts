@@ -3,7 +3,7 @@
 // Les traitements automatiques du navigateur (réduction de bruit, anti-écho, gain automatique) sont coupés : son brut.
 // On n'écoute jamais l'entrée par l'app : l'écoute se fait par le direct monitor de la Scarlett (pas de retard).
 import { lireObjet, ecrireJson } from "./stockage";
-import { contexte, entreeOuverte, quandNouveauContexte } from "./moteurAudio";
+import { contexte, contexteActuel, entreeOuverte, quandNouveauContexte } from "./moteurAudio";
 import { useEffect, useSyncExternalStore } from "react";
 
 // ---------------------------------------------------------------- Réglages gardés sur l'appareil
@@ -41,11 +41,12 @@ export interface EtatEntree {
   latenceMs: number | null;    // retard estimé de l'entrée jusqu'aux mesures de l'app
   traitementsCoupes: boolean | null; // le navigateur a bien coupé anti-écho, réduction de bruit et gain auto
   bloque: boolean;             // le moteur audio ne progresse plus (affichages et enregistrement figés)
+  muet: boolean;               // le moteur avance mais ne reçoit que des zéros (silence numérique complet)
 }
 
 let etat: EtatEntree = {
   reglages: lireReglages(), statut: "arret", erreur: null, appareils: [], nomAppareil: "",
-  srEntree: null, srApp: null, canauxRecus: 0, paireDispo: true, latenceMs: null, traitementsCoupes: null, bloque: false,
+  srEntree: null, srApp: null, canauxRecus: 0, paireDispo: true, latenceMs: null, traitementsCoupes: null, bloque: false, muet: false,
 };
 const ecoute = new Set<() => void>();
 function maj(x: Partial<EtatEntree>) { etat = { ...etat, ...x }; ecoute.forEach((f) => f()); }
@@ -244,6 +245,21 @@ function erreurDe(e: unknown): ErreurEntree {
   }
 }
 
+/** Un affichage n'arrive pas à lire l'entrée (nœuds audio refusés) : message clair au lieu d'un écran vide. */
+export function signalerErreurAffichage() {
+  maj({ statut: "erreur", erreur: erreurFrequence(etat.srEntree, graphe?.ctx.sampleRate ?? null) });
+}
+
+/** Le problème à montrer à la place d'un affichage vide (null si tout va bien). */
+export function problemeEntree(e: EtatEntree): { titre: string; texte: string } | null {
+  if (e.statut === "erreur" && e.erreur) return { titre: e.erreur.titre, texte: e.erreur.aides[0] ?? "" };
+  if (e.statut !== "ouvert") return null;
+  const freq = e.srEntree && e.srApp ? ` Entrée : ${fmtHz(e.srEntree)} · moteur audio : ${fmtHz(e.srApp)}.` : "";
+  if (e.bloque) return { titre: "Le moteur audio est à l'arrêt : l'affichage est figé.", texte: `La fréquence de ta carte son ne correspond peut-être pas : vérifie le réglage dans Windows (même fréquence en entrée et en sortie, par exemple 48 000 Hz), puis « Réessayer ».${freq}` };
+  if (e.muet) return { titre: "Aucun son ne parvient à l'app.", texte: `Si l'E2 joue : vérifie le câble et la paire d'entrées. Si ça continue, la fréquence de ta carte son ne correspond peut-être pas : vérifie le réglage dans Windows, puis « Réessayer ».${freq}` };
+  return null;
+}
+
 /** Met à jour la liste des entrées audio (les noms n'apparaissent qu'après l'autorisation). */
 export async function listerAppareils(): Promise<Appareil[]> {
   if (!navigator.mediaDevices?.enumerateDevices) return [];
@@ -260,6 +276,45 @@ export function appareilDePaire(appareils: Appareil[], paire: number, labelActue
   const motif = paire === 0 ? /\b1\s*(\+|-|&|\/|et)\s*2\b/i : /\b3\s*(\+|-|&|\/|et)\s*4\b/i;
   const marque = /focusrite|scarlett/i.test(labelActuel) ? /focusrite|scarlett/i : /./;
   return appareils.find((a) => motif.test(a.label) && marque.test(a.label));
+}
+
+/** Fréquences d'échantillonnage courantes des cartes son, essayées si la fréquence annoncée ne marche pas. */
+const FREQUENCES = [48000, 44100, 96000, 88200, 192000, 176400, 32000];
+
+/** Crée le moteur audio à la fréquence de l'entrée et y branche l'entrée. Rend null si aucune fréquence ne marche. */
+function brancherSource(stream: MediaStream, srEntree: number | null): { ctx: AudioContext; source: MediaStreamAudioSourceNode } | null {
+  const avant = contexteActuel()?.sampleRate;
+  const essais: (number | undefined)[] = [srEntree ?? undefined, undefined, ...FREQUENCES];
+  const faits = new Set<string>();
+  for (const sr of essais) {
+    const cle = String(sr ?? "moteur");
+    if (faits.has(cle)) continue;
+    faits.add(cle);
+    try {
+      const ctx = sr ? contexte({ sampleRate: sr }) : contexte();
+      if (sr === undefined && faits.has(String(ctx.sampleRate))) continue;
+      faits.add(String(ctx.sampleRate));
+      const source = ctx.createMediaStreamSource(stream);
+      return { ctx, source };
+    } catch { /* fréquence refusée : on essaie la suivante */ }
+  }
+  // rien n'a marché : le moteur revient à sa fréquence d'avant (les aperçus sonores continuent de marcher)
+  try { if (avant) contexte({ sampleRate: avant }); } catch { /* */ }
+  return null;
+}
+
+/** Le message quand l'entrée et le moteur audio n'arrivent pas à travailler à la même fréquence. */
+export function erreurFrequence(srEntree: number | null, srApp: number | null): ErreurEntree {
+  return {
+    code: "frequence",
+    titre: "La fréquence de ta carte son ne correspond pas : vérifie le réglage dans Windows.",
+    aides: [
+      `Fréquence de l'entrée : ${srEntree ? fmtHz(srEntree) : "non annoncée par le navigateur"} · fréquence du moteur audio de l'app : ${srApp ? fmtHz(srApp) : "?"}.`,
+      "Windows : clic droit sur le haut-parleur (en bas à droite) → Paramètres du son → Plus de paramètres de son. Onglet « Enregistrement » → ta carte son (Scarlett) → Propriétés → Avancé → Format par défaut : choisis 48000 Hz. Fais pareil dans l'onglet « Lecture ».",
+      "Mets la même fréquence dans FL Studio (Options → Audio settings) et dans Focusrite Control, si tu l'utilises.",
+      "Ferme puis rouvre le navigateur, et clique sur « Réessayer ».",
+    ],
+  };
 }
 
 async function ouvrir(): Promise<void> {
@@ -289,11 +344,16 @@ async function ouvrir(): Promise<void> {
   const piste = stream.getAudioTracks()[0];
   const s = (piste?.getSettings?.() ?? {}) as MediaTrackSettings & { latency?: number };
   const srEntree = typeof s.sampleRate === "number" && s.sampleRate > 0 ? s.sampleRate : null;
-  let ctx: AudioContext;
   // Le moteur audio partagé, à la fréquence de la carte son (pas de rééchantillonnage pour l'enregistrement).
-  try { ctx = contexte(srEntree ? { sampleRate: srEntree } : {}); }
-  catch { ctx = contexte(); }
-  const source = ctx.createMediaStreamSource(stream);
+  // Certains navigateurs refusent de brancher une entrée dont la fréquence diffère de celle du moteur :
+  // on essaie la fréquence annoncée, puis celle du moteur, puis les fréquences courantes des cartes son.
+  const branche = brancherSource(stream, srEntree);
+  if (!branche) {
+    stream.getTracks().forEach((t) => t.stop());
+    maj({ statut: "erreur", erreur: erreurFrequence(srEntree, contexteActuel()?.sampleRate ?? null), srEntree, srApp: contexteActuel()?.sampleRate ?? null });
+    return;
+  }
+  const { ctx, source } = branche;
   const canauxRecus = Math.max(1, s.channelCount ?? source.channelCount ?? 2);
   source.channelCountMode = "explicit"; source.channelCount = Math.max(1, Math.min(canauxRecus, 32)); source.channelInterpretation = "discrete";
   const split = ctx.createChannelSplitter(Math.max(2, canauxRecus));
@@ -342,7 +402,7 @@ async function ouvrir(): Promise<void> {
   cabler();
   piste?.addEventListener("ended", () => { fermer(); maj({ statut: "erreur", erreur: { code: "debranche", titre: "L'entrée audio s'est coupée (Scarlett débranchée ou prise par un autre logiciel).", aides: ["Vérifie le câble USB.", "Ferme FL Studio s'il utilise la Scarlett en ASIO, puis « Réessayer »."] } }); });
   if (ctx.state === "suspended") { try { await ctx.resume(); } catch { /* */ } }
-  maj({ statut: "ouvert", erreur: null, appareils, nomAppareil, srEntree, srApp: ctx.sampleRate, canauxRecus, paireDispo: paireOk(), latenceMs, traitementsCoupes, bloque: false });
+  maj({ statut: "ouvert", erreur: null, appareils, nomAppareil, srEntree, srApp: ctx.sampleRate, canauxRecus, paireDispo: paireOk(), latenceMs, traitementsCoupes, bloque: false, muet: false });
   surveiller(ctx);
 }
 
@@ -353,7 +413,7 @@ let minuterieSurveillance = 0;
 function arreterSurveillance() { window.clearInterval(minuterieSurveillance); minuterieSurveillance = 0; }
 function surveiller(ctx: AudioContext) {
   arreterSurveillance();
-  let dernier = ctx.currentTime, fige = 0;
+  let dernier = ctx.currentTime, fige = 0, zeros = 0;
   ctx.addEventListener("statechange", () => { if (graphe?.ctx === ctx && ctx.state !== "running" && ctx.state !== "closed") void ctx.resume().catch(() => {}); });
   minuterieSurveillance = window.setInterval(() => {
     if (!graphe || graphe.ctx !== ctx) { arreterSurveillance(); return; }
@@ -363,6 +423,13 @@ function surveiller(ctx: AudioContext) {
     dernier = t;
     const bloque = fige >= 3;
     if (bloque !== etat.bloque) maj({ bloque });
+    // que des zéros pendant 5 s : aucun son ne traverse le moteur (souvent une fréquence qui ne correspond pas)
+    graphe.aL.getFloatTimeDomainData(tmpL); graphe.aR.getFloatTimeDomainData(tmpR);
+    let zero = true;
+    for (let i = 0; i < tmpL.length; i += 4) if (tmpL[i] !== 0 || tmpR[i] !== 0) { zero = false; break; }
+    zeros = zero ? zeros + 1 : 0;
+    const muet = zeros >= 5;
+    if (muet !== etat.muet) maj({ muet });
   }, 1000);
 }
 

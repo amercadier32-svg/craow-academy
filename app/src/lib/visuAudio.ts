@@ -1,10 +1,10 @@
 // Mesures en direct pour le Visualiseur : spectre, forme d'onde, stéréo (largeur, phase, grave centré),
 // note dominante (estimation) et détection du kick. Lit l'entrée ouverte par audioEntree.ts.
-import { contexteEntree, sortieEntree } from "./audioEntree";
+import { contexteEntree, signalerErreurAffichage, sortieEntree } from "./audioEntree";
 import { FREQS_SPECTRE } from "./masterAnalyse";
 import { nomMidi } from "./music";
 
-interface Noeuds { ctx: AudioContext; aM: AnalyserNode; aL: AnalyserNode; aR: AnalyserNode; bL: AnalyserNode; bR: AnalyserNode }
+interface Noeuds { ctx: AudioContext; aM: AnalyserNode; aL: AnalyserNode; aR: AnalyserNode; bL: AnalyserNode; bR: AnalyserNode; wL: AnalyserNode; wR: AnalyserNode }
 let noeuds: Noeuds | null = null;
 
 /** Crée (une fois par entrée ouverte) les analyseurs du visualiseur. */
@@ -12,6 +12,10 @@ function brancher(): Noeuds | null {
   const ctx = contexteEntree(), sortie = sortieEntree();
   if (!ctx || !sortie) { noeuds = null; return null; }
   if (noeuds && noeuds.ctx === ctx) return noeuds;
+  try { return creerNoeuds(ctx, sortie); }
+  catch { noeuds = null; signalerErreurAffichage(); return null; }
+}
+function creerNoeuds(ctx: AudioContext, sortie: GainNode): Noeuds {
   const mono = ctx.createGain(); mono.channelCount = 1; mono.channelCountMode = "explicit"; mono.channelInterpretation = "speakers";
   sortie.connect(mono);
   const aM = ctx.createAnalyser(); aM.fftSize = 8192; aM.minDecibels = -120; aM.maxDecibels = 0; aM.smoothingTimeConstant = 0.6;
@@ -19,6 +23,9 @@ function brancher(): Noeuds | null {
   const sp = ctx.createChannelSplitter(2); sortie.connect(sp);
   const aL = ctx.createAnalyser(), aR = ctx.createAnalyser(); aL.fftSize = aR.fftSize = 2048;
   sp.connect(aL, 0); sp.connect(aR, 1);
+  // pour la forme d'onde défilante : les 8192 derniers échantillons de chaque côté (≈ 170 ms)
+  const wL = ctx.createAnalyser(), wR = ctx.createAnalyser(); wL.fftSize = wR.fftSize = 8192;
+  sp.connect(wL, 0); sp.connect(wR, 1);
   // le grave seul (sous 150 Hz), pour vérifier qu'il est centré
   const pb = ctx.createBiquadFilter(); pb.type = "lowpass"; pb.frequency.value = 150; pb.Q.value = 0.7;
   pb.channelCount = 2; pb.channelCountMode = "explicit"; pb.channelInterpretation = "discrete";
@@ -26,7 +33,7 @@ function brancher(): Noeuds | null {
   const sp2 = ctx.createChannelSplitter(2); pb.connect(sp2);
   const bL = ctx.createAnalyser(), bR = ctx.createAnalyser(); bL.fftSize = bR.fftSize = 4096;
   sp2.connect(bL, 0); sp2.connect(bR, 1);
-  noeuds = { ctx, aM, aL, aR, bL, bR };
+  noeuds = { ctx, aM, aL, aR, bL, bR, wL, wR };
   return noeuds;
 }
 
@@ -40,9 +47,12 @@ export interface Image {
   largeur: number;             // 0 = mono, 1 = très large (énergie côté / centre)
   graveCorr: number; graveCote: number; graveNiveauDb: number;  // grave sous 150 Hz
   basseEnergie: number;        // énergie 40–120 Hz (pour le kick)
+  nfft: number;                // taille de la FFT du spectre
+  ondeL: Float32Array; ondeR: Float32Array; // 8192 derniers échantillons (forme d'onde défilante)
+  tAudio: number;              // heure du moteur audio (s) : combien d'échantillons sont nouveaux
 }
 
-const buf = { bins: new Float32Array(4096), t: new Float32Array(8192), L: new Float32Array(2048), R: new Float32Array(2048), bL: new Float32Array(4096), bR: new Float32Array(4096) };
+const buf = { wL: new Float32Array(8192), wR: new Float32Array(8192), bins: new Float32Array(4096), t: new Float32Array(8192), L: new Float32Array(2048), R: new Float32Array(2048), bL: new Float32Array(4096), bR: new Float32Array(4096) };
 
 /** Lit une image de toutes les mesures. `lissage` : 0 = rapide, 0,9 = très lisse. */
 export function lireImage(lissage: number): Image | null {
@@ -53,12 +63,14 @@ export function lireImage(lissage: number): Image | null {
   n.aM.getFloatTimeDomainData(buf.t);
   n.aL.getFloatTimeDomainData(buf.L); n.aR.getFloatTimeDomainData(buf.R);
   n.bL.getFloatTimeDomainData(buf.bL); n.bR.getFloatTimeDomainData(buf.bR);
+  n.wL.getFloatTimeDomainData(buf.wL); n.wR.getFloatTimeDomainData(buf.wR);
   const sr = n.ctx.sampleRate;
   const st = stereo(buf.L, buf.R), gr = stereo(buf.bL, buf.bR);
   return {
     sr, spectreBins: buf.bins, bandes: bandesLive(buf.bins, sr), temps: buf.t, L: buf.L, R: buf.R,
     correlation: st.corr, largeur: st.largeur, graveCorr: gr.corr, graveCote: gr.largeur, graveNiveauDb: gr.niveauDb,
     basseEnergie: energie(buf.bins, sr, 40, 120),
+    nfft: NFFT, ondeL: buf.wL, ondeR: buf.wR, tAudio: n.ctx.currentTime,
   };
 }
 

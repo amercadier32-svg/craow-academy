@@ -1,12 +1,12 @@
 /* ===== Petit spectre en direct ===== */
 .mini-spectre { display: grid; gap: 6px; margin: 8px 0; }
 .mini-spectre-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
-.mini-spectre-cv { width: 100%; height: 110px; display: block; border: 2px solid var(--edge); image-rendering: pixelated; }
+.mini-spectre-cv { width: 100%; height: clamp(110px, 12vw, 200px); display: block; border: 2px solid var(--edge); }
 .mini-note { font-family: var(--px); font-size: 1.1rem; color: #7fe0ff; }
 .mini-note small { font-family: inherit; color: var(--muted); font-size: 0.8rem; }
 
 /* ===== Page Visualiseur ===== */
-.visu-page { max-width: 1280px; margin: 0 auto; padding-bottom: 40px; }
+.visu-page { max-width: 2600px; margin: 0 auto; padding-bottom: 40px; }
 .visu-page .page-title { display: flex; align-items: center; justify-content: center; gap: 10px; }
 .visu-demarrer { display: grid; justify-items: center; gap: 10px; padding: 24px; background: var(--panel); border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); text-align: center; }
 .visu-outils { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 8px 0; }
@@ -18,14 +18,19 @@
 .visu-fige { margin: 4px 0; padding: 6px 10px; background: #7fe0ff14; border-left: 4px solid #7fe0ff; }
 .visu-aide-ref { margin: 0 0 6px; }
 .visu-grille { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); }
-.visu-grille .v-spectre, .visu-grille .v-spectrogramme { grid-column: 1 / -1; }
+.visu-grille .v-spectre, .visu-grille .v-spectrogramme, .visu-grille .v-onde { grid-column: 1 / -1; }
 .visu-grille.n1 { grid-template-columns: 1fr; }
 @media (max-width: 520px) { .visu-grille { grid-template-columns: 1fr; } }
 .visu-panneau { background: var(--panel); border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); padding: 8px 10px; display: grid; gap: 6px; align-content: start; min-width: 0; }
 .visu-panneau header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
 .visu-panneau header > b { font-family: var(--px); font-weight: 400; font-size: 1.2rem; font-size-adjust: ex-height 0.56; }
-.visu-cv { width: 100%; height: auto; aspect-ratio: 960 / 360; display: block; border: 2px solid var(--edge); }
-.v-stereo .visu-cv { aspect-ratio: 1; max-width: 300px; justify-self: center; }
+.visu-cv { width: 100%; height: clamp(170px, 30vw, 58vh); display: block; border: 2px solid var(--edge); }
+.visu-cv.cv-oscillo { height: clamp(150px, 18vw, 40vh); }
+.visu-cv.cv-stereo { height: auto; aspect-ratio: 1; width: min(100%, 44vh, 520px); margin: 0 auto; }
+.visu-cv.cv-onde { height: 160px; }
+.visu-onde-reg { display: inline-flex; flex-wrap: wrap; gap: 4px 14px; }
+.visu-outils-spectre { padding: 6px 10px; background: #15161b; border: 2px solid var(--edge); }
+.visu-outils-spectre > b { font-family: var(--px); font-weight: 400; font-size: 1.1rem; }
 .visu-vu { padding: 18px 4px; }
 .visu-txt { margin: 0; }
 .visu-note { font-family: var(--px); font-size: 1.3rem; color: #7fe0ff; }
@@ -71,3 +76,14 @@
 .visu-video-rec.bientot { color: #ffd84d; border-color: #ffd84d88; }
 .visu-video-rec.fin { color: #fff; background: #b5242bcc; }
 .visu-video-rec.garde { color: #4fd18b; border-color: #4fd18b66; top: auto; bottom: 10px; }
+
+/* ===== Message à la place d'un affichage vide ===== */
+.mini-spectre-boite, .visu-boite { position: relative; min-width: 0; }
+.visu-souci { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 6px; padding: 12px; text-align: center;
+  background: #0b0d12e6; color: #ffd84d; border: 2px solid #ffb020; font-size: 0.95rem; }
+.visu-souci b { font-size: 1.05rem; }
+.visu-souci span { color: var(--text); max-width: 60ch; }
+.visu-souci a { color: #7fe0ff; }
+.visu-souci.petit { font-size: 0.85rem; gap: 2px; padding: 6px; }
+/* Grand écran (TV) : le Visualiseur prend la largeur disponible */
+.app.mod-visualiseur main { max-width: min(2600px, 100%); }

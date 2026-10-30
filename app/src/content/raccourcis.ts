@@ -6,6 +6,8 @@ export const RACCOURCIS: { groupe: string; liste: Raccourci[] }[] = [
   {
     groupe: "Partout",
     liste: [
+      { touches: ["Alt", "←"], action: "Page précédente, exactement où tu étais (ferme d'abord une fenêtre ouverte) ; comme la flèche ← en haut à gauche", ou: "Toute l'app", fichier: "App.tsx" },
+      { touches: ["Alt", "→"], action: "Page suivante, après un retour ; comme la flèche → en haut à gauche", ou: "Toute l'app", fichier: "App.tsx" },
       { touches: ["Échap"], action: "Fermer le menu ☰, le menu Machines, le menu Plus ou un panneau de filtres", ou: "Toute l'app", fichier: "components/useFermeture.ts" },
       { touches: ["Échap"], action: "Fermer la fenêtre d'une recette, d'un effet, d'une gamme ou d'un terme du glossaire", ou: "Recettes, Effets, Gammes, Glossaire", lien: "#recettes", fichier: "components/Fenetre.tsx" },
       { touches: ["Double-clic"], action: "Agrandir ou réduire la fenêtre (sur sa barre de titre)", ou: "Recettes, Effets, Gammes, Glossaire", lien: "#recettes", fichier: "components/Fenetre.tsx" },
@@ -45,8 +47,8 @@ export const RACCOURCIS: { groupe: string; liste: Raccourci[] }[] = [
   {
     groupe: "Visualiseur",
     liste: [
-      { touches: ["R"], action: "Lancer ou arrêter l'enregistrement (mode vidéo)", ou: "Visualiseur, mode vidéo", lien: "#visualiseur/video", fichier: "modules/Visualiseur.tsx" },
-      { touches: ["Échap"], action: "Sortir du mode vidéo", ou: "Visualiseur, mode vidéo", lien: "#visualiseur/video", fichier: "modules/Visualiseur.tsx" },
+      { touches: ["R"], action: "Lancer ou arrêter l'enregistrement (mode vidéo)", ou: "Visualiseur, mode vidéo", lien: "#visualiseur/video", fichier: "modules/ModeVideo.tsx" },
+      { touches: ["Échap"], action: "Sortir du mode vidéo", ou: "Visualiseur, mode vidéo", lien: "#visualiseur/video", fichier: "modules/ModeVideo.tsx" },
     ],
   },
   {

@@ -1,8 +1,9 @@
-// Flèche « ← Retour », bouton retour du navigateur et geste retour du téléphone.
+// Flèches ← et → (comme dans Chrome), Alt + ← / Alt + →, bouton retour du navigateur et geste retour du téléphone.
 // Chaque entrée de l'historique reçoit un numéro (history.state.k). L'état d'une page (filtres, sections ouvertes,
 // onglets) et sa position dans la page sont gardés sous ce numéro, dans la session de l'onglet :
 // en revenant en arrière, la page retrouve exactement l'endroit où on était.
-// Une fenêtre (recette, effet, gamme, glossaire) ajoute sa propre entrée : « Retour » la ferme d'abord.
+// Une fenêtre (recette, effet, gamme, glossaire) ajoute sa propre entrée : ← la ferme d'abord.
+// Le numéro le plus haut atteint (CLE.max) dit s'il y a une page « en avant » après un retour.
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 
 interface Etat { k: string; i: number; fenetre?: boolean }
@@ -24,10 +25,14 @@ export function etatHisto(): Etat {
   premier = false;
   try { history.replaceState(e, "", location.href); } catch { /* */ }
   dernierI = e.i;
+  // nouvelle page : les pages « en avant » n'existent plus (comme dans le navigateur)
+  ecrire(`${CLE}.max`, e.i);
   return e;
 }
-/** Une page avant celle-ci dans l'app : la flèche « Retour » s'affiche. */
+/** Une page avant celle-ci dans l'app : la flèche ← est active. */
 export const peutRevenir = () => etatHisto().i > 0;
+/** Une page après celle-ci (on a reculé) : la flèche → est active. */
+export const peutAvancer = () => { const e = etatHisto(); return e.i < (lire<number>(`${CLE}.max`) ?? e.i); };
 
 /** Change l'adresse sans créer d'entrée (choix d'une fiche dans une page) en gardant le numéro de l'entrée. */
 export function remplacerAdresse(url: string) {
@@ -39,7 +44,7 @@ export function ouvrirFenetre(url: string) {
   const e = etatHisto();
   try {
     if (e.fenetre) history.replaceState(e, "", url);
-    else history.pushState({ k: nouvelId(), i: e.i + 1, fenetre: true } satisfies Etat, "", url);
+    else { history.pushState({ k: nouvelId(), i: e.i + 1, fenetre: true } satisfies Etat, "", url); ecrire(`${CLE}.max`, e.i + 1); }
   } catch { /* */ }
   dernierI = etatHisto().i;
 }

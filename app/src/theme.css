@@ -613,11 +613,21 @@ h2 .etoile, h3 .etoile { font-size: 1.05rem; }
 .drl-session-btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .drl-lancer { margin-left: auto; }
 
-/* Flèche « ← Retour » en haut de chaque page (lib/retour.ts) */
-.retour-barre { max-width: 1400px; margin: 10px auto -4px; padding: 0 16px; }
-.retour-btn {
-  font-family: var(--px); font-size: 1.15rem; cursor: pointer; padding: 4px 14px; min-height: 36px;
+/* Flèches ← → en haut à gauche, à gauche du menu (lib/retour.ts), comme dans Chrome */
+.top-ligne { display: flex; align-items: flex-start; gap: 8px; }
+.top-ligne-reste { flex: 1; min-width: 0; }
+.top-fleches { display: flex; gap: 4px; padding-top: 9px; flex: none; }
+.fleche-nav {
+  font-family: var(--px); font-size: 1.35rem; line-height: 1; cursor: pointer; width: 38px; height: 36px; padding: 0;
+  display: grid; place-items: center;
   background: var(--panel); color: var(--text); border: 2px solid var(--edge); box-shadow: 0 3px 0 var(--edge);
 }
-.retour-btn:hover { background: #2a3b62; }
-.retour-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--edge); }
+.fleche-nav:hover:not(:disabled) { background: #2a3b62; color: #fff; }
+.fleche-nav:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--edge); }
+.fleche-nav:disabled { opacity: 0.32; cursor: default; box-shadow: none; }
+@media (max-width: 1020px) {
+  .top-fleches { padding-top: 0; height: 54px; align-items: center; gap: 3px; }
+  .fleche-nav { width: 40px; height: 40px; }
+  .top-ligne { gap: 6px; }
+}
+@media (max-width: 400px) { .fleche-nav { width: 36px; } .top-brand { font-size: 0.95rem !important; } }

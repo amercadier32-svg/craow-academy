@@ -21,6 +21,8 @@ import { ecrireMp3, mp3Possible } from "../lib/masterMp3";
 import { avecProtections, compDepuis, CURSEURS, ecrireSimple, egaux, FREQ_PASSE_HAUT, lireSimples, protections, reglagesSimples, type CleSimple, type InfoCurseur } from "../lib/masterSimple";
 import { useStyles } from "../content/styles";
 import { AIDES, BLOCS_M, LECONS, POINTS_DEPART, PRESETS_RAPIDES, reglagesPreset, type Aide, type BlocId, type Lecon } from "../content/mastering";
+import { Cretes, dessinerCourbes, fDeX, preparerCanvas as preparerCourbe, prefsSpectre, usePrefsSpectre, xDeF, zoneCourbe, type Courbe } from "../lib/spectreCourbe";
+import { ReglagesSpectre } from "../components/SpectreCourbe";
 import "./mastering.css";
 
 const CLE_REGLAGES = "e2academy.mastering.reglages";
@@ -432,6 +434,7 @@ function BlocAnalyse({ ctx, ouvert, setOuvert }: { ctx: Ctx; ouvert: boolean; se
               <Spectre ctx={ctx} courbes={[{ nom: "Moyenne avant", couleur: "#8a91a0", v: a.spectre, pointille: true }]} />
               <Legende items={[{ nom: "Avant (en direct)", couleur: "#8a91a0" }, { nom: "Après (en direct)", couleur: "#4fd18b" }, { nom: "Moyenne de tout le morceau (avant)", couleur: "#8a91a0", pointille: true }]} />
               <p className="small muted">Grave à gauche, aigu à droite. Lance la lecture pour voir le spectre en direct.</p>
+              <ReglagesSpectre compact />
             </div>
             <div>
               <h4>Image stéréo</h4>
@@ -889,61 +892,59 @@ function FormeOnde({ ctx, zone, setZone }: { ctx: Ctx; zone: [number, number] | 
 function Spectre({ ctx, eq, courbes, hauteur = 220 }: { ctx: Ctx; eq?: boolean; courbes?: { nom: string; couleur: string; v: number[]; pointille?: boolean }[]; hauteur?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const lisseA = useRef<number[]>([]), lisseB = useRef<number[]>([]);
+  const cretesB = useRef(new Cretes());
   const sr = ctx.son?.sr ?? 48000;
   const eqCourbe = useMemo(() => (eq ? courbeEq(ctx.reglages, FREQS_SPECTRE, sr) : null), [eq, ctx.reglages, sr]);
   const [prise, setPrise] = useState<number | null>(null);
-  const X = (f: number, w: number) => (Math.log(f / 20) / Math.log(1000)) * w;
-  const Fx = (x: number, w: number) => 20 * Math.pow(1000, x / w);
+  const ps = usePrefsSpectre();
+  const X = (f: number, w: number) => xDeF(f, ps.echelle) * w;
+  const Fx = (x: number, w: number) => fDeX(x / w, ps.echelle);
   const BAS = -100, HAUT = -10, EQ = 15;
   useAnim(() => {
     const c = ref.current; if (!c) return;
-    const { g, w, h } = preparerCanvas(c);
-    const Y = (db: number) => h - ((db - BAS) / (HAUT - BAS)) * h;
-    g.clearRect(0, 0, w, h);
-    g.strokeStyle = "#ffffff14"; g.fillStyle = "#a3abba"; g.font = "11px ui-monospace, monospace"; g.lineWidth = 1;
-    for (const f of w < 500 ? [100, 1000, 10000] : [50, 100, 200, 500, 1000, 2000, 5000, 10000]) { const x = X(f, w); g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); g.fillText(fHz(f).replace(" ", ""), x + 2, h - 3); }
-    for (let d = -90; d <= -20; d += 10) { const y = Y(d); g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
-    const trace = (v: number[], couleur: string, larg = 2, pointille = false, remplir = false) => {
-      g.beginPath(); g.setLineDash(pointille ? [5, 4] : []);
-      v.forEach((d, i) => { const x = X(FREQS_SPECTRE[i], w), y = Y(d); if (i) g.lineTo(x, y); else g.moveTo(x, y); });
-      g.strokeStyle = couleur; g.lineWidth = larg; g.stroke(); g.setLineDash([]);
-      if (remplir) { g.lineTo(w, h); g.lineTo(0, h); g.closePath(); g.fillStyle = couleur + "22"; g.fill(); }
-    };
-    for (const cb of courbes ?? []) trace(cb.v, cb.couleur, 2, cb.pointille);
-    const l = ctx.lecteur;
+    const pr = preparerCourbe(c); if (!pr) return;
+    const { g, w } = pr;
+    const hc = zoneCourbe(pr.h, { zones: true }).bas;
+    const l = ctx.lecteur, p = prefsSpectre();
     if (l.lecture) {
-      const lisser = (nv: number[], old: number[]) => nv.map((v, i) => (old[i] === undefined ? v : v > old[i] ? v * 0.6 + old[i] * 0.4 : v * 0.15 + old[i] * 0.85));
+      // lissage dans le temps selon le réglage commun (réactif ↔ lisse)
+      const kH = 0.75 - p.lissage * 0.45, kB = 0.5 - p.lissage * 0.42;
+      const lisser = (nv: number[], old: number[]) => nv.map((v, i) => (old[i] === undefined ? v : v > old[i] ? v * kH + old[i] * (1 - kH) : v * kB + old[i] * (1 - kB)));
       lisseA.current = lisser(spectreExtrait(l.ringA, l.ringPos, sr), lisseA.current);
       lisseB.current = lisser(spectreExtrait(l.ringB, l.ringPos, sr), lisseB.current);
     }
+    const tout: Courbe[] = (courbes ?? []).map((cb) => ({ v: cb.v, f: FREQS_SPECTRE, couleur: cb.couleur, epais: 2, pointille: cb.pointille }));
     if (lisseA.current.length) {
-      trace(lisseA.current, "#8a91a0", 1.5);
-      trace(lisseB.current, "#4fd18b", 2, false, true);
+      tout.push({ v: lisseA.current, f: FREQS_SPECTRE, couleur: "#8a91a0", epais: 1.6 });
+      tout.push({ v: lisseB.current, f: FREQS_SPECTRE, couleur: "#4fd18b", epais: 2.2, remplir: true });
     }
+    const cretes = p.cretes && l.lecture && lisseB.current.length ? { v: cretesB.current.maj(lisseB.current, performance.now()), f: FREQS_SPECTRE, couleur: "#d9ffe9cc" } : null;
+    if (!p.cretes) cretesB.current.vider();
+    dessinerCourbes(g, w, pr.h, tout, { echelle: p.echelle, haut: HAUT, bas: BAS, fond: "#0d0e12", zones: true, reperes: true, grilleDb: 10, cretes });
     if (eqCourbe) {
-      const Ye = (d: number) => h / 2 - (d / EQ) * (h / 2 - 12);
-      g.strokeStyle = "#ffd84d55"; g.setLineDash([2, 4]); g.beginPath(); g.moveTo(0, h / 2); g.lineTo(w, h / 2); g.stroke(); g.setLineDash([]);
+      const Ye = (d: number) => hc / 2 - (d / EQ) * (hc / 2 - 12);
+      g.strokeStyle = "#ffd84d55"; g.lineWidth = 1; g.setLineDash([2, 4]); g.beginPath(); g.moveTo(0, hc / 2); g.lineTo(w, hc / 2); g.stroke(); g.setLineDash([]);
       g.beginPath(); eqCourbe.forEach((d, i) => { const x = X(FREQS_SPECTRE[i], w), y = Ye(d); if (i) g.lineTo(x, y); else g.moveTo(x, y); });
       g.strokeStyle = ctx.reglages.eq.on ? "#ffd84d" : "#ffd84d66"; g.lineWidth = 2.5; g.stroke();
       ctx.reglages.eq.bandes.forEach((b, i) => {
         if (!b.on) return;
-        const x = X(b.f, w), y = b.type === "hp" || b.type === "lp" ? h / 2 : Ye(b.g);
+        const x = X(b.f, w), y = b.type === "hp" || b.type === "lp" ? hc / 2 : Ye(b.g);
         g.fillStyle = prise === i ? "#ffffff" : "#ffd84d"; g.strokeStyle = "#050608"; g.lineWidth = 2;
         g.fillRect(x - 6, y - 6, 12, 12); g.strokeRect(x - 6, y - 6, 12, 12);
-        g.fillStyle = "#050608"; g.font = "bold 10px ui-monospace, monospace"; g.fillText(String(i + 1), x - 3, y + 4);
+        g.fillStyle = "#050608"; g.font = "bold 10px ui-monospace, monospace"; g.textAlign = "left"; g.textBaseline = "alphabetic"; g.fillText(String(i + 1), x - 3, y + 4);
       });
-      g.fillStyle = "#ffd84d"; g.font = "11px ui-monospace, monospace"; g.fillText(`EQ ±${EQ} dB`, w - 70, 12);
+      g.fillStyle = "#ffd84d"; g.font = "11px ui-monospace, monospace"; g.textAlign = "left"; g.textBaseline = "alphabetic"; g.fillText(`EQ ±${EQ} dB`, w - 70, 12);
     }
-  }, [eqCourbe, courbes, prise, sr]);
+  }, [eqCourbe, courbes, prise, sr, ps.echelle]);
 
   // glisser les points de l'EQ
   const surPoint = (e: React.PointerEvent): number | null => {
     if (!eq) return null;
-    const r = (e.currentTarget as HTMLElement).getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, hc = zoneCourbe(r.height, { zones: true }).bas;
     let best: number | null = null, bd = 18;
     ctx.reglages.eq.bandes.forEach((b, i) => {
       if (!b.on) return;
-      const bx = X(b.f, r.width), by = b.type === "hp" || b.type === "lp" ? r.height / 2 : r.height / 2 - (b.g / EQ) * (r.height / 2 - 12);
+      const bx = X(b.f, r.width), by = b.type === "hp" || b.type === "lp" ? hc / 2 : hc / 2 - (b.g / EQ) * (hc / 2 - 12);
       const d = Math.hypot(bx - x, by - y); if (d < bd) { bd = d; best = i; }
     });
     return best;
@@ -956,7 +957,8 @@ function Spectre({ ctx, eq, courbes, hauteur = 220 }: { ctx: Ctx; eq?: boolean; 
         if (prise === null) return;
         const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
         const f = Math.round(Math.min(20000, Math.max(20, Fx(e.clientX - r.left, r.width))));
-        const gdb = Math.round(Math.max(-EQ, Math.min(EQ, ((r.height / 2 - (e.clientY - r.top)) / (r.height / 2 - 12)) * EQ)) * 10) / 10;
+        const hc = zoneCourbe(r.height, { zones: true }).bas;
+        const gdb = Math.round(Math.max(-EQ, Math.min(EQ, ((hc / 2 - (e.clientY - r.top)) / (hc / 2 - 12)) * EQ)) * 10) / 10;
         const nr = copie(ctx.reglages); const b = nr.eq.bandes[prise];
         b.f = f; if (b.type !== "hp" && b.type !== "lp") b.g = gdb;
         nr.eq.on = true;
@@ -1163,6 +1165,7 @@ function ReglagesEq({ ctx, maj }: { ctx: Ctx; maj: (f: (n: Reglages) => void) =>
   return (
     <>
       <Spectre ctx={ctx} eq hauteur={260} courbes={ctx.avant ? [{ nom: "Moyenne avant", couleur: "#8a91a0", v: ctx.avant.spectre, pointille: true }] : []} />
+      <ReglagesSpectre compact />
       <Legende items={[{ nom: "Courbe de l'EQ (glisse les carrés)", couleur: "#ffd84d" }, { nom: "Après (en direct)", couleur: "#4fd18b" }, { nom: "Moyenne avant", couleur: "#8a91a0", pointille: true }]} />
       <div className="ms-bandes">
         {r.eq.bandes.map((b, i) => (

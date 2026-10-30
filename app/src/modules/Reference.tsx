@@ -19,6 +19,7 @@ import { ouvrirAudio } from "../lib/decodage";
 import { EnregistrerVersion } from "../components/Enregistreur";
 import { FREQS_SPECTRE, lufsIntegre, spectreMoyen, type Son } from "../lib/masterAnalyse";
 import { setSpectreRefCourant } from "../lib/visuAudio";
+import { SpectreCourbes } from "../components/SpectreCourbe";
 import { gammeByN, nomMidi } from "../lib/music";
 import { analyserSon, comparer, monoDe, pics, statsZone, tempo, tonalite, trouverKick, type AnaSon, type StatsZone, type Tempo, type Tonalite, type Zone } from "../lib/refAnalyse";
 import { recettesDepuisSon } from "../lib/refRecettes";
@@ -384,23 +385,9 @@ function Onde({ x, sr, debut, fin, zone, onZone, hauteur, zoom, couleur = "#4e7e
   );
 }
 
-/** Spectre en bandes de 1/6 d'octave (une ou plusieurs courbes superposées). */
+/** Spectre en courbe (bandes de 1/6 d'octave), une ou plusieurs courbes superposées de couleurs différentes. */
 function SpectreSvg({ courbes }: { courbes: { nom: string; couleur: string; v: number[]; pointille?: boolean }[] }) {
-  const W = 640, H = 200;
-  const haut = Math.ceil(Math.max(...courbes.flatMap((c) => c.v)) / 10) * 10 + 3, bas = haut - 66;
-  const X = (f: number) => (Math.log(f / 20) / Math.log(1000)) * W;
-  const Y = (d: number) => Math.max(0, Math.min(H, ((haut - d) / (haut - bas)) * H));
-  return (
-    <figure className="ref-spectre">
-      <svg viewBox={`0 0 ${W} ${H + 18}`} role="img" aria-label="Spectre : grave à gauche, aigu à droite">
-        <rect x={0} y={0} width={X(250)} height={H} fill="#ff6a3d10" /><rect x={X(250)} y={0} width={X(4000) - X(250)} height={H} fill="#ffd84d0a" /><rect x={X(4000)} y={0} width={W - X(4000)} height={H} fill="#3fd6d00d" />
-        {[50, 100, 250, 500, 1000, 4000, 10000].map((f) => <g key={f}><line x1={X(f)} x2={X(f)} y1={0} y2={H} stroke="#ffffff14" /><text x={X(f) + 2} y={H + 13} className="ref-ax">{f >= 1000 ? `${f / 1000}k` : f}</text></g>)}
-        <text x={6} y={14} className="ref-ax big">GRAVE</text><text x={X(250) + 6} y={14} className="ref-ax big">MÉDIUM</text><text x={X(4000) + 6} y={14} className="ref-ax big">AIGU</text>
-        {courbes.map((c) => <polyline key={c.nom} fill="none" stroke={c.couleur} strokeWidth={2.5} strokeDasharray={c.pointille ? "6 4" : undefined} points={c.v.map((d, i) => `${X(FREQS_SPECTRE[i]).toFixed(1)},${Y(d).toFixed(1)}`).join(" ")} />)}
-      </svg>
-      {courbes.length > 1 && <figcaption className="ms-legende">{courbes.map((c) => <span key={c.nom}><i style={{ background: c.couleur, borderColor: c.couleur }} />{c.nom}</span>)}</figcaption>}
-    </figure>
-  );
+  return <SpectreCourbes courbes={courbes} f={FREQS_SPECTRE} hauteur={220} />;
 }
 
 // ============================================================ 3. Le son de la zone

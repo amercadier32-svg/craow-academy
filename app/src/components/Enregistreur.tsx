@@ -55,8 +55,21 @@ export function BarreEntree({ qui }: { qui: string }) {
       <div className="audio-alerte orange rec-erreur" role="alert">
         <b>Le moteur audio du navigateur est à l'arrêt : les affichages et l'enregistrement sont figés.</b>
         <ul>
+          <li>La fréquence de ta carte son ne correspond peut-être pas : vérifie le réglage dans Windows (même fréquence en entrée et en sortie, par exemple 48 000 Hz). {e.srEntree && e.srApp ? `Entrée : ${fmtHz(e.srEntree)} · moteur audio : ${fmtHz(e.srApp)}.` : ""}</li>
           <li>Vérifie que la sortie son de Windows (Paramètres → Son → Sortie) n'est pas prise en mode exclusif par un autre logiciel.</li>
           <li>Clique sur « Réessayer » : l'entrée se rouvre et l'enregistrement en cours continue.</li>
+        </ul>
+        <div className="rec-btns"><button type="button" className="e2-ui-btn" onClick={() => void reessayer(qui)}>↻ Réessayer</button><a className="e2-ui-btn" href="#audio">⚙ Réglages audio</a></div>
+      </div>
+    );
+  }
+  if (e.statut === "ouvert" && e.muet) {
+    return (
+      <div className="audio-alerte orange rec-erreur" role="status">
+        <b>Aucun son ne parvient à l'app (que du silence complet depuis 5 secondes).</b>
+        <ul>
+          <li>Si l'E2 joue : vérifie le câble, le gain de la Scarlett et la paire d'entrées choisie.</li>
+          <li>Si ça continue, la fréquence de ta carte son ne correspond peut-être pas : vérifie le réglage dans Windows, puis « Réessayer ». {e.srEntree && e.srApp ? `Entrée : ${fmtHz(e.srEntree)} · moteur audio : ${fmtHz(e.srApp)}.` : ""}</li>
         </ul>
         <div className="rec-btns"><button type="button" className="e2-ui-btn" onClick={() => void reessayer(qui)}>↻ Réessayer</button><a className="e2-ui-btn" href="#audio">⚙ Réglages audio</a></div>
       </div>

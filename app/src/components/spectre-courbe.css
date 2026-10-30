@@ -1,0 +1,17 @@
+/* ===== Spectre en courbe (commun) ===== */
+.sc-figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+.sc-cv { display: block; width: 100%; border: 2px solid var(--edge); background: #0d0e12; }
+.sc-pied { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; font-size: 0.85rem; color: var(--muted); }
+.sc-legende { display: inline-flex; flex-wrap: wrap; gap: 4px 14px; }
+.sc-legende > span { display: inline-flex; align-items: center; gap: 6px; }
+.sc-legende i { width: 24px; border-top: 3px solid; }
+.sc-reglages { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 0.88rem; color: var(--muted); }
+.sc-reglages-corps { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.sc-lissage, .sc-check, .sc-echelle { display: inline-flex; align-items: center; gap: 6px; }
+.sc-lissage input { width: 110px; }
+.sc-echelle select { padding: 4px 6px; background: #121318; color: var(--text); border: 2px solid var(--edge); font: inherit; }
+.sc-btn { font-size: 0.85rem; }
+@media (max-width: 520px) {
+  .sc-reglages-corps { gap: 8px 12px; }
+  .sc-lissage input { width: 96px; }
+}

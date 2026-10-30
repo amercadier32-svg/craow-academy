@@ -8,7 +8,7 @@ import { StylesCss } from "./components/Styles";
 import { PixelArt } from "./components/PixelArt";
 import { MenuMachines, Repere } from "./components/MenuMachines";
 import { positionDe } from "./machines";
-import { etatHisto, peutRevenir, retrouverPosition, suivrePosition } from "./lib/retour";
+import { etatHisto, peutAvancer, peutRevenir, retrouverPosition, suivrePosition } from "./lib/retour";
 
 // Chaque module se charge seulement quand tu l'ouvres (l'accueil est prêt tout de suite).
 const MachineMap = lazy(() => import("./modules/MachineMap"));
@@ -106,22 +106,32 @@ export default function App() {
   const [{ mod, arg }, setRoute] = useState(readHash);
   const [menuOuvert, setMenuOuvert] = useState(false);
   const modPrec = useRef(readHash().mod);
-  const [retour, setRetour] = useState(() => { etatHisto(); return peutRevenir(); });
+  const [nav, setNav] = useState(() => { etatHisto(); return { arriere: peutRevenir(), avant: peutAvancer() }; });
   useEffect(() => {
     suivrePosition();
+    const majNav = () => setNav({ arriere: peutRevenir(), avant: peutAvancer() });
     const on = () => {
       // Changer de page arrête tous les sons (seule l'alerte de Session peut encore sonner).
       if (readHash().mod !== modPrec.current) toutArreter();
       modPrec.current = readHash().mod;
       etatHisto();
-      setRoute(readHash()); setMenuOuvert(false); setRetour(peutRevenir());
+      setRoute(readHash()); setMenuOuvert(false); majNav();
       // même endroit qu'avant si on revient en arrière, sinon le haut de la page
       requestAnimationFrame(retrouverPosition);
     };
-    const pop = () => setRetour(peutRevenir());
+    // une fenêtre qui s'ouvre (pushState) ne déclenche aucun événement : on relit l'état après chaque clic
+    const clic = () => window.setTimeout(majNav, 0);
+    // Alt + ← et Alt + → : page précédente / suivante (comme dans le navigateur)
+    const touche = (e: KeyboardEvent) => {
+      if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (e.key === "ArrowLeft") { e.preventDefault(); if (peutRevenir()) history.back(); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); if (peutAvancer()) history.forward(); }
+    };
     window.addEventListener("hashchange", on);
-    window.addEventListener("popstate", pop);
-    return () => { window.removeEventListener("hashchange", on); window.removeEventListener("popstate", pop); };
+    window.addEventListener("popstate", majNav);
+    window.addEventListener("click", clic, true);
+    window.addEventListener("keydown", touche);
+    return () => { window.removeEventListener("hashchange", on); window.removeEventListener("popstate", majNav); window.removeEventListener("click", clic, true); window.removeEventListener("keydown", touche); };
   }, []);
   const current = MODULES.find((m) => m.id === mod)!;
   const pos = positionDe(mod);
@@ -140,6 +150,12 @@ export default function App() {
     <div className={`app mod-${mod} ${pos ? "avec-repere" : ""}`}>
       <StylesCss />
       <header className="top">
+        <div className="top-ligne">
+        <div className="top-fleches" role="group" aria-label="Navigation">
+          <button type="button" className="fleche-nav" disabled={!nav.arriere} onClick={() => history.back()} aria-label="Page précédente" title="Revenir à la page précédente, exactement où tu étais (Alt + ←)">←</button>
+          <button type="button" className="fleche-nav" disabled={!nav.avant} onClick={() => history.forward()} aria-label="Page suivante" title="Revenir en avant (Alt + →)">→</button>
+        </div>
+        <div className="top-ligne-reste">
         <div className="top-mobile">
           <a href="#accueil" className="top-brand">CrAoW ACADEMY</a>
           <span className="top-cur"><PixelArt name={actif.icone} size={18} /> {actif.nom}</span>
@@ -156,16 +172,13 @@ export default function App() {
           </a>
           <MenuPlus ecran={mod} />
         </nav>
+        </div>
+        </div>
         <Repere ecran={mod} nomSousPage={(id) => (id === "styles" ? (arg === "gerer" ? "Gérer les styles" : "Les styles") : LABO.find((t) => t.id === id)?.nom)} />
       </header>
       {pos?.sousPage && pos.module?.id === "labo" && <LaboTabs mod={mod} />}
       <PlusTard><Suspense fallback={null}><RecupPrises /></Suspense></PlusTard>
       <RappelExport />
-      {retour && (
-        <div className="retour-barre">
-          <button type="button" className="retour-btn" onClick={() => history.back()} title="Revenir à l'endroit d'avant (même page, mêmes filtres, même position)">← Retour</button>
-        </div>
-      )}
       <main>
         <ErreurModule key={mod}>
         <Suspense fallback={<div className="chargement-module" role="status">Chargement…</div>}>
