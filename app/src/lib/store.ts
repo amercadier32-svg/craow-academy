@@ -26,7 +26,11 @@ interface State {
   sessions: Record<string, SessionFaite>;            // module Session : sessions chronométrées terminées
   defisPerso: Record<string, DefiPerso>;             // module Session : défis créés par Alex
   analysesRef: Record<string, AnalyseRef>;           // module Analyser une référence (sans l'audio)
+  testees: Record<string, Testee>;                   // « ✓ Testée sur ma machine » sur les recettes (id de recette)
 }
+
+/** Recette refaite sur l'E2 et qui sonne bien, avec une note facultative (ce que j'ai dû changer). on = false garde la date (pour l'import). */
+export interface Testee { id: string; on: boolean; note: string; majLe: string }
 
 /** Une zone choisie dans une référence (en secondes). */
 export interface ZoneRef { id: string; nom: string; debut: number; fin: number }
@@ -83,7 +87,7 @@ export interface Favori { id: string; type: TypeFavori; ref: string; titre: stri
 export interface Plage { min: string; max: string; majLe: string }
 
 const KEY = "e2academy.v1";
-const empty: State = { version: 1, observations: {}, faits: {}, plages: {}, favoris: {}, recettesGenerees: {}, etatsRecettes: {}, sessions: {}, defisPerso: {}, analysesRef: {} };
+const empty: State = { version: 1, observations: {}, faits: {}, plages: {}, favoris: {}, recettesGenerees: {}, etatsRecettes: {}, sessions: {}, defisPerso: {}, analysesRef: {}, testees: {} };
 
 type Dated = { majLe: string };
 
@@ -104,7 +108,7 @@ function load(): State {
   let s: State = empty;
   const raw = lireTexte(KEY);
   if (raw) { try { s = { ...empty, ...(JSON.parse(raw) as State) }; } catch { /* stockage illisible : on repart des relevés intégrés (la copie automatique d'avant reste dans « Mes données ») */ } }
-  s = { ...s, favoris: { ...(s.favoris ?? {}) }, recettesGenerees: { ...(s.recettesGenerees ?? {}) }, etatsRecettes: { ...(s.etatsRecettes ?? {}) }, sessions: { ...(s.sessions ?? {}) }, defisPerso: { ...(s.defisPerso ?? {}) }, analysesRef: { ...(s.analysesRef ?? {}) } };
+  s = { ...s, favoris: { ...(s.favoris ?? {}) }, recettesGenerees: { ...(s.recettesGenerees ?? {}) }, etatsRecettes: { ...(s.etatsRecettes ?? {}) }, sessions: { ...(s.sessions ?? {}) }, defisPerso: { ...(s.defisPerso ?? {}) }, analysesRef: { ...(s.analysesRef ?? {}) }, testees: { ...(s.testees ?? {}) } };
   return {
     ...s,
     plages: mergeNewest(base.plages ?? {}, s.plages).merged,
@@ -233,6 +237,13 @@ export function supprimerDefiPerso(id: string) {
 }
 export const listeDefisPerso = (st: State) => Object.values(st.defisPerso).filter((x) => x.defi).map((x) => x.defi!);
 
+// ---------- Recettes testées sur ma machine ----------
+export const estTestee = (st: State, id: string) => Boolean(st.testees?.[id]?.on);
+export function setTestee(id: string, x: { on?: boolean; note?: string }) {
+  const cur = state.testees[id] ?? { id, on: false, note: "", majLe: "" };
+  save({ ...state, testees: { ...state.testees, [id]: { ...cur, ...x, id, majLe: maintenant() } } });
+}
+
 // ---------- Analyser une référence ----------
 export function garderAnalyse(a: AnalyseRef) {
   save({ ...state, analysesRef: { ...state.analysesRef, [a.id]: { ...a, majLe: maintenant() } } });
@@ -255,16 +266,18 @@ export interface RelevesFile {
   sessions?: Record<string, SessionFaite>;
   defisPerso?: Record<string, DefiPerso>;
   analysesRef?: Record<string, AnalyseRef>;
+  testees?: Record<string, Testee>;
+  faits?: Record<string, string>;
 }
 
 export function exportReleves(noms: (id: string) => string | undefined): RelevesFile {
   const plages: RelevesFile["plages"] = {};
   for (const [id, p] of Object.entries(state.plages)) plages[id] = { nom: noms(id), ...p };
-  return { app: "CrAoW ACADEMY", type: "releves", version: 1, exporteLe: new Date().toISOString(), plages, observations: state.observations, favoris: state.favoris, recettesGenerees: state.recettesGenerees, etatsRecettes: state.etatsRecettes, stylesPrefs: state.stylesPrefs, sessions: state.sessions, defisPerso: state.defisPerso, analysesRef: state.analysesRef };
+  return { app: "CrAoW ACADEMY", type: "releves", version: 1, exporteLe: new Date().toISOString(), plages, observations: state.observations, favoris: state.favoris, recettesGenerees: state.recettesGenerees, etatsRecettes: state.etatsRecettes, stylesPrefs: state.stylesPrefs, sessions: state.sessions, defisPerso: state.defisPerso, analysesRef: state.analysesRef, testees: state.testees, faits: state.faits };
 }
 
 /** Fusionne un fichier exporté : la valeur la plus récente gagne. */
-export function importReleves(file: unknown): { plages: number; observations: number; favoris: number; recettes: number; sessions: number; analyses: number } {
+export function importReleves(file: unknown): { plages: number; observations: number; favoris: number; recettes: number; sessions: number; analyses: number; testees: number } {
   const f = file as Partial<RelevesFile>;
   if (!f || (f.type !== "releves" && (f.type as unknown as string) !== "donnees") || typeof f.plages !== "object") throw new Error("Ce fichier n'est pas un export « Mes relevés » de CrAoW ACADEMY.");
   const plIn: Record<string, Plage> = {};
@@ -292,8 +305,14 @@ export function importReleves(file: unknown): { plages: number; observations: nu
   const anIn: Record<string, AnalyseRef> = {};
   for (const [id, x] of Object.entries(f.analysesRef ?? {})) if (x && x.le && Array.isArray(x.zones)) anIn[id] = { ...x, id, recettes: Array.isArray(x.recettes) ? x.recettes : [], majLe: x.majLe ?? x.le };
   const an = mergeNewest(state.analysesRef, anIn);
-  save({ ...state, plages: pl.merged, observations: ob.merged, favoris: fa.merged, recettesGenerees: ge.merged, etatsRecettes: et.merged, stylesPrefs: sp, sessions: se.merged, defisPerso: dp.merged, analysesRef: an.merged });
-  return { plages: pl.pris, observations: ob.pris, favoris: Object.values(favIn).filter((x) => x.on && fa.merged[x.id] === x).length, recettes: ge.pris + et.pris, sessions: se.pris + dp.pris, analyses: an.pris };
+  const teIn: Record<string, Testee> = {};
+  for (const [id, x] of Object.entries(f.testees ?? {})) if (x && typeof x === "object") teIn[id] = { id, on: Boolean(x.on), note: String(x.note ?? ""), majLe: x.majLe ?? "" };
+  const te = mergeNewest(state.testees, teIn);
+  // exercices et leçons faits : on réunit les deux (la date la plus ancienne reste)
+  const faits = { ...state.faits };
+  for (const [id, d] of Object.entries(f.faits ?? {})) if (typeof d === "string" && !faits[id]) faits[id] = d;
+  save({ ...state, plages: pl.merged, observations: ob.merged, favoris: fa.merged, recettesGenerees: ge.merged, etatsRecettes: et.merged, stylesPrefs: sp, sessions: se.merged, defisPerso: dp.merged, analysesRef: an.merged, testees: te.merged, faits });
+  return { plages: pl.pris, observations: ob.pris, favoris: Object.values(favIn).filter((x) => x.on && fa.merged[x.id] === x).length, recettes: ge.pris + et.pris, sessions: se.pris + dp.pris, analyses: an.pris, testees: te.pris };
 }
 
 // Changement d'onglet : relit le stockage (deux onglets ouverts).

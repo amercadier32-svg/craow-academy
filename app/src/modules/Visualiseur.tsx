@@ -1,15 +1,14 @@
-// Module « Visualiseur en direct » (#visualiseur) : le son de l'E2 par la Scarlett, en direct.
+// Onglet « Visualiser » du Studio (#studio/visualiser) : le son de l'E2 par la Scarlett, en direct.
 // Spectre en courbe, spectrogramme, oscilloscope, forme d'onde défilante, vumètre, stéréo ; plusieurs à la fois.
 // Réglages : sensibilité, lissage, maintien des crêtes, échelle, Figer, note dominante (estimation), comparaison avec une référence.
 // Mode vidéo plein écran (OBS, TikTok, YouTube) : voir ModeVideo.tsx.
-// ● REC : l'enregistreur est dans la page (jusqu'à 40 min) ; en mode vidéo, la touche R lance et arrête, avec un petit voyant.
+// ● REC : l'enregistreur est celui du Studio (le même que l'onglet Enregistrer) ; en mode vidéo, la touche R lance et arrête, avec un petit voyant.
 import { imageASauter } from "../lib/moteurAudio";
 import { lireObjet, ecrireJson } from "../lib/stockage";
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { BarreEntree, VueEnregistreur, mmss, useEnregistreur } from "../components/Enregistreur";
+import { BarreEntree, mmss, type EtatEnregistreur } from "../components/Enregistreur";
 import { DUREE_MAX_S } from "../lib/enregistreur";
 import { FiltreMenu, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
-import { PixelArt } from "../components/PixelArt";
 import { Vumetre } from "../components/Vumetre";
 import { MessageVisu, OndeDefilante, THEMES, dessinerOscillo, dessinerSpectre, dessinerSpectrogramme, dessinerStereo, nouvelEtatSpectre, nouvelEtatSpectrogramme, useNoteSuivie } from "../components/Visus";
 import { ReglagesSpectre } from "../components/SpectreCourbe";
@@ -54,7 +53,7 @@ function lire(): PrefsVisu {
 const QUI = "visualiseur";
 const fmt = (x: number, d = 2) => x.toLocaleString("fr-FR", { maximumFractionDigits: d, minimumFractionDigits: d });
 
-/** Les spectres de référence disponibles : le morceau chargé dans « Analyser une référence » et les analyses gardées. */
+/** Les spectres de référence disponibles : le morceau analysé dans l'onglet Analyser et les analyses gardées. */
 function useRefs(): SpectreRef[] {
   const st = useStore();
   const cour = spectreRefCourant();
@@ -62,7 +61,7 @@ function useRefs(): SpectreRef[] {
   return cour ? [cour, ...gardees.filter((g) => g.id !== cour.id)] : gardees;
 }
 
-export default function Visualiseur({ focus }: { focus?: string }) {
+export default function Visualiseur({ focus, r }: { focus?: string; r: EtatEnregistreur }) {
   const [p, setP] = useState<PrefsVisu>(() => {
     const x = lire();
     // #visualiseur/ref=<id> : arrive depuis « Analyser une référence » avec cette référence choisie
@@ -74,8 +73,7 @@ export default function Visualiseur({ focus }: { focus?: string }) {
   const [video, setVideo] = useState(focus === "video");
   const e = useEntree(QUI, on || video);
   const souci = problemeEntree(e);
-  // l'enregistreur vit ici : il continue quand on passe en mode vidéo et qu'on en revient
-  const r = useEnregistreur({ source: { module: "visualiseur", titre: "Visualiseur en direct", href: "#visualiseur" }, qui: "visualiseur-rec", actif: on || video });
+  // l'enregistreur est celui du Studio : il continue quand on passe en mode vidéo, ou dans un autre onglet
   const refs = useRefs();
   const refChoisie = refs.find((r) => r.id === p.ref) ?? null;
 
@@ -128,13 +126,12 @@ export default function Visualiseur({ focus }: { focus?: string }) {
 
   if (video) return (
     <Suspense fallback={<div className="visu-video"><p className="visu-video-msg">Chargement du mode vidéo…</p></div>}>
-      <ModeVideo ancien={p.video} r={r} onSortir={() => { setVideo(false); setOn(true); if (focus === "video") history.replaceState(history.state, "", "#visualiseur"); }} />
+      <ModeVideo ancien={p.video} r={r} onSortir={() => { setVideo(false); setOn(true); if (focus === "video") history.replaceState(history.state, "", "#studio/visualiser"); }} />
     </Suspense>
   );
 
   return (
     <div className="visu-page">
-      <h2 className="page-title"><PixelArt name="visualiseur" size={34} /> Visualiseur en direct</h2>
       <p className="audio-intro muted">Le son de ton E2 par la Scarlett, en direct. Tourne un potard et regarde ce qui change. <a href="#audio">Réglages audio</a></p>
 
       {!on ? (
@@ -160,13 +157,16 @@ export default function Visualiseur({ focus }: { focus?: string }) {
             <button type="button" className="px-btn" onClick={() => setVideo(true)}>🎬 Mode vidéo</button>
           </div>
           <div className="visu-outils visu-outils-spectre"><b>Spectre</b><ReglagesSpectre /></div>
-          {!refs.length && <p className="small muted visu-aide-ref">Pour comparer : charge un morceau dans <a href="#reference">Analyser une référence</a> (ou rouvre une analyse gardée), sa courbe apparaîtra ici en pointillés roses.</p>}
+          {!refs.length && <p className="small muted visu-aide-ref">Pour comparer : analyse un morceau dans l'onglet <a href="#studio/analyser">Analyser</a> (ou rouvre une analyse gardée), sa courbe apparaîtra ici en pointillés roses.</p>}
           {fige && <p className="visu-fige" role="status">❄ Image figée : regarde cet instant, puis « Reprendre ».</p>}
 
-          <section className={`visu-rec ${r.phase}`} aria-label="Enregistrer pendant le visualiseur">
-            {r.phase === "rec" && <div className="visu-rec-voyant" role="status"><i aria-hidden /> REC <b>{mmss(r.t)}</b><small>reste {mmss(r.restant)}</small>{r.sat > 0 && <em>⚠ saturation</em>}</div>}
-            <h3><span aria-hidden>●</span> Enregistrer <small className="muted">· le spectre continue pendant l'enregistrement, jusqu'à {DUREE_MAX_S / 60} min</small></h3>
-            <VueEnregistreur r={r} sansBarre />
+          <section className={`visu-rec visu-rec-mini ${r.phase}`} aria-label="Enregistrer pendant le visualiseur">
+            {r.phase === "rec" || r.phase === "decompte"
+              ? <button type="button" className="rec-stop" onClick={r.stop}>■ Stop</button>
+              : <button type="button" className="rec-rec" disabled={!r.pret} onClick={() => r.rec()}>● REC</button>}
+            {r.phase === "rec" ? <span className="visu-rec-voyant" role="status"><i aria-hidden /> REC <b>{mmss(r.t)}</b><small>reste {mmss(r.restant)}</small>{r.sat > 0 && <em>⚠ saturation</em>}</span>
+              : r.phase === "fini" || r.phase === "garde" ? <span className="small">Prise terminée : <a href="#studio/enregistrer">garde-la ou coupe-la dans l'onglet Enregistrer</a>.</span>
+              : <span className="small muted">Le spectre continue pendant l'enregistrement (jusqu'à {DUREE_MAX_S / 60} min). C'est le même enregistreur que l'onglet Enregistrer.</span>}
           </section>
 
           <div className={`visu-grille n${p.vues.length}`}>

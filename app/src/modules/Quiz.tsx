@@ -1,4 +1,5 @@
 // Quiz et flashcards, avec répétition espacée. Les questions sont générées depuis data/ (lib/quiz.ts).
+import { confirmer } from "../components/Confirmer";
 import { lireJson } from "../lib/stockage";
 import { Infos, Rangement } from "../components/Rangement";
 import { useEffect, useMemo, useState } from "react";
@@ -104,7 +105,7 @@ export default function Quiz({ focus }: { focus?: string }) {
             ))}
           </div>
           <button type="button" className="e2-ui-btn big" onClick={demarrer} disabled={!pool.length}>▶ {fini ? "Encore une série" : "Commencer une série"} de {taille}</button>
-          <button type="button" className="e2-ui-btn qz-reset" onClick={() => { if (confirm("Effacer toute ta progression du quiz ?")) setSuivi({}); }}>Remettre la progression à zéro</button>
+          <button type="button" className="e2-ui-btn qz-reset" onClick={() => { void confirmer("Effacer toute ta progression du quiz ?", { oui: "Effacer" }).then((ok) => { if (ok) setSuivi({}); }); }}>Remettre la progression à zéro</button>
         </div>
       ) : carte && (
         <div className="block qz-card">

@@ -3,7 +3,7 @@
 // Elle sert à entendre l'idée de l'effet (saturer, répéter, filtrer, faire bouger…), pas ses réglages exacts.
 import { useSyncExternalStore } from "react";
 import { engine as seqEngine } from "./seq";
-import { contexte, declarerLecteur, liberer, prendreLaMain, quandNouveauContexte, sortie as sortieMoteur } from "./moteurAudio";
+import { contexte, declarerLecteur, liberer, prendreLaMain, quandNouveauContexte, sortie as sortieMoteur, telephone } from "./moteurAudio";
 
 export type FxKind = "ifx" | "mfx" | "mod";
 export type AB = "sans" | "avec" | "ab";
@@ -75,7 +75,8 @@ function shaperFx(c: Ctx, make: (amt: number) => Float32Array<ArrayBuffer>, pre:
 
 /** Réduction de fréquence d'échantillonnage (Decimator) ou de résolution (Bit Crusher). */
 function crushFx(c: Ctx, mode: "rate" | "bits", getAmt: (p: FxParams) => number): Built {
-  const sp = c.createScriptProcessor(1024, 1, 1);
+  // Téléphone : tampon plus grand (calcul moins souvent), pas de grésillement.
+  const sp = c.createScriptProcessor(telephone ? 4096 : 1024, 1, 1);
   const inp = c.createGain(), out = c.createGain();
   let amt = 0.5, held = 0, cnt = 0;
   sp.onaudioprocess = (e) => {

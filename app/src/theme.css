@@ -551,6 +551,15 @@ h2 .etoile, h3 .etoile { font-size: 1.05rem; }
 .drl.petit .gros-btn-txt { padding: 9px 0; }
 .drl.petit .gros-btn-txt b { font-size: 1.5rem; }
 .drl.petit .drl-emoji { width: 48px; height: 48px; font-size: 2.2rem; }
+/* Version compacte (panneaux de réglages) : une ligne, même comportement. */
+.drl.compact { margin: 0 0 6px; border: 2px solid var(--edge); background: #15171d; }
+.drl.compact.ouvert { border-color: color-mix(in srgb, var(--cc) 70%, var(--edge)); }
+.drl-compact-btn { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; width: 100%; min-height: 44px; padding: 8px 12px; background: none; border: 0; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.drl-compact-btn:focus-visible { outline: 2px solid var(--cc); outline-offset: -2px; }
+.drl-compact-btn .drl-fleche { font-size: 0.8rem; color: var(--cc); }
+.drl-compact-titre { font-family: var(--px); font-weight: 400; font-size: 1.25rem; }
+.drl-compact-texte { color: var(--muted); font-size: 0.86rem; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.drl.compact .drl-contenu { padding: 4px 12px 12px; }
 .drl-vide { margin: 0; color: var(--muted); padding: 10px 14px; background: var(--panel); border: 2px dashed var(--edge); }
 .drl-tout { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin: 14px 0 -6px; color: var(--muted); font-size: 0.85rem; }
 .drl-tout button { background: none; border: 0; padding: 2px 4px; color: var(--muted); font: inherit; cursor: pointer; }

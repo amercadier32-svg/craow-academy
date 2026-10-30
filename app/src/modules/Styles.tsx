@@ -5,7 +5,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { Deroulant, ToutOuvrirFermer } from "../components/Deroulant";
 import { Badge } from "../components/common";
 import { SelecteurStyles } from "../components/Styles";
-import { Confirmer } from "../components/FiltreMenu";
+import { Confirmer } from "../components/Confirmer";
 import { FICHE, SOURCE_STYLES, STYLE_NOM, estStyle, useStyles, type Style, type StyleVu } from "../content/styles";
 import { ELEMENTS, RECETTES } from "../content/recettes";
 import { VIDES_STYLES } from "../content/recettesStylesSuite";

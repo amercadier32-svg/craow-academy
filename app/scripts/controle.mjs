@@ -5,7 +5,10 @@
 //  2. aucune recette (de l'app ou générée 🎲) n'utilise un oscillateur, un effet ou une modulation absents des données ;
 //  3. la notation des notes est partout celle de l'E2 (dièses, numéro d'octave, C4 = MIDI 60, jamais de bémol) ;
 //  4. aucun lien n'est cassé (liens internes #…, fichiers PDF, fiches visées, raccourcis clavier) ;
-//  5. le fichier E2-Academy.html est complet (chaque morceau de l'app se lit sans erreur).
+//  5. le fichier E2-Academy.html est complet (chaque morceau de l'app se lit sans erreur) ;
+//  6. tes anciennes données passent bien par les migrations (rien n'est perdu ni abîmé) ;
+//  7. rien de privé n'est publié sur GitHub (manuels Korg, données personnelles, sauvegardes, README).
+// « npm run controle -- --internet » teste en plus les liens vers internet (manuels sur le site de Korg, version en ligne).
 // Sortie : « OK » ou la liste des problèmes (code de sortie 1).
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, statSync, mkdtempSync, writeFileSync } from "node:fs";
@@ -58,6 +61,29 @@ const fouiller = (x, ou) => {
 };
 for (const k of ["RECETTES", "FICHES", "LEXIQUE", "NIVEAUX", "ETAPES", "EXERCISES", "CHAIN_EXERCISES", "BLOCS", "BLOCS_M", "LECONS", "parameters", "allControls", "procedures", "DEFIS"]) fouiller(D[k], k);
 for (const f of readdirSync(join(root, "data/electribe2")).filter((f) => f.endsWith(".json"))) fouiller(JSON.parse(readFileSync(join(root, "data/electribe2", f), "utf8")), f);
+// Réglages complets affichés dans la fenêtre de chaque recette (tous les paramètres de la partie, bloc par bloc).
+const PARAM_VIRTUELS = new Set(["type-filtre", "synchro-mod"]);   // expliqués par la page du bloc
+const paramIds = new Map(D.parameters.map((p) => [p.id, p]));
+let nChamps = 0;
+const champsVus = new Set();
+for (const b of D.BLOCS_FENETRE) for (const c of b.champs) if (!PARAM_VIRTUELS.has(c) && !paramIds.has(c)) pb("paramètres", `fenêtre des recettes, bloc ${b.titre} : « ${c} » absent des données`);
+for (const rc of D.RECETTES) for (const reg of [rc.reglages ?? [], ...(rc.variantes ?? []).map((v) => [...(rc.reglages ?? []), ...(v.reglages ?? [])])]) {
+  let blocs;
+  try { blocs = D.blocsComplets(reg); } catch (e) { pb("paramètres", `fenêtre de la recette « ${rc.nom} » : ${e.message}`); continue; }
+  for (const b of blocs) {
+    sources.push({ ...b.src, ou: `bloc ${b.titre}` });
+    for (const l of b.lignes) {
+      nChamps++;
+      if (champsVus.has(l.param)) continue;
+      champsVus.add(l.param);
+      if (PARAM_VIRTUELS.has(l.param)) continue;
+      const p = paramIds.get(l.param);
+      if (!p) pb("paramètres", `fenêtre des recettes, bloc ${b.titre} : « ${l.param} » absent des données`);
+      else if (!p.source?.page) pb("paramètres", `fenêtre des recettes : « ${l.param} » n'a pas de page de manuel`);
+    }
+  }
+}
+console.log(`   ${champsVus.size} réglages différents des fenêtres de recette vérifiés (${nChamps} lignes affichées).`);
 let horsDoc = 0;
 for (const s of sources) {
   const d = D.DOCS[s.doc];
@@ -140,10 +166,8 @@ const cibles = {
   styles: (a) => a === "gerer" || D.STYLES_LISTE.includes(a),
   session: (a) => ["historique", "en-cours"].includes(a) || D.DEFIS.some((d) => d.id === a || `defi-${d.id}` === a) || a.startsWith("defi-"),
   quiz: (a) => ["lexique"].includes(a) || true,
-  visualiseur: (a) => a === "video" || a.startsWith("ref="),
-  mastering: (a) => a.startsWith("rec=") || a.startsWith("depart") || D.POINTS_DEPART.some((p) => p.id === a),
-  enregistrements: (a) => a === "corbeille" || true,
-  reference: () => true,
+  // Studio : #studio/<onglet>[/…] (les anciennes adresses #mastering, #reference, #visualiseur, #enregistrements, #labo sont redirigées dans App.tsx)
+  studio: (a) => ["enregistrer", "visualiser", "analyser", "masteriser"].includes(a),
 };
 let nLiens = 0;
 const verifierLien = (h, ou) => {
@@ -175,6 +199,12 @@ for (const g of D.RACCOURCIS) for (const r of g.liste) {
   if (!existsSync(f)) { pb("raccourcis", `${r.touches.join("+")} : ${r.fichier} n'existe plus`); continue; }
   if (!/keydown|onKeyDown|space\(\)/.test(readFileSync(f, "utf8"))) pb("raccourcis", `${r.touches.join("+")} : plus de gestion du clavier dans ${r.fichier}`);
 }
+// Chaque fichier qui écoute le clavier a ses raccourcis sur la page « Raccourcis clavier ».
+const fichiersRacc = new Set(D.RACCOURCIS.flatMap((g) => g.liste.map((r) => r.fichier)));
+for (const f of src) {
+  const t = readFileSync(f, "utf8"), rel = f.replace(join(app, "src") + "/", "").replaceAll("\\", "/");
+  if (/\b(?:e|ev)\.(?:key|code) === "/.test(t) && !fichiersRacc.has(rel) && !t.includes("controle: pas-de-raccourci")) pb("raccourcis", `${rel} réagit au clavier mais n'apparaît pas sur la page Raccourcis clavier (content/raccourcis.ts)`);
+}
 const externes = new Set();
 for (const f of src) for (const m of readFileSync(f, "utf8").matchAll(/https?:\/\/[^\s"'`)<>]+/g)) externes.add(m[0]);
 console.log(`   ${nLiens} liens internes vérifiés.${externes.size ? ` Liens vers internet (non testés ici) : ${[...externes].join(", ")}` : " Aucun lien vers internet."}`);
@@ -195,7 +225,83 @@ else {
   console.log(`   ${morceaux.length} morceaux lus sans erreur, ${(html.length / 1024).toFixed(0)} Ko.`);
 }
 
+// ---------- 6. Migrations de tes données ----------
+titre("6. Tes anciennes données après une mise à jour");
+{
+  const memoire = new Map();
+  globalThis.localStorage = {
+    get length() { return memoire.size; }, key: (i) => [...memoire.keys()][i] ?? null,
+    getItem: (k) => (memoire.has(k) ? memoire.get(k) : null), setItem: (k, v) => { memoire.set(k, String(v)); },
+    removeItem: (k) => { memoire.delete(k); }, clear: () => memoire.clear(),
+  };
+  const remettre = () => { D.etatFormat.plusRecent = false; D.etatFormat.migrees.length = 0; D.etatFormat.erreur = ""; };
+  const vers = D.MIGRATIONS.map((m) => m.vers);
+  if (Math.max(...vers) !== D.FORMAT) pb("données", `FORMAT = ${D.FORMAT} mais la dernière migration va vers ${Math.max(...vers)}`);
+  if (vers.some((v, i) => i > 0 && v <= vers[i - 1])) pb("données", "les migrations doivent être rangées par numéro croissant");
+  // a) données d'avant le numéro de format (octobre 2026) : favoris du Guide des effets à part
+  const anciennes = {
+    "e2academy.v1": JSON.stringify({ version: 1, plages: { "filter.cutoff": { min: 0, max: 127 } }, observations: { "osc.edit": { titre: "Edit", texte: "Ma note" } }, faits: { "lesson:l1": true, "recette:kick-tekno": "2026-10-20T10:00:00.000Z" }, favoris: {} }),
+    "e2academy.fx.favoris": JSON.stringify(["mfx-4", "ifx-2"]),
+    "e2academy.morceau.encours": JSON.stringify({ nom: "Mon morceau", couches: [{ id: "a" }], bpm: 140 }),
+    "e2academy.mastering.presets": JSON.stringify([{ id: "p1", nom: "Tribe" }]),
+    "e2academy.sections": JSON.stringify({ "accueil.machines": true }),
+  };
+  memoire.clear(); for (const [k, v] of Object.entries(anciennes)) memoire.set(k, v);
+  remettre(); D.preparerDonnees();
+  const v1 = JSON.parse(memoire.get("e2academy.v1") ?? "{}");
+  if (memoire.get(D.CLE_FORMAT) !== String(D.FORMAT)) pb("données", `anciennes données : format ${memoire.get(D.CLE_FORMAT)} au lieu de ${D.FORMAT}`);
+  if (D.etatFormat.erreur) pb("données", `migration en erreur : ${D.etatFormat.erreur}`);
+  if (!v1.favoris?.["fx:mfx-4"] || !v1.favoris?.["fx:ifx-2"]) pb("données", "anciens favoris des effets perdus pendant la migration");
+  if (v1.observations?.["osc.edit"]?.texte !== "Ma note" || v1.plages?.["filter.cutoff"]?.max !== 127 || !v1.faits?.["lesson:l1"]) pb("données", "notes, relevés ou leçons faites abîmés par la migration");
+  for (const k of ["e2academy.morceau.encours", "e2academy.mastering.presets", "e2academy.sections"]) if (memoire.get(k) !== anciennes[k]) pb("données", `${k} modifié par la migration`);
+  if (!v1.testees?.["kick-tekno"]?.on || !v1.faits?.["recette:kick-tekno"]) pb("données", "recette faite pas reprise comme « Testée sur ma machine » (ou fait effacé)");
+  // b) migration relancée : rien ne bouge
+  const avant = JSON.stringify([...memoire]); remettre(); D.preparerDonnees();
+  if (JSON.stringify([...memoire]) !== avant) pb("données", "relancer l'app modifie les données une seconde fois");
+  // c) données d'une version plus récente : on n'y touche pas
+  memoire.clear(); memoire.set(D.CLE_FORMAT, String(D.FORMAT + 1)); memoire.set("e2academy.v1", "{\"futur\":1}");
+  remettre(); D.preparerDonnees();
+  if (!D.etatFormat.plusRecent || memoire.get("e2academy.v1") !== "{\"futur\":1}") pb("données", "des données d'une version plus récente ont été modifiées");
+  // d) premier lancement
+  memoire.clear(); remettre(); D.preparerDonnees();
+  if (memoire.get(D.CLE_FORMAT) !== String(D.FORMAT)) pb("données", "premier lancement : numéro de format absent");
+  remettre(); delete globalThis.localStorage;
+  console.log(`   format ${D.FORMAT}, ${D.MIGRATIONS.length} migration(s) testée(s) sur des données d'avant, une relance, une version plus récente et un premier lancement.`);
+}
+
+// ---------- 7. Ce qui part sur GitHub ----------
+titre("7. Rien de privé dans la version publiée");
+{
+  const gi = existsSync(join(root, ".gitignore")) ? readFileSync(join(root, ".gitignore"), "utf8").split(/\r?\n/).map((l) => l.trim()) : null;
+  if (!gi) notes.push(".gitignore absent de ce dossier : vérification de la publication sautée");
+  else {
+    for (const [regle, quoi] of [["docs/", "les manuels Korg et la photo"], ["*.pdf", "les PDF"], ["sauvegardes/", "le dossier sauvegardes"], ["README.md", "le README"],
+      ["*releves*.json", "tes relevés"], ["mes-donnees*.json", "tes exports de données"], ["E2-Academy.html", "l'app assemblée avec tes relevés"], ["captures/", "tes captures"]])
+      if (!gi.includes(regle)) pb("publication", `.gitignore ne protège plus ${quoi} (ligne « ${regle} » manquante)`);
+  }
+  // La version en ligne ouvre les manuels sur le site officiel de Korg, jamais une copie des PDF.
+  for (const [id, d] of Object.entries(D.DOCS)) if (!/^https:\/\/(?:cdn\.)?korg\.com\//.test(d.korg)) pb("publication", `manuel ${id} : le lien en ligne doit aller sur le site de Korg (${d.korg})`);
+  const site = join(app, "site");
+  if (existsSync(site)) {
+    const pub = fichiers(site);
+    for (const f of pub) if (/\.pdf$|releves|mes-donnees|sauvegardes|README/i.test(f)) pb("publication", `${f.replace(app, "")} ne doit pas être publié`);
+    for (const f of ["manifest.webmanifest", "sw.js", "icone-192.png", "icone-512.png", "icone-maskable-512.png", "icone-apple.png"]) if (!existsSync(join(site, f))) pb("publication", `version en ligne : ${f} manquant (installation impossible)`);
+    console.log(`   ${pub.length} fichiers de la version en ligne (app/site) vérifiés.`);
+  }
+  console.log("   .gitignore et liens des manuels vérifiés.");
+}
+
+// ---------- Liens vers internet (seulement avec --internet) ----------
+if (process.argv.includes("--internet")) {
+  titre("Liens vers internet");
+  const urls = [...Object.values(D.DOCS).map((d) => d.korg), "https://amercadier32-svg.github.io/craow-academy/", "https://amercadier32-svg.github.io/craow-academy/manifest.webmanifest", "https://amercadier32-svg.github.io/craow-academy/sw.js"];
+  for (const u of urls) {
+    try { const r = await fetch(u, { method: "GET", redirect: "follow", signal: AbortSignal.timeout(20000) }); if (!r.ok) pb("liens", `${u} répond ${r.status}`); else console.log(`   OK ${r.status} ${u.slice(0, 90)}`); }
+    catch (e) { pb("liens", `${u.slice(0, 90)} injoignable (${e.cause?.code ?? e.message})`); }
+  }
+}
+
 console.log("");
 for (const n of notes) console.log("note : " + n);
 if (problemes.length) { console.log(`\nPROBLÈMES (${problemes.length}) :\n- ` + problemes.join("\n- ")); process.exit(1); }
-console.log("OK : paramètres, pages du manuel, recettes, notation des notes, liens et fichier final sont bons.");
+console.log("OK : paramètres, pages du manuel, recettes, notation des notes, liens, fichier final, migrations des données et publication sont bons.");

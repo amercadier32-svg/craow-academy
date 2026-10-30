@@ -1,7 +1,8 @@
 // Ce que l'app sait de chaque favori : son nom, sa machine, son type, sa catégorie, sa fiche et comment l'écouter.
+import { confirmer } from "../components/Confirmer";
 import { lireJson, ecrireJson } from "./stockage";
-import { CATEGORIES, ELEMENTS, RECETTES } from "../content/recettes";
-import { GRILLES, STYLE_GRILLE } from "../content/grilles";
+import { CATEGORIES, ELEMENTS, recetteParId } from "../content/recettes";
+import { GRILLES, STYLE_GRILLE, COULEUR_GRILLE } from "../content/grilles";
 import { FICHES } from "../content/effets";
 import { CATS_LEX, lexById } from "../content/lexique";
 import { EXEMPLES, styleM } from "../content/morceau";
@@ -46,15 +47,15 @@ export interface InfoFav {
   cat: { id: string; nom: string; couleur: string };
   href: string;
   /** Avant d'ouvrir la fiche (ex. charger le morceau). Renvoie false pour annuler. */
-  avant?: () => boolean;
+  avant?: () => Promise<boolean>;
   jouer?: (owner: string, mode: Mode, range: Range) => void;
   sansEcoute?: string;
   existe: boolean;
 }
 
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 const ficheById = new Map(FICHES.map((f) => [f.id, f]));
-const COUL_STYLE: Record<string, string> = { tribe: "#ff6a3d", mentale: "#9b6bff", tekno: "#6aa2ee" };
+const COUL_STYLE = COULEUR_GRILLE;
 const KIND_FX = { ifx: { nom: "Insert FX", couleur: "#e255c8" }, mfx: { nom: "Master FX", couleur: "#9b6bff" }, mod: { nom: "Modulations", couleur: "#3fd6d0" } };
 const CLE_MORCEAU = "e2academy.morceau.encours";
 
@@ -100,11 +101,11 @@ export function infoFav(f: Favori): InfoFav {
         href: `#glossaire/${m.id}`, jouer: m.ec ? (o, mode, range) => jouerLex(o, m, range, mode) : undefined };
     }
     case "master": {
-      const sansEcoute = "Pour l'entendre, charge un morceau dans le Mastering : la fiche s'ouvre sur ce preset.";
-      if (f.ref.startsWith("perso-")) return { ...base, existe: true, sous: "Mes presets", cat: { id: "perso", nom: "Mes presets", couleur: "#9b6bff" }, href: "#mastering/depart", sansEcoute };
+      const sansEcoute = "Pour l'entendre, charge un morceau dans le Studio (onglet Masteriser) : il s'ouvre sur ce preset.";
+      if (f.ref.startsWith("perso-")) return { ...base, existe: true, sous: "Mes presets", cat: { id: "perso", nom: "Mes presets", couleur: "#9b6bff" }, href: "#studio/masteriser/depart", sansEcoute };
       const p = POINTS_DEPART.find((x) => x.id === f.ref);
       if (!p) return base;
-      return { ...base, existe: true, titre: p.nom, sous: `Point de départ · ${p.resume}`, cat: { id: "depart", nom: "Points de départ", couleur: p.couleur }, href: `#mastering/depart-${p.id}`, sansEcoute };
+      return { ...base, existe: true, titre: p.nom, sous: `Point de départ · ${p.resume}`, cat: { id: "depart", nom: "Points de départ", couleur: p.couleur }, href: `#studio/masteriser/depart-${p.id}`, sansEcoute };
     }
     case "defi": {
       const d = DEFIS.find((x) => x.id === f.ref) ?? getState().defisPerso[f.ref]?.defi ?? undefined;
@@ -117,20 +118,20 @@ export function infoFav(f: Favori): InfoFav {
       if (!a || a.supprimee) return base;
       const tona = a.key ? ` · ${a.key} ${a.mineur ? "mineur" : "majeur"}` : "";
       return { ...base, existe: true, titre: a.nom, sous: `${a.bpm ? `${a.bpm} BPM` : "BPM ?"}${tona} · ${a.zones.length} zone(s)`, cat: { id: "reference", nom: "Analyses", couleur: "#9b6bff" },
-        href: `#reference/${a.id}`, sansEcoute: "L'audio de la référence reste sur ton appareil : ouvre l'analyse et recharge le fichier pour l'écouter." };
+        href: `#studio/analyser/${a.id}`, sansEcoute: "L'audio de la référence reste sur ton appareil : ouvre l'analyse et recharge le fichier pour l'écouter." };
     }
     case "enregistrement":
       return { ...base, existe: true, sous: "Mon enregistrement", cat: { id: "enregistrement", nom: "Enregistrements", couleur: "#ff3b3b" },
-        href: `#enregistrements/${encodeURIComponent(f.ref)}`, sansEcoute: "Ouvre-le dans Mes enregistrements pour l'écouter." };
+        href: `#studio/enregistrer/${encodeURIComponent(f.ref)}`, sansEcoute: "Ouvre-le dans Mes enregistrements pour l'écouter." };
     case "morceau": {
       const ex = f.ref.startsWith("ex-") ? EXEMPLES.find((x) => `ex-${x.id}` === f.ref) : undefined;
       const m: Morceau | undefined = ex ? morceauDe(ex) : (f.data as Morceau | undefined);
       if (!m || !Array.isArray(m.couches)) return base;
       const s = styleM(m.style);
-      const avant = ex ? undefined : () => {
+      const avant = ex ? undefined : async () => {
         const cur = lireJson<Morceau | null>(CLE_MORCEAU, null);
         if (cur && cur.couches?.length && JSON.stringify(cur.couches) !== JSON.stringify(m.couches)
-          && !confirm(`Remplacer ton morceau en cours (« ${cur.nom} ») par « ${m.nom} » ?`)) return false;
+          && !(await confirmer(`Remplacer ton morceau en cours (« ${cur.nom} ») par « ${m.nom} » ?`, { oui: "Remplacer" }))) return false;
         ecrireJson(CLE_MORCEAU, { ...m, majLe: new Date().toISOString() });
         return true;
       };

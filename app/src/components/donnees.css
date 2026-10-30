@@ -19,3 +19,8 @@
 .raccourcis th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
 .raccourcis kbd { display: inline-block; min-width: 1.6em; text-align: center; padding: 2px 6px; background: var(--panel-2); border: 2px solid var(--edge); box-shadow: 0 2px 0 var(--edge); font-family: var(--txt, system-ui); }
 @media (max-width: 560px) { .raccourcis thead { display: none; } .raccourcis tr { display: grid; padding: 6px 0; border-bottom: 1px solid var(--line); } .raccourcis td { border: 0; padding: 2px 0; } }
+
+/* Version en ligne : « Nouvelle version disponible, recharger ? » (app/en-ligne/maj.js) */
+.maj-dispo { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 900; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  width: max-content; max-width: calc(100% - 24px); padding: 10px 14px; background: var(--panel, #1a1d24); color: var(--text, #eef1f6);
+  border: 2px solid var(--edge, #000); border-top: 4px solid #4fd18b; box-shadow: 0 6px 0 var(--edge, #000); }

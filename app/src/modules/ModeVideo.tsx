@@ -8,6 +8,9 @@
 //   remplir ou ajuster, opacité, flou, assombrissement, pulsation au kick ; galerie avec suppression.
 // - Presets : tous ces choix enregistrés ensemble.
 // Échap pour sortir, R pour lancer / arrêter l'enregistrement.
+import { Deroulant } from "../components/Deroulant";
+import { BoutonSupprimer, confirmer } from "../components/Confirmer";
+import { imageASauter } from "../lib/moteurAudio";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as PE } from "react";
 import { InfosRec, mmss, type EtatEnregistreur } from "../components/Enregistreur";
 import { DUREE_MAX_S } from "../lib/enregistreur";
@@ -45,7 +48,8 @@ const POSITIONS: { id: Pos; nom: string }[] = [
 ];
 export interface TexteV { on: boolean; valeur: string; police: string; taille: number; couleur: string; style: "aucun" | "contour" | "ombre"; bord: string; position: Pos; auto?: boolean }
 type CleTexte = "artiste" | "morceau" | "bpm";
-export interface FondV { mediaId: string | null; couleur: string; grille: boolean; ajuster: "remplir" | "ajuster"; opacite: number; flou: number; sombre: number; pulse: boolean }
+/** `incrust` : fond vert (incrustation, « chroma key ») ou transparent, pour OBS. Absent = fond normal. */
+export interface FondV { mediaId: string | null; couleur: string; grille: boolean; ajuster: "remplir" | "ajuster"; opacite: number; flou: number; sombre: number; pulse: boolean; incrust?: "vert" | "transparent" }
 export interface ConfigVideo { format: "16:9" | "9:16"; couches: Couche[]; textes: Record<CleTexte, TexteV>; fond: FondV; ondeDuree: number }
 
 const c0 = (type: TypeVisu, on: boolean, x: number, y: number, w: number, h: number, couleur: string, extra: Partial<Couche> = {}): Couche =>
@@ -153,6 +157,12 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
   const [souris, setSouris] = useState(true);
   const [policesPretes, setPolicesPretes] = useState(false);
   useEffect(() => { void chargerPolices().then(() => setPolicesPretes(true)); }, []);
+  // Fond transparent (OBS, Source navigateur) : toute la page devient transparente derrière la scène.
+  useEffect(() => {
+    const t = cfg.fond.incrust === "transparent";
+    document.documentElement.classList.toggle("fond-transparent", t);
+    return () => document.documentElement.classList.remove("fond-transparent");
+  }, [cfg.fond.incrust]);
 
   // ---- fond (image ou vidéo de la galerie)
   const [media, setMedia] = useState<{ url: string; infos: InfosFond } | null>(null);
@@ -224,8 +234,10 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
     const kick = new DetecteurKick();
     const etats = { spectre: nouvelEtatSpectre(), spectrogramme: nouvelEtatSpectrogramme(), onde: new OndeDefilante(), vu: nouvelEtatVu() };
     const th = THEMES[0];
+    const cadence = { t: 0 };
     const boucle = (t: number) => {
       raf = requestAnimationFrame(boucle);
+      if (imageASauter(t, cadence)) return;   // 30 images/s sur téléphone (60 sur PC)
       const c = cfgRef.current;
       const img = lireImage(Math.min(0.8, prefsSpectre().lissage * 0.85)); if (!img) return;
       kick.suivre(img.basseEnergie, t);
@@ -311,6 +323,7 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
       <div className="vv-zone">
         <div className="vv-scene" style={{ width: aw, height: ah }} onPointerDown={() => edition && setSel(null)}>
           {/* fond */}
+          {cfg.fond.incrust ? <div className={`vv-fond vv-incrust-${cfg.fond.incrust}`} style={{ background: cfg.fond.incrust === "vert" ? "#00ff00" : "transparent" }} /> : (
           <div className="vv-fond" style={{ background: cfg.fond.couleur }}>
             <div ref={fondEl} className="vv-fond-media">
               {!media && cfg.fond.grille && <div className="vv-grille" />}
@@ -319,6 +332,7 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
             </div>
             {cfg.fond.sombre > 0 && <div className="vv-sombre" style={{ background: `rgba(0,0,0,${cfg.fond.sombre})` }} />}
           </div>
+          )}
           {/* visualisations */}
           {cfg.couches.map((k) => (
             <div key={k.type} ref={(el) => { couchesEl.current[k.type] = el; }}
@@ -382,8 +396,7 @@ function Reglages(p: {
         {(["16:9", "9:16"] as const).map((f) => <button key={f} type="button" className={`chipbtn ${cfg.format === f ? "on" : ""}`} onClick={() => maj((c) => ({ ...c, format: f }))}>{f} {f === "16:9" ? "YouTube" : "TikTok (vertical)"}</button>)}
       </div>
 
-      <details className="vv-bloc" open>
-        <summary>Visualisations</summary>
+      <Deroulant compact id="video.visus" defaut couleur="#4fd18b" titre="Visualisations">
         <p className="small muted">Coche celles à afficher (une ou plusieurs). Clique sur une visualisation dans l'image pour la régler ; glisse-la pour la déplacer, tire le coin en bas à droite pour la redimensionner.</p>
         <label className="vv-ligne"><input type="checkbox" checked={p.deplacer} onChange={(e) => p.setDeplacer(e.target.checked)} /> Déplacer et redimensionner dans l'image</label>
         <ul className="vv-visus">
@@ -420,10 +433,9 @@ function Reglages(p: {
         <div className="vv-ligne"><span>Couleurs rapides</span>
           {THEMES.map((t) => <button key={t.id} type="button" className="chipbtn vv-theme" style={{ "--t1": t.barres[0], "--t2": t.barres[2], "--t3": t.accent } as CSSProperties} onClick={() => maj((c) => appliquerTheme(c, t))}><i />{t.nom}</button>)}
         </div>
-      </details>
+      </Deroulant>
 
-      <details className="vv-bloc" open>
-        <summary>Disposition toute prête</summary>
+      <Deroulant compact id="video.dispo" defaut couleur="#ffd84d" titre="Disposition toute prête">
         <div className="vv-dispos">
           {DISPOS.map((d) => (
             <button key={d.id} type="button" className={`vv-dispo d-${d.id}`} onClick={() => maj((c) => disposer(c, d.id))} title={d.texte}>
@@ -431,22 +443,19 @@ function Reglages(p: {
             </button>
           ))}
         </div>
-      </details>
+      </Deroulant>
 
-      <details className="vv-bloc">
-        <summary>Textes et polices</summary>
+      <Deroulant compact id="video.textes" couleur="#9b6bff" titre="Textes et polices">
         {(["artiste", "morceau", "bpm"] as CleTexte[]).map((cle) => <ReglageTexte key={cle} cle={cle} t={cfg.textes[cle]} maj={(x) => majTexte(cle, x)} />)}
-      </details>
+      </Deroulant>
 
-      <details className="vv-bloc">
-        <summary>Fond (image ou vidéo)</summary>
+      <Deroulant compact id="video.fond" couleur="#4aa3ff" titre="Fond (image ou vidéo)">
         <ReglageFond fond={cfg.fond} majFond={majFond} media={p.media} absent={p.mediaAbsent} saccade={p.saccade} />
-      </details>
+      </Deroulant>
 
-      <details className="vv-bloc">
-        <summary>Presets du mode vidéo</summary>
+      <Deroulant compact id="video.presets" couleur="#ff6a3d" titre="Presets du mode vidéo">
         <Presets cfg={cfg} appliquer={(c) => maj(() => completer(c))} />
-      </details>
+      </Deroulant>
     </div>
   );
 }
@@ -516,6 +525,15 @@ function ReglageFond({ fond, majFond, media, absent, saccade }: { fond: FondV; m
   };
   return (
     <div className="vv-fond-reg">
+      <div className="vv-ligne vv-incrust" role="radiogroup" aria-label="Fond pour OBS">
+        <span>Fond</span>
+        <button type="button" role="radio" aria-checked={!fond.incrust} className={`chipbtn ${!fond.incrust ? "on" : ""}`} onClick={() => majFond({ incrust: undefined })}>Normal</button>
+        <button type="button" role="radio" aria-checked={fond.incrust === "vert"} className={`chipbtn ${fond.incrust === "vert" ? "on" : ""}`} onClick={() => majFond({ incrust: "vert" })}>🟩 Fond vert</button>
+        <button type="button" role="radio" aria-checked={fond.incrust === "transparent"} className={`chipbtn ${fond.incrust === "transparent" ? "on" : ""}`} onClick={() => majFond({ incrust: "transparent" })}>◻ Transparent</button>
+      </div>
+      {fond.incrust === "vert" && <p className="small">Fond vert pur (#00FF00) : dans OBS, ajoute le filtre <b>Incrustation chromatique</b> (« Chroma Key ») sur la capture de cette fenêtre, couleur verte. Évite le vert dans tes visualisations.</p>}
+      {fond.incrust === "transparent" && <p className="small">Fond transparent : il marche dans OBS avec une <b>Source navigateur</b> qui ouvre l'app. Dans une fenêtre normale, tu vois du noir derrière : c'est normal. Sinon, prends le fond vert.</p>}
+      {fond.incrust && <p className="small muted">L'image ou la vidéo de fond est mise de côté (pas effacée) tant que ce mode est choisi.</p>}
       <p className="small muted">🔒 Tes fonds restent sur cet appareil, dans le navigateur : rien n'est publié ni envoyé en ligne. Les vidéos tournent en boucle et sans son.</p>
       <div className="vv-ligne">
         <button type="button" className="px-btn" disabled={ajout} onClick={() => input.current?.click()}>{ajout ? "Import…" : "＋ Importer une image ou une vidéo"}</button>
@@ -536,7 +554,7 @@ function ReglageFond({ fond, majFond, media, absent, saccade }: { fond: FondV; m
               <span className="vv-vign-img" style={{ backgroundImage: x.miniature ? `url(${x.miniature})` : undefined }}>{x.type === "video" && <em>▶</em>}{x.lourd && <em className="lourd">⚠</em>}</span>
               <small>{x.nom}</small>
             </button>
-            <button type="button" className="vv-vign-suppr" aria-label={`Supprimer ${x.nom}`} onClick={() => { if (confirm(`Supprimer le fond « ${x.nom} » de cet appareil ?`)) { void effacerFond(x.id); if (fond.mediaId === x.id) majFond({ mediaId: null }); } }}>🗑</button>
+            <BoutonSupprimer className="vv-vign-suppr" quoi={`le fond « ${x.nom} » de cet appareil`} onSupprimer={() => { void effacerFond(x.id); if (fond.mediaId === x.id) majFond({ mediaId: null }); }} />
           </div>
         ))}
       </div>
@@ -565,10 +583,10 @@ function Presets({ cfg, appliquer }: { cfg: ConfigVideo; appliquer: (c: ConfigVi
   const [nom, setNom] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const garder = (l: PresetVideo[]) => { setListe(l); ecrireJson(CLE_PRESETS, l); };
-  const ajouter = () => {
+  const ajouter = async () => {
     const n = nom.trim() || `Preset ${liste.length + 1}`;
     const existe = liste.find((x) => x.nom.toLowerCase() === n.toLowerCase());
-    if (existe && !confirm(`Remplacer le preset « ${existe.nom} » ?`)) return;
+    if (existe && !(await confirmer(`Remplacer le preset « ${existe.nom} » ?`, { oui: "Remplacer" }))) return;
     const p: PresetVideo = { id: existe?.id ?? `pv-${Date.now().toString(36)}`, nom: n, config: cfg, creeLe: new Date().toISOString() };
     garder(existe ? liste.map((x) => (x.id === existe.id ? p : x)) : [p, ...liste]);
     setNom(""); setMsg(`✓ « ${n} » enregistré (visualisations, disposition, polices et fond).`);
@@ -591,7 +609,7 @@ function Presets({ cfg, appliquer }: { cfg: ConfigVideo; appliquer: (c: ConfigVi
             <li key={x.id}>
               <div><b>{x.nom}</b><small className="muted">{resume(x.config)}</small></div>
               <button type="button" className="chipbtn" onClick={() => { appliquer(x.config); setMsg(`✓ « ${x.nom} » appliqué.`); }}>Appliquer</button>
-              <button type="button" className="chipbtn" aria-label={`Supprimer le preset ${x.nom}`} onClick={() => { if (confirm(`Supprimer le preset « ${x.nom} » ?`)) garder(liste.filter((y) => y.id !== x.id)); }}>🗑</button>
+              <BoutonSupprimer quoi={`le preset « ${x.nom} »`} onSupprimer={() => garder(liste.filter((y) => y.id !== x.id))} />
             </li>
           ))}
         </ul>

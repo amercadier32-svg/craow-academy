@@ -39,28 +39,40 @@ export interface DeroulantProps {
   badge?: string | number;
   icone?: string;             // nom d'une icône pixel
   emoji?: ReactNode;          // ou un symbole (★…) à la place de l'icône
-  couleur: string;
+  couleur?: string;
   defaut?: boolean;           // ouvert par défaut
+  compact?: boolean;          // en-tête d'une seule ligne (panneaux de réglages : mode vidéo, Mastering)
+  etat?: [boolean, (v: boolean) => void];   // ouvert / fermé géré par la page (sinon retenu sous `id`)
   petit?: boolean;            // version plus basse (sections d'une page)
   ouvrir?: boolean;           // ouvre la section à l'arrivée (lien direct vers elle)
   children: ReactNode;
 }
 
-export function Deroulant({ id, titre, texte, badge, icone, emoji, couleur, defaut, petit, ouvrir, children }: DeroulantProps) {
-  const [ouvert, setOuvert] = useOuvert(id, defaut);
+export function Deroulant({ id, titre, texte, badge, icone, emoji, couleur = "#5b6b8c", defaut, petit, compact, etat, ouvrir, children }: DeroulantProps) {
+  const retenu = useOuvert(id, defaut);
+  const [ouvert, setOuvert] = etat ?? retenu;
   // Le contenu n'est construit qu'à la première ouverture (pages plus légères), puis il reste pour l'animation.
   const [vu, setVu] = useState(ouvert);
   const corps = useId();
   useEffect(() => { if (ouvrir && !ouvert) { setVu(true); setOuvert(true); } }, [ouvrir]); // eslint-disable-line react-hooks/exhaustive-deps
   const basculer = () => { if (!ouvert) setVu(true); setOuvert(!ouvert); };
   return (
-    <section className={`drl ${ouvert ? "ouvert" : ""} ${petit ? "petit" : ""}`} style={{ "--cc": couleur } as CSSProperties}>
+    <section className={`drl ${ouvert ? "ouvert" : ""} ${petit ? "petit" : ""} ${compact ? "compact" : ""}`} style={{ "--cc": couleur } as CSSProperties}>
+      {compact ? (
+        <button type="button" className="drl-compact-btn" aria-expanded={ouvert} aria-controls={corps} onClick={basculer}>
+          <span className="drl-fleche" aria-hidden>▶</span>
+          <b className="drl-compact-titre">{titre}</b>
+          {texte && <span className="drl-compact-texte">{texte}</span>}
+          {badge !== undefined && badge !== "" && <span className="mcard-badge">{badge}</span>}
+        </button>
+      ) : (
       <button type="button" className="gros-btn drl-btn" style={{ "--cc": couleur } as CSSProperties} aria-expanded={ouvert} aria-controls={corps} onClick={basculer}>
         <span className="gros-btn-img">{icone ? <PixelArt name={icone} size={petit ? 48 : 72} /> : <span className="drl-emoji" aria-hidden>{emoji}</span>}</span>
         <span className="gros-btn-txt"><b>{titre}</b>{texte && <span>{texte}</span>}</span>
         {badge !== undefined && badge !== "" && <span className="mcard-badge gros-btn-badge">{badge}</span>}
         <span className="gros-btn-fleche drl-fleche" aria-hidden>▶</span>
       </button>
+      )}
       <div className="drl-corps" id={corps} {...(!ouvert ? { inert: "" } : {})}>
         <div className="drl-int">{(vu || ouvert) && <div className="drl-contenu">{children}</div>}</div>
       </div>

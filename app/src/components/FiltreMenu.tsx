@@ -3,7 +3,7 @@
 // les filtres actifs en petites étiquettes sous la barre (✕ pour en retirer un) et « Tout effacer ».
 import { useFermeture } from "./useFermeture";
 import "./filtres.css";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 export interface FmOption { id: string; nom: string; n?: number; couleur?: string; section?: string }
 export interface FmGroupe {
@@ -126,25 +126,3 @@ export function FiltreMenu({ groupes, valeur, onChange, resultat, bas, autres = 
   );
 }
 
-/** Fenêtre de confirmation de l'app (les confirm() du navigateur sont bloqués dans la version téléphone). */
-export function Confirmer({ texte, detail, oui = "Supprimer définitivement", onOui, onNon }: { texte: string; detail?: string; oui?: string; onOui: () => void; onNon: () => void }) {
-  const btn = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    btn.current?.focus();
-    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onNon(); };
-    window.addEventListener("keydown", esc);
-    return () => window.removeEventListener("keydown", esc);
-  }, [onNon]);
-  return (
-    <div className="cf-fond" role="presentation" onClick={onNon}>
-      <div className="cf-boite" role="alertdialog" aria-modal="true" aria-label={texte} onClick={(e) => e.stopPropagation()}>
-        <p className="cf-texte">{texte}</p>
-        {detail && <p className="small muted">{detail}</p>}
-        <div className="cf-btns">
-          <button type="button" className="e2-ui-btn" ref={btn} onClick={onNon}>Annuler</button>
-          <button type="button" className="e2-ui-btn cf-oui" onClick={onOui}>{oui}</button>
-        </div>
-      </div>
-    </div>
-  );
-}

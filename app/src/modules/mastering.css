@@ -240,17 +240,10 @@
 .ms-ref-nom { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ms-infos-son { margin: 0; }
 
-.ms-analyse { border: 2px solid var(--edge); background: #1a1d24; }
-.ms-analyse > summary { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 8px 12px; cursor: pointer; list-style: none; }
-.ms-analyse > summary::-webkit-details-marker { display: none; }
-.ms-analyse > summary::before { content: "▸"; font-family: var(--px); font-size: 1.2rem; color: #ffb020; }
-.ms-analyse[open] > summary::before { content: "▾"; }
-.ms-analyse > summary b { font-family: var(--px); font-weight: 400; font-size: 1.35rem; }
-.ms-analyse > summary .muted { font-size: 0.86rem; }
 .ms-an-res { display: inline-flex; gap: 6px 14px; flex-wrap: wrap; font-family: ui-monospace, Menlo, monospace; font-size: 0.82rem; }
 .ms-an-res .alerte { color: #ffb020; }
 .ms-an-res .ok { color: #4fd18b; }
-.ms-an-corps { padding: 4px 12px 12px; display: grid; gap: 8px; }
+.ms-an-corps { display: grid; gap: 8px; }
 
 /* étape 2 : presets */
 .ms-presets2 { display: grid; gap: 10px; }

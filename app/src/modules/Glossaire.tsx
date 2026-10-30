@@ -1,13 +1,14 @@
 // Glossaire (lexique en 10 catégories) et recherche globale : mots, paramètres, contrôles, gestes, oscillateurs, gammes, recettes, grilles.
 // Chaque terme : définition simple, nom anglais / abréviation, schéma, aperçu sonore, comment le faire sur l'E2,
 // liens vers les recettes, les fiches d'effets, les leçons et les étapes de « Construire un morceau ».
+import { BoutonLecture } from "../components/Lecteur";
 import { lireJson, ecrireJson } from "../lib/stockage";
 import { Etoile } from "../components/Etoile";
 import { Fenetre } from "../components/Fenetre";
 import { fermerFenetre, ouvrirFenetre, useEtatPage } from "../lib/retour";
 import { useEffect, useMemo, useState } from "react";
 import { CATS_LEX, CLE_QUIZ_LEX, LEXIQUE, lexById, type Cat, type Mot } from "../content/lexique";
-import { ELEMENTS, RECETTES } from "../content/recettes";
+import { ELEMENTS, RECETTES, recetteParId } from "../content/recettes";
 import { FICHES } from "../content/effets";
 import { ETAPES, etapeById, type EtapeId } from "../content/morceau";
 import { NIVEAUX } from "../content/parcours";
@@ -23,7 +24,7 @@ import { indexRecherche, norm, score, TYPES, type Type } from "../lib/recherche"
 import { etatPistes, etatRecette, toutArreter } from "../lib/apercus";
 import "./glossaire.css";
 
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 const ficheById = new Map(FICHES.map((f) => [f.id, f]));
 const catById = new Map(CATS_LEX.map((c) => [c.id, c]));
 const index = indexRecherche;
@@ -56,7 +57,7 @@ function Ecouter({ m }: { m: Mot }) {
   useEffect(() => () => { if (engine.snap.owner === id) engine.stop(); if (fxEngine.snap.owner === id) fxEngine.stop(); }, [id]);
   return (
     <div className="lx-ecoute">
-      <button type="button" className="e2-ui-btn" onClick={() => (playing ? toutArreter() : lancer())}>{playing ? "■ Arrêter" : "▶ Écouter"}</button>
+      <BoutonLecture joue={playing} onClick={() => (playing ? toutArreter() : lancer())} libelle="Écouter" />
       <Badge kind="interp">Approximation pédagogique</Badge>
       <span className="small muted">
         {"fx" in ec ? `Le motif commun joué 4 mesures sans l'effet ${ec.fx.nom}, puis 4 mesures avec.` : rc ? `Aperçu de la recette « ${rc.nom} ».` : "Un son simple du navigateur, pas le son réel de l'Electribe."}
@@ -77,7 +78,7 @@ function liensDe(m: Mot): Lien[] {
     else if (l.startsWith("fx:")) { const f = ficheById.get(l.slice(3)); if (f) add({ href: `#effets/${f.id}`, label: `${f.kind.toUpperCase()} ${f.n} · ${f.nom}`, type: "Fiche d'effet" }); }
     else if (l.startsWith("e:")) { const e = etapeById.get(l.slice(2) as EtapeId); if (e) add({ href: `#morceau/${e.id}`, label: `Étape ${e.nom}`, type: "Construire un morceau" }); }
     else if (l.startsWith("voir:")) { const t = lexById.get(l.slice(5)); if (t) add({ href: `#glossaire/${t.id}`, label: t.fr, type: "Voir aussi", voir: t.id }); }
-    else if (l.startsWith("#")) { const [href, label] = l.split("|"); add({ href, label: label ?? href, type: href.startsWith("#mastering/lecon") ? "Leçon" : href.startsWith("#morceau") ? "Construire un morceau" : "Module" }); }
+    else if (l.startsWith("#")) { const [href, label] = l.split("|"); add({ href, label: label ?? href, type: href.startsWith("#studio/masteriser/lecon") ? "Leçon" : href.startsWith("#morceau") ? "Construire un morceau" : "Module" }); }
   }
   if (m.ec && "recette" in m.ec) { const rc = rcById.get(m.ec.recette); if (rc) add({ href: `#recettes/${rc.id}`, label: rc.nom, type: "Recette" }); }
   if (m.el?.length) {

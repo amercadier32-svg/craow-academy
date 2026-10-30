@@ -1,6 +1,8 @@
 // Module « Construire un morceau » : un assistant en étapes pour monter un morceau dans l'un des 7 styles de l'app
 // couche par couche, avec les recettes de l'app. Chaque nouvelle couche s'écoute par-dessus les couches déjà choisies.
 // Le morceau en cours est gardé sur cet appareil (localStorage).
+import { slug as slugTexte } from "../lib/texte";
+import { BoutonSupprimer, confirmer } from "../components/Confirmer";
 import { BoutonLecture, ChoixMode } from "../components/Lecteur";
 import { lireJson, ecrireJson } from "../lib/stockage";
 import { Etoile } from "../components/Etoile";
@@ -12,7 +14,7 @@ import { nomPas, useKnobRange, usePlayerPrefs } from "../components/SeqPlayer";
 import { knobsDe } from "./Grilles";
 import { INFO } from "../content/gammes";
 import { ETAPES, EXEMPLES, LONGUEURS, PAGES, STRUCTURES, etapeById, styleM, type Etape, type EtapeId, type Exemple, type Section } from "../content/morceau";
-import { KNOBS_APERCU, RECETTES, STYLE_NOM, type Recette } from "../content/recettes";
+import { KNOBS_APERCU, RECETTES, recetteParId, STYLE_NOM, type Recette } from "../content/recettes";
 import { FICHE, stylesGamme, useStyles, type Style } from "../content/styles";
 import { paramById } from "../lib/data";
 import { ALL_KEYS, GAMMES, degreeSemi, gammeByN, keyByEn, notesIn, type Gamme } from "../lib/music";
@@ -26,7 +28,7 @@ import { POTARDS, etatMix, pisteCouche, triees, type Couche, type Morceau } from
 export { etatMix, type Couche, type Morceau };
 
 const CLE = "e2academy.morceau.encours";
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 const percu = (rc: Recette) => SONS_PERCU.includes(rc.apercu.son);
 const uid = () => Math.random().toString(36).slice(2, 9);
 
@@ -242,7 +244,7 @@ function Depart({ m, maj, suivant, recommencer }: { m: Morceau; maj: (f: (x: Mor
       </div>
 
       <div className="mc-nav">
-        {m.couches.length > 0 && <button type="button" className="e2-ui-btn" onClick={() => { if (confirm("Effacer ce morceau et recommencer ?")) recommencer(); }}>↺ Nouveau morceau</button>}
+        {m.couches.length > 0 && <button type="button" className="e2-ui-btn" onClick={() => { void confirmer("Effacer ce morceau et recommencer ?", { oui: "Effacer" }).then((ok) => { if (ok) recommencer(); }); }}>↺ Nouveau morceau</button>}
         <button type="button" className="px-btn green" onClick={suivant}>{m.couches.length ? "Reprendre les couches →" : "Commencer : le kick →"}</button>
       </div>
     </section>
@@ -751,7 +753,7 @@ function StructureLecteur({ id, m, sections }: { id: string; m: Morceau; section
         ))}
       </div>
       <div className="seqp-transport">
-        <button type="button" className={`e2-ui-btn play ${playing && !jeu?.seule ? "on" : ""}`} onClick={() => (playing ? engine.stop() : lancer(null))}>{playing ? "■ Stop" : "▶ Écouter tout le morceau"}</button>
+        <BoutonLecture joue={playing && !jeu?.seule} onClick={() => (playing ? engine.stop() : lancer(null))} libelle="Écouter tout le morceau" />
         <div className="seg" role="radiogroup" aria-label="Longueur">
           <button type="button" role="radio" aria-checked={court} className={court ? "on" : ""} onClick={() => setCourt(true)}>Version courte (4 mesures par section)</button>
           <button type="button" role="radio" aria-checked={!court} className={!court ? "on" : ""} onClick={() => setCourt(false)}>Vraie longueur ({total} mesures, {Math.floor(duree / 60)} min {String(duree % 60).padStart(2, "0")})</button>
@@ -848,8 +850,8 @@ function ExemplesVue({ courant, ouvrir }: { courant: Morceau; ouvrir: (m: Morcea
   useEffect(() => { if (playing) { const st = etat(k); if (st) engine.set(id, { pistes: st.pistes }); } }, [k]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => () => { if (engine.snap.owner === id) engine.stop(); }, []);
   const toggle = () => { engine.touch(id); if (playing) engine.stop(); else { const st = etat(k); if (st) engine.play(id, st); } };
-  const modifier = () => {
-    if (courant.couches.length && !confirm(`Remplacer ton morceau en cours (« ${courant.nom} ») par l'exemple ? Enregistre-le d'abord dans « Emporter sur l'E2 » si tu veux le garder.`)) return;
+  const modifier = async () => {
+    if (courant.couches.length && !(await confirmer(`Remplacer ton morceau en cours (« ${courant.nom} ») par l'exemple ?`, { detail: "Enregistre-le d'abord dans « Emporter sur l'E2 » si tu veux le garder.", oui: "Remplacer" }))) return;
     ouvrir({ ...m, nom: `${ex.nom} (ma version)` }, "grille");
   };
   return (
@@ -905,7 +907,7 @@ function lireListe(): Morceau[] {
   const x = lireJson<Morceau[]>(CLE_LISTE, []); return Array.isArray(x) ? x.filter((m) => m?.v === 1) : [];
 }
 function ecrireListe(l: Morceau[]) { ecrireJson(CLE_LISTE, l); }
-const slug = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "morceau";
+const slug = (s: string) => slugTexte(s) || "morceau";
 
 function ficheSections(m: Morceau, lue: (id: string) => boolean): { titre: string; lignes: Ligne[] }[] {
   const gam = gammeByN.get(m.scale)!;
@@ -1005,8 +1007,8 @@ ${ss.map((s) => `<h2>${echap(s.titre)}</h2><ol>${s.lignes.map((l) => `<li>${echa
             {liste.map((x) => (
               <li key={x.nom}>
                 <span><b>{x.nom}</b> <small className="muted">· {styleM(x.style).nom} · {x.bpm} BPM · {x.couches.length} couches · {new Date(x.majLe).toLocaleDateString("fr-FR")}</small></span>
-                <button type="button" className="e2-ui-btn" onClick={() => { if (!m.couches.length || x.nom === m.nom || confirm(`Ouvrir « ${x.nom} » ? Le morceau en cours (« ${m.nom} ») sera remplacé ; enregistre-le d'abord si tu veux le garder.`)) ouvrir(x, "grille"); }}>Ouvrir</button>
-                <button type="button" className="e2-ui-btn" onClick={() => { if (confirm(`Supprimer « ${x.nom} » de Mes morceaux ?`)) majListe(liste.filter((y) => y.nom !== x.nom)); }}>✕</button>
+                <button type="button" className="e2-ui-btn" onClick={async () => { if (!m.couches.length || x.nom === m.nom || await confirmer(`Ouvrir « ${x.nom} » ?`, { detail: `Le morceau en cours (« ${m.nom} ») sera remplacé ; enregistre-le d'abord si tu veux le garder.`, oui: "Ouvrir" })) ouvrir(x, "grille"); }}>Ouvrir</button>
+                <BoutonSupprimer className="e2-ui-btn" quoi={`« ${x.nom} » de Mes morceaux`} onSupprimer={() => majListe(liste.filter((y) => y.nom !== x.nom))} />
               </li>
             ))}
           </ul>

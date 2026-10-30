@@ -2,6 +2,7 @@
 // Le CSS et le premier morceau (l'accueil) sont lus tout de suite ; les autres modules attendent dans la page
 // sous forme de texte et ne sont lus qu'à leur ouverture (scripts/chargeur.js).
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 // « node scripts/assembler.mjs en-ligne » : version en ligne (GitHub Pages) dans app/site/,
 // avec l'icône installable et la copie hors ligne (dossier en-ligne/).
@@ -32,12 +33,16 @@ if (enLigne) {
   const site = new URL("../site/", import.meta.url), extra = new URL("../en-ligne/", import.meta.url);
   rmSync(site, { recursive: true, force: true });
   mkdirSync(site, { recursive: true });
-  for (const f of readdirSync(extra)) if (!f.endsWith(".md")) copyFileSync(new URL(f, extra), new URL(f, site));
-  const avecTete = avantDerniere(sortie, "</head>", `<link rel="manifest" href="manifest.webmanifest">\n<link rel="icon" type="image/png" href="icone-192.png">\n<link rel="apple-touch-icon" href="icone-apple.png">\n<meta name="apple-mobile-web-app-title" content="CrAoW">\n`);
-  const page = avantDerniere(avecTete, "</body>", `<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});</script>\n`);
+  for (const f of readdirSync(extra)) if (!f.endsWith(".md") && f !== "maj.js" && f !== "sw.js") copyFileSync(new URL(f, extra), new URL(f, site));
+  const avecTete = avantDerniere(sortie, "</head>", `<link rel="manifest" href="manifest.webmanifest">\n<link rel="icon" type="image/png" href="icone-192.png">\n<link rel="apple-touch-icon" href="icone-apple.png">\n<meta name="apple-mobile-web-app-title" content="CrAoW">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="mobile-web-app-capable" content="yes">\n<meta name="theme-color" content="#0e1116">\n`);
+  const maj = readFileSync(new URL("maj.js", extra), "utf8");
+  const page = avantDerniere(avecTete, "</body>", `<script>${maj}</script>\n`);
+  // numéro de version = empreinte de la page : chaque mise en ligne différente déclenche « Nouvelle version disponible »
+  const version = createHash("sha256").update(page).digest("hex").slice(0, 12);
+  writeFileSync(new URL("sw.js", site), readFileSync(new URL("sw.js", extra), "utf8").replace("__VERSION__", version));
   writeFileSync(new URL("index.html", site), page);
   writeFileSync(new URL(".nojekyll", site), "");
-  console.log(`→ version en ligne prête dans app/site/ (${(page.length / 1024).toFixed(0)} Ko, ${js.length} morceaux)`);
+  console.log(`→ version en ligne prête dans app/site/ (${(page.length / 1024).toFixed(0)} Ko, ${js.length} morceaux, version ${version})`);
 } else {
   writeFileSync(new URL("../../E2-Academy.html", import.meta.url), sortie);
   console.log(`→ E2-Academy.html mis à jour (${(sortie.length / 1024).toFixed(0)} Ko, ${js.length} morceaux)`);

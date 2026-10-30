@@ -49,11 +49,6 @@
 .vv-reglages-tete { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; position: sticky; top: -12px; z-index: 1; margin: -12px -14px 0; padding: 10px 14px; background: #16181e; border-bottom: 2px solid var(--edge); }
 .vv-reglages h3 { margin: 0; }
 .vv-reglages p { margin: 0; }
-.vv-bloc { border: 2px solid var(--edge); background: #121318; }
-.vv-bloc > summary { cursor: pointer; padding: 8px 10px; font-family: var(--px); font-size: 1.15rem; list-style: none; }
-.vv-bloc > summary::before { content: "▶ "; font-size: 0.8em; }
-.vv-bloc[open] > summary::before { content: "▼ "; }
-.vv-bloc > :not(summary) { margin: 0 10px 10px; }
 .vv2 .vv-ligne { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 0.9rem; }
 .vv2 .vv-ligne > span:first-child { min-width: 70px; color: var(--muted); }
 .vv2 .vv-ligne input[type="text"], .vv2 .vv-ligne input[type="number"], .vv2 .vv-ligne select {
@@ -108,3 +103,7 @@
 .vv-presets-liste li > div { flex: 1; display: grid; min-width: 0; }
 .vv-presets-liste small { font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (pointer: coarse) { .vv2 .vv-ligne input[type="range"] { min-height: 32px; } .vv-visu-tete label input { width: 22px; height: 22px; } }
+
+/* Fond vert / transparent pour OBS */
+html.fond-transparent, html.fond-transparent body, html.fond-transparent .app, html.fond-transparent .vv2, html.fond-transparent .vv-zone { background: transparent !important; }
+html.fond-transparent .vv2.avec-reglages .vv-zone { background: repeating-conic-gradient(#2a2d36 0 25%, #1d1f26 0 50%) 0 0 / 24px 24px !important; }

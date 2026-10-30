@@ -26,7 +26,7 @@ export function CarteFavori({ x, compact }: { x: InfoFav; compact?: boolean }) {
   const [modeJoue, setModeJoue] = useState<Mode | null>(null);
   const t = typeFav(x.f.type);
   const lancer = (mode: Mode) => { if (joue && modeJoue === mode) { toutArreter(); return; } x.jouer?.(owner, mode, range); setModeJoue(mode); };
-  const ouvrir = () => { if (engine.snap.owner === owner || fxEngine.snap.owner === owner) toutArreter(); if (x.avant && !x.avant()) return; location.hash = x.href; };
+  const ouvrir = async () => { if (engine.snap.owner === owner || fxEngine.snap.owner === owner) toutArreter(); if (x.avant && !(await x.avant())) return; location.hash = x.href; };
   return (
     <li className={`fav-carte ${compact ? "compact" : ""} ${joue ? "joue" : ""}`} style={{ "--cc": x.cat.couleur } as CSSProperties}>
       <div className="fav-tete">

@@ -86,8 +86,9 @@ export interface Recette {
   exercices?: string[];
   /** Kit : plusieurs recettes jouées ensemble sur plusieurs parties (affiché comme une grille). */
   kit?: { lecture: string[]; pistes: { recette: string; mesures: Pas[][] }[] };
-  /** Recette proposée par « Analyser une référence » (badge « D'après une référence ») : nom du morceau analysé. */
-  origine?: { type: "reference"; morceau: string; analyse?: string };
+  /** Recette proposée par « Analyser une référence » (badge « D'après une référence ») : nom du morceau analysé.
+   *  `perso` : recette créée à partir de « ✚ Recette vierge » (badge « Mes recettes »). */
+  origine?: { type: "reference"; morceau: string; analyse?: string } | { type: "perso" };
 }
 
 const PG = (page: number): Source => ({ doc: "PG", page });
@@ -669,4 +670,6 @@ export const RECETTES: (Recette & { element: ElementId })[] = [...PREMIERES, ...
 
 
 /** Potards que l'aperçu sait imiter. */
+/** Une recette par son identifiant (une seule table pour toute l'app). */
+export const recetteParId = new Map(RECETTES.map((r) => [r.id, r]));
 export const KNOBS_APERCU = ["filter.cutoff", "filter.resonance", "filter.egint", "amp.attack", "amp.decay", "amp.level", "amp.pan", "osc.edit", "osc.glide", "mod.depth", "mod.speed", "ifx.edit"];

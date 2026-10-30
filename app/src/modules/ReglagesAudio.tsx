@@ -41,7 +41,7 @@ export default function ReglagesAudio() {
   return (
     <div className="audio-page">
       <h2 className="page-title"><PixelArt name="audio" size={34} /> Réglages audio</h2>
-      <p className="audio-intro muted">L'entrée de ta carte son, pour <a href="#enregistrements">l'Enregistrement</a> et le <a href="#visualiseur">Visualiseur en direct</a>. Réglée une fois ici, elle sert partout.</p>
+      <p className="audio-intro muted">L'entrée de ta carte son, pour les onglets <a href="#studio/enregistrer">Enregistrer</a> et <a href="#studio/visualiser">Visualiser</a> du Studio. Réglée une fois ici, elle sert partout.</p>
 
       {!r.permissionExpliquee && (
         <section className="audio-permission">

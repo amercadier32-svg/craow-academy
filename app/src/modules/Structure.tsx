@@ -4,8 +4,8 @@ import { BoutonLecture, ChoixMode } from "../components/Lecteur";
 import { lireJson, garderSiModifie } from "../lib/stockage";
 import { Infos, Rangement } from "../components/Rangement";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { GRILLES, STYLE_GRILLE, type Grille } from "../content/grilles";
-import { RECETTES, FONCTIONS } from "../content/recettes";
+import { GRILLES, STYLE_GRILLE, type Grille, COULEUR_GRILLE } from "../content/grilles";
+import { recetteParId, FONCTIONS } from "../content/recettes";
 import { LONGUEURS, SECTIONS } from "../content/structure";
 import { gammeByN, keyByEn } from "../lib/music";
 import { engine, useEngine, type SeqState } from "../lib/seq";
@@ -13,7 +13,7 @@ import { Badge, DoneToggle, ObservationBox, SourceRef } from "../components/comm
 import { useKnobRange } from "../components/SeqPlayer";
 import { load, pisteDe } from "./Grilles";
 
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 interface Sec { nom: string; couleur: string; mesures: number; on: boolean[]; role: string }
 interface SData { sections: Sec[]; base: number }
 
@@ -35,7 +35,7 @@ function loadS(g: Grille): SData {
 }
 const mmss = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")}`;
 
-const COUL_STYLE: Record<string, string> = { tribe: "#ff6a3d", mentale: "#9b6bff", tekno: "#6aa2ee" };
+const COUL_STYLE = COULEUR_GRILLE;
 
 export default function Structure({ focus }: { focus?: string }) {
   const [sel, setSel] = useState<string | null>(() => (focus && GRILLES.some((g) => g.id === focus) ? focus : GRILLES[0].id));

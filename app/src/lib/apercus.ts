@@ -1,7 +1,7 @@
 // Aperçus sonores communs : jouer une recette, une grille, une gamme, un terme du glossaire, un effet ou un morceau
 // sans ouvrir sa fiche (page Mes favoris, glossaire). Approximation pédagogique, pas le son réel de l'Electribe.
 import { toutArreter as toutArreterMoteur } from "./moteurAudio";
-import { RECETTES, type Recette } from "../content/recettes";
+import { recetteParId, type Recette } from "../content/recettes";
 import { GRILLES } from "../content/grilles";
 import { MOTIFS, BPM as BPM_GAMME } from "../content/gammes";
 import type { EP, Mot } from "../content/lexique";
@@ -12,7 +12,7 @@ import { etatMix, load, pisteDe, type Morceau } from "./pistes";
 import type { useKnobRange } from "../components/SeqPlayer";
 
 type Range = ReturnType<typeof useKnobRange>;
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 const RANG_DEFAUT = 7; // Aeolian
 
 export function etatPistes(ps: EP[], bpm = BPM_APERCU, swing?: number, scale = RANG_DEFAUT, mode: Mode = "once"): SeqState {

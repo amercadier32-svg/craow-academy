@@ -7,7 +7,6 @@ import { Jauge, usePlace } from "./Jauge";
 
 export const PAGES_PLUS = [
   { id: "audio", nom: "Réglages audio", texte: "Entrée de la Scarlett, test, mono / stéréo", icone: "audio" },
-  { id: "enregistrements", nom: "Mes enregistrements", texte: "Tes prises, favoris ★ et corbeille", icone: "enregistrer" },
   { id: "donnees", nom: "Mes données", texte: "Sauvegarde, export, place utilisée", icone: "carnet" },
   { id: "raccourcis", nom: "Raccourcis clavier", texte: "Toutes les touches de l'app", icone: "glossaire" },
 ] as const;
@@ -21,7 +20,7 @@ export function MenuPlus({ ecran }: { ecran: string }) {
   return (
     <div ref={zone} className={`mm mp ${ouvert ? "open" : ""}`}>
       <button type="button" className={`mm-btn mp-btn ${ici ? "active" : ""}`} aria-expanded={ouvert} aria-haspopup="true" aria-controls="mp-panneau"
-        onClick={() => setOuvert((o) => !o)} title="Plus : réglages audio, enregistrements…">
+        onClick={() => setOuvert((o) => !o)} title="Plus : réglages audio, mes données, raccourcis">
         <span className="mp-traits" aria-hidden>☰</span> <span className="mp-txt">Plus</span>
       </button>
       <div id="mp-panneau" className="mm-panneau mp-panneau" role="region" aria-label="Plus">

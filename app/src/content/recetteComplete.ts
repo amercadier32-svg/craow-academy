@@ -46,7 +46,7 @@ const DEFAUTS: Record<string, { valeur: string; note?: string }> = {
   "part.laststep": { valeur: "16" },
 };
 
-const BLOCS: { id: string; titre: string; champs: string[]; src: Source }[] = [
+export const BLOCS: { id: string; titre: string; champs: string[]; src: Source }[] = [
   { id: "oscillateur", titre: "Oscillator", champs: ["osc.type", "osc.edit", "osc.pitch", "osc.glide"], src: OM(23) },
   { id: "filtre", titre: "Filter", champs: ["type-filtre", "filter.cutoff", "filter.resonance", "filter.egint"], src: OM(23) },
   { id: "modulation", titre: "Modulation", champs: ["mod.type", "mod.depth", "mod.speed", "synchro-mod"], src: PG(14) },

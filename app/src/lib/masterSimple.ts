@@ -88,3 +88,27 @@ export function depuisSimples(v: Partial<ValeursSimples>): Reglages {
 }
 
 export const egaux = (a: Reglages, b: Reglages) => JSON.stringify(a) === JSON.stringify(b);
+
+// ---------- Conversion vers les 6 curseurs (l'ancien mode Avancé a été retiré en octobre 2026) ----------
+/** Ce qui s'entend vraiment : un bloc éteint, ou une bande d'EQ à 0 dB, ne compte pas. */
+function effectif(r: Reglages) {
+  const n = (x: number) => Math.round(x * 100) / 100;
+  const bandes = r.eq.on ? r.eq.bandes.map((b) => (!b.on || ((b.type === "pk" || b.type === "ls" || b.type === "hs") && Math.abs(b.g) < 0.01) ? null : { t: b.type, f: n(b.f), g: n(b.g), q: n(b.q) })) : null;
+  const bloc = <T extends { on: boolean }>(x: T) => (x.on ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, typeof v === "number" ? n(v) : v])) : null);
+  return JSON.stringify({ bandes, comp: bloc(r.comp), sat: bloc(r.sat), larg: r.larg.on && (Math.abs(r.larg.largeur - 100) > 0.01 || r.larg.monoGrave) ? bloc(r.larg) : null, lim: bloc(r.lim) });
+}
+
+/** Les mêmes réglages ramenés aux 6 curseurs (au plus proche) : ce qui n'a pas de curseur est remis à plat. */
+export function versSimple(r0: Reglages): Reglages {
+  const r = avecProtections(r0);
+  const v = lireSimples(r);
+  let n = reglagesSimples();
+  for (const i of [0, 1, 3, 5] as const) if (r.eq.bandes[i].on) n.eq.bandes[i] = { ...r.eq.bandes[i] };
+  n = ecrireSimple(n, "comp", v.comp);
+  n = ecrireSimple(n, "sat", v.sat);
+  n.lim = { ...n.lim, gain: v.volume, plafond: r.lim.plafond, relachement: r.lim.relachement };
+  return n;
+}
+
+/** Vrai si les 6 curseurs suffisent pour obtenir exactement ce son (rien de l'ancien mode Avancé). */
+export const estSimple = (r: Reglages) => effectif(avecProtections(r)) === effectif(versSimple(r));

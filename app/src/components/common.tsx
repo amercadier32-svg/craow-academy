@@ -5,7 +5,7 @@ import { paramById } from "../lib/data";
 import { EnregistrerVersion } from "./Enregistreur";
 
 // Tous les badges de l'app passent par ici (Manuel, Pratique, Interprétation, Mes observations, Générée, D'après une référence).
-export type BadgeKind = "manuel" | "pratique" | "obs" | "interp" | "genere" | "ref";
+export type BadgeKind = "manuel" | "pratique" | "obs" | "interp" | "genere" | "ref" | "perso";
 
 const LABELS: Record<BadgeKind, string> = {
   manuel: "Manuel",
@@ -14,8 +14,9 @@ const LABELS: Record<BadgeKind, string> = {
   obs: "Mes observations",
   genere: "🎲 Générée",
   ref: "🔍 D'après une référence",
+  perso: "✚ Mes recettes",
 };
-const CLASSES: Partial<Record<BadgeKind, string>> = { genere: "badge-gen", ref: "badge-gen badge-ref" };
+const CLASSES: Partial<Record<BadgeKind, string>> = { genere: "badge-gen", ref: "badge-gen badge-ref", perso: "badge-gen badge-perso" };
 
 export function Badge({ kind, children, title }: { kind: BadgeKind; children?: React.ReactNode; title?: string }) {
   return <span className={CLASSES[kind] ?? `badge badge-${kind}`} title={title}>{children ?? LABELS[kind]}</span>;

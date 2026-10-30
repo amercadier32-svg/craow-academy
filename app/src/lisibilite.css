@@ -23,16 +23,25 @@ body .px-btn.green:hover { background: #26843f; }
 body .fx-blk.on { background: #3d6aa8; }
 body .ms-bm-live { color: #8a93a3; }
 body .vu-sat { color: #c07a7e; }
+/* Pastilles des cartes (compteurs) : fond assombri, le texte blanc reste lisible sur toutes les couleurs. */
+body .mcard-badge { background: color-mix(in srgb, var(--cc) 62%, #000); }
 
 /* 2. Cibles tactiles : 44 px minimum sur téléphone (sauf les pads et grilles de pas, serrés comme sur l'E2,
       et la carte de la machine, placée comme sur la photo). */
 @media (pointer: coarse), (max-width: 760px) {
   :is(button, summary, select, .e2-ui-btn, .px-btn, .chipbtn, .rg-tab, .rg-crumb, .rg-clear, .fm-clear, .burger, .top-brand, a.rc-name, a.maplink,
-      .mp-lien, .mm-lien, .sel-st, .chip-t, .ca, .done, .etoile, .close, input[type="text"], input[type="search"], input[type="number"]
+      .mp-lien, .mm-lien, .sel-st, .chip-t, .ca, .done, .etoile, .close, input:not([type]), input[type="text"], input[type="search"], input[type="number"]
   ):not(:is(.e2, .cz, .rc-pads, .seqp-pads, .gpads, .steps, .seqp-steps, .seqp-notes, .ec-notes, .gnotes) *) {
     min-height: 44px;
   }
   :is(a.e2-ui-btn, .top-brand, .rg-tab, a.rc-name, a.maplink, .mp-lien, .mm-lien):not(:is(.e2, .cz) *) { display: inline-flex; align-items: center; }
+  /* fil d'Ariane et réglages du mode vidéo */
+  .repere-etape a { display: inline-flex; align-items: center; min-height: 44px; }
+  body .vv2 .vv-ligne :is(input:not([type]), input[type="text"], input[type="number"], select) { min-height: 44px; }
+  body .vv2 input[type="color"] { height: 44px; width: 48px; }
+  /* « Manuel p. 27 » : la pastille garde sa taille, mais la zone qu'on touche fait 44 px de haut */
+  a.badge { position: relative; }
+  a.badge::after { content: ""; position: absolute; inset: -11px -2px; }
   :is(.etoile, .close, .btn-jeter, .rc-trash, .home-search-x, .vu-raz, .vu-sat, .ms-q, .burger):not(:is(.e2, .cz) *) { min-width: 44px; }
   label:has(> input[type="checkbox"]), label:has(> input[type="radio"]) { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; }
   input[type="checkbox"], input[type="radio"] { width: 22px; height: 22px; }

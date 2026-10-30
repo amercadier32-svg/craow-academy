@@ -12,7 +12,8 @@ import { FICHE, STYLE_NOM, estStyle, useStyles, type Style } from "../content/st
 import { Badge } from "../components/common";
 import { Deroulant, ToutOuvrirFermer } from "../components/Deroulant";
 import { Etoile } from "../components/Etoile";
-import { Confirmer, FiltreMenu, fmVide, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
+import { BoutonSupprimer, Confirmer } from "../components/Confirmer";
+import { FiltreMenu, fmVide, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
 import { PixelArt } from "../components/PixelArt";
 import { effects } from "../lib/data";
 import { gammeByN, GAMMES } from "../lib/music";
@@ -21,7 +22,8 @@ import { MiniSpectre } from "../components/Visus";
 import { effacerEnregistrement, garderEnregistrement, lireEnregistrement } from "../lib/recordings";
 import { arreter, basculerPause, finirMaintenant, lancer, mmss, temps, useEnCours, useTic, type EnCours } from "../lib/sessionEnCours";
 import { enregistrerSession, estFavori, garderDefiPerso, idFavori, listeDefisPerso, listeSessions, supprimerDefiPerso, supprimerSession, useStore, type SessionFaite } from "../lib/store";
-import { MachineSession, defisDeMachine, machineDe, routeSession, useMachineSession } from "../lib/sessionMachines";
+import { MachineSession, machineDe, routeSession, useMachineSession } from "../lib/sessionMachines";
+import { defisDeMachine } from "../lib/sessionDefis";
 import "./session.css";
 
 const FX = effects as unknown as { ifx: { types: { n: number; nom: string }[] }; mfx: { types: { n: number; nom: string }[] } };
@@ -155,7 +157,6 @@ function Choisir({ focus }: { focus?: string }) {
 }
 
 export function CarteDefi({ d, style, grande, vise }: { d: Defi; style: string; grande?: boolean; vise?: boolean }) {
-  const [suppr, setSuppr] = useState(false);
   const sl = styleDeLancement(d, style);
   return (
     <article id={`defi-${d.id}`} className={`ss-carte ${grande ? "grande" : ""} ${vise ? "vise" : ""}`} style={{ "--cc": COUL_DUREE[d.duree] } as CSSProperties}>
@@ -171,9 +172,8 @@ export function CarteDefi({ d, style, grande, vise }: { d: Defi; style: string; 
       <p className="ss-styles-d small muted">{d.styles?.length ? d.styles.map((s) => STYLE_NOM[s]).join(", ") : "Tous les styles"}</p>
       <div className="ss-carte-btns">
         <button type="button" className="px-btn green" onClick={() => lancerDefi(d, sl)}>▶ Lancer{sl ? ` en ${STYLE_NOM[sl as Style]}` : ""}</button>
-        {d.perso && <button type="button" className="chipbtn" onClick={() => setSuppr(true)}>🗑 Supprimer</button>}
+        {d.perso && <BoutonSupprimer quoi={`le défi « ${d.titre} »`} detail="Tes sessions déjà faites avec ce défi restent dans l'historique." onSupprimer={() => supprimerDefiPerso(d.id)}>🗑 Supprimer</BoutonSupprimer>}
       </div>
-      {suppr && <Confirmer texte={`Supprimer le défi « ${d.titre} » ?`} detail="Tes sessions déjà faites avec ce défi restent dans l'historique." oui="Supprimer" onNon={() => setSuppr(false)} onOui={() => { supprimerDefiPerso(d.id); setSuppr(false); }} />}
     </article>
   );
 }
@@ -459,7 +459,6 @@ function Historique() {
 }
 
 function LigneSession({ s, defi }: { s: SessionFaite; defi?: Defi }) {
-  const [suppr, setSuppr] = useState(false);
   const date = new Date(s.le).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
   const reel = Math.round(s.dureeReelle / 60);
   return (
@@ -485,9 +484,8 @@ function LigneSession({ s, defi }: { s: SessionFaite; defi?: Defi }) {
       <div className="ss-hist-btns">
         {s.audioNom && <Ecoute id={`session:${s.id}`} nom={s.audioNom} />}
         {defi && <button type="button" className="chipbtn" onClick={() => lancerDefi(defi, s.style)}>▶ {s.statut === "a-reprendre" ? "Reprendre ce défi" : "Relancer ce défi"}</button>}
-        <button type="button" className="chipbtn" onClick={() => setSuppr(true)}>🗑</button>
+        <BoutonSupprimer quoi={`la session « ${s.titre} » du ${date}`} detail="Son enregistrement audio est effacé aussi." onSupprimer={() => { supprimerSession(s.id); void effacerEnregistrement(`session:${s.id}`).catch(() => {}); }} />
       </div>
-      {suppr && <Confirmer texte={`Supprimer la session « ${s.titre} » du ${date} ?`} detail="Son enregistrement audio est effacé aussi." oui="Supprimer" onNon={() => setSuppr(false)} onOui={() => { supprimerSession(s.id); void effacerEnregistrement(`session:${s.id}`).catch(() => {}); setSuppr(false); }} />}
     </li>
   );
 }

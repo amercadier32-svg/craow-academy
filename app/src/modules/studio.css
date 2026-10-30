@@ -1,0 +1,23 @@
+/* Module Studio : onglets, son en cours ; la barre de lecture du bas vient de mastering.css (.ms-barre) */
+.studio { max-width: 1180px; margin: 0 auto; display: grid; gap: 12px; padding-bottom: calc(var(--ms-barre, 130px) + 24px); }
+.studio .ms2 { padding-bottom: 0; }
+.studio-onglets { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.studio-onglet { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; min-height: 44px; background: #23262f; color: var(--text);
+  border: 3px solid var(--edge); box-shadow: 0 4px 0 var(--edge); text-decoration: none; font-family: var(--px); font-size: 1.15rem; }
+.studio-onglet:hover { background: #2f333e; }
+.studio-onglet.on { background: #ffb020; color: #16181e; transform: translateY(2px); box-shadow: 0 2px 0 var(--edge); }
+.studio-rec-led { width: 10px; height: 10px; border-radius: 50%; background: #ff3b3b; animation: vu-clign-rec 1s steps(2) infinite; }
+.studio-son { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 12px; background: #1a1d24; border: 2px dashed #ffffff22; }
+.studio-son.charge { border-style: solid; border-color: #ffb02066; }
+.studio-son-tag { font-family: var(--px); color: #ffb020; text-transform: uppercase; font-size: 0.95rem; }
+.studio-son-nom { display: grid; min-width: 0; flex: 1; }
+.studio-son-nom b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.studio-son-nom small { color: var(--muted); }
+.studio-son-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.studio-son .err { flex-basis: 100%; margin: 0; }
+.studio-enr { display: grid; gap: 12px; }
+.studio-titre-section { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; }
+.visu-rec-mini { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+@media (max-width: 760px) {
+  .studio-onglet { padding: 6px 10px; font-size: 1rem; flex: 1 1 40%; justify-content: center; }
+}

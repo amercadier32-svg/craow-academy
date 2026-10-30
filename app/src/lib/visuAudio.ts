@@ -1,5 +1,6 @@
 // Mesures en direct pour le Visualiseur : spectre, forme d'onde, stéréo (largeur, phase, grave centré),
 // note dominante (estimation) et détection du kick. Lit l'entrée ouverte par audioEntree.ts.
+import { telephone } from "./moteurAudio";
 import { contexteEntree, signalerErreurAffichage, sortieEntree } from "./audioEntree";
 import { FREQS_SPECTRE } from "./masterAnalyse";
 import { nomMidi } from "./music";
@@ -18,7 +19,8 @@ function brancher(): Noeuds | null {
 function creerNoeuds(ctx: AudioContext, sortie: GainNode): Noeuds {
   const mono = ctx.createGain(); mono.channelCount = 1; mono.channelCountMode = "explicit"; mono.channelInterpretation = "speakers";
   sortie.connect(mono);
-  const aM = ctx.createAnalyser(); aM.fftSize = 8192; aM.minDecibels = -120; aM.maxDecibels = 0; aM.smoothingTimeConstant = 0.6;
+  const aM = ctx.createAnalyser(); aM.fftSize = telephone ? 4096 : 8192;   // téléphone : analyse deux fois plus légère
+  aM.minDecibels = -120; aM.maxDecibels = 0; aM.smoothingTimeConstant = 0.6;
   mono.connect(aM);
   const sp = ctx.createChannelSplitter(2); sortie.connect(sp);
   const aL = ctx.createAnalyser(), aR = ctx.createAnalyser(); aL.fftSize = aR.fftSize = 2048;

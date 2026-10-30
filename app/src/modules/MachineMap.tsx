@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { norm } from "../lib/texte";
 import { Panel, PAD_MODES, stepLabel, type PadMode } from "../components/Panel";
 import { exercisesForControl, exercisesForParam, type Exercise } from "../content/exercises";
 import {
@@ -35,7 +36,6 @@ const REAR_SHORT: Record<string, string> = {
   phones: "Casque", dc: "DC 9V", usb: "USB", sd: "SD", led: "Diode",
 };
 
-const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
 function searchText(c: PlacedControl) {
   const params = (c.parametres ?? []).map((id) => paramById.get(id)).filter(Boolean) as Parameter[];

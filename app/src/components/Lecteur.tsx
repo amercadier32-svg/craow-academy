@@ -5,11 +5,13 @@ import type { ReactNode } from "react";
 type Mode = "once" | "loop";
 
 /** Gros bouton lecture / arrêt. `espace` : rappelle que la touche Espace fait pareil. */
-export function BoutonLecture({ joue, onClick, libelle = "Lecture", espace, disabled, grand }: {
+export function BoutonLecture({ joue, onClick, libelle = "Lecture", espace, disabled, grand, pixel }: {
   joue: boolean; onClick: () => void; libelle?: ReactNode; espace?: boolean; disabled?: boolean; grand?: boolean;
+  pixel?: boolean;   // gros bouton pixel (vert pendant la lecture) au lieu du bouton de console
 }) {
+  const classe = pixel ? `px-btn ${joue ? "green" : ""}` : `e2-ui-btn play ${grand ? "big" : ""} ${joue ? "on" : ""}`;
   return (
-    <button type="button" className={`e2-ui-btn play ${grand ? "big" : ""} ${joue ? "on" : ""}`} onClick={onClick} aria-pressed={joue} disabled={disabled}>
+    <button type="button" className={classe} onClick={onClick} aria-pressed={joue} disabled={disabled}>
       {joue ? "■ Stop" : <>▶ {libelle}</>}{espace && <> <small>(Espace)</small></>}
     </button>
   );

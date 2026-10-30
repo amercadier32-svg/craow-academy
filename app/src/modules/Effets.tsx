@@ -1,5 +1,6 @@
 // Guide des effets et modulations : une fiche par Insert FX, par Master FX et par modulation.
 // Lien direct : #effets/ifx-3, #effets/mfx-12, #effets/mod-25.
+import { norm } from "../lib/texte";
 import { BoutonLecture, ChoixMode } from "../components/Lecteur";
 import { Etoile } from "../components/Etoile";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -21,7 +22,7 @@ import { AvantApres, FormeMod, Trajet } from "../components/FxSchema";
 import { Badge, DoneToggle, ObservationBox, PlageLue, RangeBox, SourceRef, StartValueChip } from "../components/common";
 import { useKnobRange, usePlayerPrefs } from "../components/SeqPlayer";
 import { BPM_APERCU, MOTIF_TEXTE, fxEngine, registerFx, touchFx, useFx, vitesseApercu, type AB, type FxParams } from "../lib/fxaudio";
-import { basculerFavori, listeFavoris, useStore } from "../lib/store";
+import { listeFavoris, useStore } from "../lib/store";
 
 const KINDS: { id: Kind; nom: string; court: string }[] = [
   { id: "ifx", nom: "Insert FX", court: "IFX" },
@@ -32,12 +33,9 @@ const KINDS: { id: Kind; nom: string; court: string }[] = [
 // ---------- Favoris : ceux de « Mes favoris » (type fx) ----------
 function useFavoris() {
   const st = useStore();
-  const fav = listeFavoris(st).filter((x) => x.type === "fx").map((x) => x.ref);
-  const toggle = (id: string) => { const f = ficheById.get(id); basculerFavori("fx", id, f ? `${f.kind === "mod" ? "Modulation" : f.kind.toUpperCase()} ${f.n} · ${f.nom}` : id); };
-  return [fav, toggle] as const;
+  return listeFavoris(st).filter((x) => x.type === "fx").map((x) => x.ref);
 }
 
-const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const texteFiche = (f: Fiche) => norm([f.n, f.nom, f.usage.texte, f.usage.assoc.join(" "), f.usage.sons.join(" "),
   f.kind === "mod" ? `${f.sourceManuel} ${f.destManuel}` : `${f.quoi} ${FAMILLES.find((x) => x.id === f.famille)?.nom}`].join(" "));
 
@@ -72,7 +70,7 @@ export default function Effets({ focus }: { focus?: string }) {
   const [q, setQ] = useEtatPage("effets.recherche", "");
   const favOnly = fl.favoris.length > 0;
   const { tous, visibles } = useStyles();
-  const [fav] = useFavoris();
+  const fav = useFavoris();
   const { faits } = useStore();
   // Retour du navigateur : la fenêtre suit l'adresse (#effets = fermée, #effets/<id> = ouverte).
   useEffect(() => {

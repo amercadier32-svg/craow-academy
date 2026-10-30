@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { PixelArt } from "../components/PixelArt";
-import { NIVEAUX } from "../content/parcours";
+import type { Niveau } from "../content/parcours";
 import type { Type } from "../lib/recherche";
 import { listeAnalyses, listeFavoris, useStore } from "../lib/store";
 const BandeauFavoris = lazy(() => import("./AccueilFavoris"));
@@ -9,7 +9,7 @@ import { derniersExports } from "../lib/exportsMaster";
 import { MACHINES } from "../machines";
 
 // Accueil, de haut en bas : titre + accroche, recherche globale, puis des sections déroulantes :
-// Machines (ouverte par défaut), Mes favoris, Analyser une référence, Visualiseur en direct, Mastering, Apprendre.
+// Machines (ouverte par défaut), Mes favoris, Studio (Enregistrer, Visualiser, Analyser, Masteriser), Apprendre.
 // Les modules de chaque machine sont sur la page de la machine (#electribe2), pas ici.
 
 export interface Carte { href: string; nom: string; texte: string; icone: string; couleur: string; badge: string | number; pal?: Record<string, string> }
@@ -18,6 +18,9 @@ export default function Accueil() {
   const st = useStore();
   const { faits } = st;
   const nbFavs = listeFavoris(st).length;
+  // Le Parcours (contenu lourd) se lit juste après l'affichage de l'accueil, pour compter les leçons.
+  const [NIVEAUX, setNiveaux] = useState<Niveau[]>([]);
+  useEffect(() => { let ok = true; void import("../content/parcours").then((m) => { if (ok) setNiveaux(m.NIVEAUX); }); return () => { ok = false; }; }, []);
   const lecons = NIVEAUX.flatMap((n) => n.lecons);
   const lues = lecons.filter((l) => faits[`lesson:${l.id}`]).length;
   const exports = derniersExports();
@@ -35,7 +38,7 @@ export default function Accueil() {
       <BarrePixel couleurs={["#5b8bd0", "#3fd6d0", "#4fd18b"]} />
       <Deroulant id="accueil.machines" defaut icone="machine" couleur="#4e7ec2" titre="Machines" texte="L'Electribe 2 et bientôt la TD-3 : fiches, recettes, gammes, effets." badge={MACHINES.length}>
         <div className="home-machines">
-          <CarteModule grande c={{ href: "#electribe2", nom: "Korg Electribe 2", texte: "Synth · la machine, les recettes, les sessions, les gammes, les effets et le Labo, rangés en 4 groupes.", icone: "machine", couleur: "#4e7ec2", badge: "4 groupes" }} />
+          <CarteModule grande c={{ href: "#electribe2", nom: "Korg Electribe 2", texte: "Synth · la machine, le setup, les recettes, les sessions, le groove, les gammes et les effets, rangés en 4 groupes.", icone: "machine", couleur: "#4e7ec2", badge: "4 groupes" }} />
           <CarteModule grande c={{ href: "#td3", nom: "Behringer TD-3", texte: "Guide en préparation, avec les mêmes menus que l'Electribe 2.", icone: "td3", couleur: "#8a8f9c", badge: "Bientôt" }} />
         </div>
       </Deroulant>
@@ -45,42 +48,13 @@ export default function Accueil() {
         <Suspense fallback={<p className="muted small">Chargement…</p>}><BandeauFavoris /></Suspense>
       </Deroulant>
 
-      <BarrePixel couleurs={["#ff6a3d", "#e255c8", "#9b6bff"]} />
-      <Deroulant id="accueil.reference" icone="reference" couleur="#9b6bff" titre="Analyser une référence" texte="BPM, tonalité et son d'un morceau que tu aimes, puis des recettes E2 pour t'en approcher." badge={listeAnalyses(st).length ? `${listeAnalyses(st).length} analyse${listeAnalyses(st).length > 1 ? "s" : ""}` : "WAV · MP3"}>
-        <SectionReference />
-      </Deroulant>
-
-      <BarrePixel couleurs={["#4fd18b", "#3fd6d0", "#7fe0ff"]} />
-      <Deroulant id="accueil.visualiseur" icone="visualiseur" couleur="#4fd18b" titre="Visualiseur en direct" texte="Spectre, oscilloscope et stéréo de ton E2 par la Scarlett, et un mode vidéo pour OBS." badge="Live">
-        <div className="drl-session">
-          <div className="drl-session-btns">
-            <a className="px-btn green" href="#visualiseur"><PixelArt name="visualiseur" size={20} /> Ouvrir le visualiseur</a>
-            <a className="px-btn" href="#visualiseur/video">🎬 Mode vidéo</a>
-            <a className="e2-ui-btn" href="#enregistrements"><PixelArt name="enregistrer" size={18} /> Mes enregistrements</a>
-            <a className="e2-ui-btn" href="#audio"><PixelArt name="audio" size={18} /> Réglages audio</a>
-          </div>
-          <p className="drl-vide">Spectre en barres, spectrogramme, oscilloscope, vumètre et stéréo, seuls ou plusieurs à la fois. Le mode vidéo passe en plein écran (16:9 ou 9:16) avec ton nom, le BPM et une pulsation au kick.</p>
-        </div>
-      </Deroulant>
-
-      <BarrePixel couleurs={["#ffb020", "#e255c8", "#9b6bff"]} />
-      <Deroulant id="accueil.mastering" icone="mastering" couleur="#ffb020" titre="Mastering" texte="Analyser, masteriser et exporter tes morceaux, en comparant au même volume." badge={exports.length ? `${exports.length} export${exports.length > 1 ? "s" : ""}` : "WAV"}>
-        <div className="drl-mastering">
-          <a className="px-btn" href="#mastering"><PixelArt name="mastering" size={20} /> Ouvrir le Mastering</a>
-          {exports.length === 0 ? (
-            <p className="drl-vide">Pas encore d'export. Tes derniers masters exportés apparaîtront ici.</p>
-          ) : (
-            <ul className="drl-liste">
-              {exports.slice(0, 4).map((e) => (
-                <li key={e.le}><b>{e.nom}</b><span>{e.format} · {Number.isFinite(e.lufs) ? `${e.lufs.toFixed(1)} LUFS` : "—"} · {dateCourte(e.le)}</span></li>
-              ))}
-            </ul>
-          )}
-        </div>
+      <BarrePixel couleurs={["#ff3b3b", "#ffb020", "#9b6bff"]} />
+      <Deroulant id="accueil.studio" icone="mastering" couleur="#ffb020" titre="Studio" texte="Enregistrer, visualiser, analyser et masteriser ton son, au même endroit." badge={exports.length ? `${exports.length} export${exports.length > 1 ? "s" : ""}` : "4 onglets"}>
+        <SectionStudio exports={exports} />
       </Deroulant>
 
       <BarrePixel couleurs={["#e8484e", "#ffd84d", "#4fd18b"]} />
-      <Deroulant id="accueil.apprendre" icone="parcours" couleur="#e8484e" titre="Apprendre" texte={`Le Parcours (${NIVEAUX.length} niveaux, ${lecons.length} leçons) et le Quiz.`} badge={lues ? `${lues}/${lecons.length}` : lecons.length}>
+      <Deroulant id="accueil.apprendre" icone="parcours" couleur="#e8484e" titre="Apprendre" texte={NIVEAUX.length ? `Le Parcours (${NIVEAUX.length} niveaux, ${lecons.length} leçons) et le Quiz.` : "Le Parcours et le Quiz."} badge={lues ? `${lues}/${lecons.length}` : lecons.length}>
         <div className="home-machines">
           <CarteModule grande c={{ href: "#parcours", nom: "Parcours", texte: `${NIVEAUX.length} niveaux, ${lecons.length} leçons, du premier motif au morceau.`, icone: "parcours", couleur: "#e8484e", badge: lues ? `${lues}/${lecons.length}` : lecons.length }} />
           <CarteModule grande c={{ href: "#quiz", nom: "Quiz", texte: "Flashcards et répétition espacée.", icone: "quiz", couleur: "#ffd84d", badge: "?" }} />
@@ -90,7 +64,7 @@ export default function Accueil() {
   );
 }
 
-const SECTIONS_ACCUEIL = ["accueil.machines", "accueil.favoris", "accueil.reference", "accueil.visualiseur", "accueil.mastering", "accueil.apprendre"];
+const SECTIONS_ACCUEIL = ["accueil.machines", "accueil.favoris", "accueil.studio", "accueil.apprendre"];
 
 /** « 29 oct. » */
 export const dateCourte = (iso: string) => { try { return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }); } catch { return iso.slice(0, 10); } };
@@ -134,7 +108,7 @@ export function CarteModule({ c, grande }: { c: Carte; grande?: boolean }) {
 }
 
 // ---------- Recherche dans toute l'app ----------
-const ORDRE: Type[] = ["recette", "fx", "gamme", "defi", "lecon", "ctl", "param", "geste", "grille", "osc"];
+const ORDRE: Type[] = ["page", "recette", "fx", "gamme", "lecon", "defi", "session", "analyse", "ctl", "param", "geste", "grille", "osc"];
 
 type ModRecherche = typeof import("../lib/recherche");
 function RechercheAccueil() {
@@ -154,7 +128,7 @@ function RechercheAccueil() {
       <label className="home-search-barre">
         <PixelArt name="glossaire" size={28} />
         <input type="search" value={q} onChange={(e) => setQ(e.target.value)} onFocus={charger} aria-label="Chercher dans toute l'app"
-          placeholder="Chercher partout : recettes, effets, glossaire, leçons, fiches de la machine…"
+          placeholder="Chercher partout : recettes, effets, gammes, glossaire, leçons, sessions, pages…"
           onKeyDown={(e) => { if (e.key === "Enter" && q.trim()) location.hash = toutVoir; }} />
         {q && <button type="button" className="home-search-x" onClick={() => setQ("")} aria-label="Effacer">✕</button>}
       </label>
@@ -182,29 +156,38 @@ function Groupe({ titre, n, items }: { titre: string; n: number; items: { href: 
   );
 }
 
-/** Section « Analyser une référence » de l'accueil : les dernières analyses. */
-function SectionReference() {
+/** Section « Studio » de l'accueil : les 4 onglets, les dernières analyses et les derniers masters exportés. */
+function SectionStudio({ exports }: { exports: ReturnType<typeof derniersExports> }) {
   const st = useStore();
   const dernieres = listeAnalyses(st).slice(0, 3);
   return (
     <div className="drl-session">
       <div className="drl-session-btns">
-        <a className="px-btn" href="#reference"><PixelArt name="reference" size={20} /> Analyser un morceau</a>
+        <a className="px-btn" href="#studio/enregistrer"><PixelArt name="enregistrer" size={20} /> Enregistrer</a>
+        <a className="px-btn green" href="#studio/visualiser"><PixelArt name="visualiseur" size={20} /> Visualiser</a>
+        <a className="px-btn" href="#studio/analyser"><PixelArt name="reference" size={20} /> Analyser</a>
+        <a className="px-btn" href="#studio/masteriser"><PixelArt name="mastering" size={20} /> Masteriser</a>
+        <a className="e2-ui-btn" href="#studio/visualiser/video">🎬 Mode vidéo</a>
       </div>
-      {dernieres.length === 0 ? (
-        <p className="drl-vide">Charge un morceau (WAV, MP3, FLAC) : tempo, tonalité, analyse d'un kick, recettes de départ et comparaison avec ton son. Tout reste dans ton navigateur.</p>
-      ) : (
+      <p className="drl-vide">Un seul son en cours pour les 4 onglets : ce que tu enregistres s'analyse puis se masterise sans réimporter le fichier. La barre de lecture en bas est la même partout (A/B au même volume, Bypass, Mono).</p>
+      {dernieres.length > 0 && (
         <ul className="drl-liste">
           {dernieres.map((a) => (
             <li key={a.id}>
               <b>{a.nom}</b>
-              <span>{dateCourte(a.le)} · {a.bpm ? `${a.bpm.toLocaleString("fr-FR")} BPM` : "BPM ?"}{a.key ? ` · ${a.key} ${a.mineur ? "mineur" : "majeur"}` : ""} · {a.recettes.length} recette(s)</span>
-              <a className="chipbtn drl-lancer" href={`#reference/${a.id}`}>📂 Ouvrir</a>
+              <span>Analyse · {dateCourte(a.le)} · {a.bpm ? `${a.bpm.toLocaleString("fr-FR")} BPM` : "BPM ?"}{a.key ? ` · ${a.key} ${a.mineur ? "mineur" : "majeur"}` : ""} · {a.recettes.length} recette(s)</span>
+              <a className="chipbtn drl-lancer" href={`#studio/analyser/${a.id}`}>📂 Ouvrir</a>
             </li>
+          ))}
+        </ul>
+      )}
+      {exports.length > 0 && (
+        <ul className="drl-liste">
+          {exports.slice(0, 3).map((e) => (
+            <li key={e.le}><b>{e.nom}</b><span>Master · {e.format} · {Number.isFinite(e.lufs) ? `${e.lufs.toFixed(1)} LUFS` : "—"} · {dateCourte(e.le)}</span></li>
           ))}
         </ul>
       )}
     </div>
   );
 }
-

@@ -1,25 +1,23 @@
 // L'enregistreur : ● REC, Stop, décompte d'une mesure, vumètre et alerte de saturation,
 // puis forme d'onde avec réécoute, découpe du début et de la fin, normalisation, export WAV et « Garder ».
 // Il s'ouvre partout (recettes, exercices, relevés, Session, Référence, Mastering, Mes enregistrements).
+import { BoutonLecture } from "./Lecteur";
 import { sortie } from "../lib/moteurAudio";
 import { usePrefs } from "../lib/stockage";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type PointerEvent as PE } from "react";
 import { fmtDb, fmtHz, paireEffective, reessayer, useEntree, useEntreeEtat, versDb } from "../lib/audioEntree";
 import {
   arreterLecture, bornesUtiles, crete, cretes, decoderBlob, demarrerCapture, DUREE_MAX_S, etatLecture, gainNormalise, jouerFichier, jouerPrise, jouerTampon,
-  lacherPrise, lecteur, libererPrise, nomAuto, priseIci, recupererPrise, surLecture, tailleWav, wavDe, type Capture, type Prise,
+  lacherPrise, lecteur, libererPrise, nomAuto, surLecture, tailleWav, wavDe, type Capture, type Prise,
 } from "../lib/enregistreur";
-import { ajouterEnregistrement, fmtTaille, listerEnregistrements, etatPrise, listerPrises, lireEnregistrement, surChangement, type Ligne, type MetaPrise, type ModuleRec } from "../lib/recordings";
+export { NOM_MODULE, mmss } from "../lib/recordings";
+import { NOM_MODULE, mmss, ajouterEnregistrement, fmtTaille, listerEnregistrements, etatPrise, lireEnregistrement, surChangement, type Ligne, type ModuleRec } from "../lib/recordings";
 import { telecharger } from "../lib/telecharger";
 import { Etoile } from "./Etoile";
 import { Vumetre } from "./Vumetre";
 import "./enregistreur.css";
 
 export interface SourceRec { module: ModuleRec; ref?: string; titre: string; href?: string }
-export const NOM_MODULE: Record<ModuleRec, string> = {
-  recette: "Recette", exercice: "Exercice d'écoute", releve: "Relevé de potard", session: "Session", reference: "Analyser une référence",
-  mastering: "Mastering", visualiseur: "Visualiseur en direct", libre: "Enregistrement libre", fichier: "Fichier ajouté",
-};
 
 // ---------------------------------------------------------------- Préférences (gardées sur l'appareil)
 interface Prefs { decompte: boolean; bip: boolean; bpm: number; bits: 16 | 24; normaliser: boolean }
@@ -158,7 +156,6 @@ type Phase = "pret" | "decompte" | "rec" | "fini" | "garde";
 let compteur = 0;
 
 /** « 40:00 » */
-export const mmss = (s: number) => { const t = Math.max(0, Math.ceil(s)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
 
 /** L'état de l'enregistreur, séparé de son affichage : le Visualiseur le garde pendant qu'il passe en mode vidéo. */
 export function useEnregistreur({ source, bpm, qui: quiDonne, actif = true }: { source: SourceRec; bpm?: number; qui?: string; actif?: boolean }) {
@@ -369,7 +366,7 @@ export function VueEnregistreur({ r, utiliser, garderDansListe = true, onFermer,
           </div>
           {prise.saturations > 0 && <p className="audio-alerte rouge small">⚠ Cette prise a saturé {prise.saturations.toLocaleString("fr-FR")} fois (en rouge sur la forme d'onde). Refais-la avec un peu moins de gain.</p>}
           <div className="rec-btns">
-            <button type="button" className="px-btn" onClick={() => r.ecouter(false)}>{r.joue ? "■ Stop" : "▶ Réécouter"}</button>
+            <BoutonLecture pixel joue={r.joue} onClick={() => r.ecouter(false)} libelle="Réécouter" />
             <button type="button" className="e2-ui-btn" onClick={() => r.ecouter(true)} disabled={r.joue}>🔁 En boucle</button>
             {phase === "fini" && <button type="button" className="e2-ui-btn" onClick={() => { const [a, b] = bornesUtiles(prise); r.setBornes([a / r.n, b / r.n]); }}>✂ Couper les silences</button>}
             {phase === "fini" && <button type="button" className="e2-ui-btn" onClick={() => r.setBornes([0, 1])}>Tout garder</button>}
@@ -393,7 +390,7 @@ export function VueEnregistreur({ r, utiliser, garderDansListe = true, onFermer,
             {onFermer && <button type="button" className="e2-ui-btn" onClick={onFermer}>Fermer</button>}
           </div>
           {r.prepa !== null && <p className="small muted" role="status">Préparation du fichier… {Math.round(r.prepa * 100)} %</p>}
-          {r.msg && <p className="small ok" role="status">✓ {r.msg} {phase === "garde" && <a href="#enregistrements">Voir Mes enregistrements</a>}</p>}
+          {r.msg && <p className="small ok" role="status">✓ {r.msg} {phase === "garde" && <a href="#studio/enregistrer">Voir Mes enregistrements</a>}</p>}
         </div>
       )}
       {r.err && <p className="small err" role="alert">{r.err}</p>}
@@ -430,7 +427,7 @@ export function MesVersions({ module, refId }: { module: ModuleRec; refId: strin
           <Etoile type="enregistrement" cle={x.cle} titre={`${x.meta!.titre} (ma version ${v.length - i})`} />
         </li>
       ))}
-      {v.length > 5 && <li className="small muted"><a href="#enregistrements">+ {v.length - 5} autre(s) dans Mes enregistrements</a></li>}
+      {v.length > 5 && <li className="small muted"><a href="#studio/enregistrer">+ {v.length - 5} autre(s) dans Mes enregistrements</a></li>}
     </ul>
   );
 }
@@ -485,50 +482,3 @@ export function EnregistrerVersion({ source, bpm, libelle = "● Enregistrer ma 
 // ---------------------------------------------------------------- Récupération après un plantage
 /** Bandeau en haut de l'app : une prise est restée sur le disque (onglet fermé ou planté pendant l'enregistrement,
  *  ou prise arrêtée mais pas gardée). « Récupérer » la range dans Mes enregistrements. */
-export function RecupPrises() {
-  const [prises, setPrises] = useState<MetaPrise[]>([]);
-  const [occupe, setOccupe] = useState("");
-  const [fait, setFait] = useState("");
-  useEffect(() => {
-    let vivant = true;
-    const lire = () => listerPrises().then((l) => {
-      // une prise d'un autre onglet qui enregistre encore (écrite il y a moins de 20 s) n'est pas proposée
-      if (!vivant) return;
-      // déjà gardée (dans Mes enregistrements ou une session) : ses morceaux partent sans rien demander
-      for (const m of l) if (!priseIci(m.id) && (m.etat === "gardee" || m.frames === 0) && (m.etat !== "rec" || Date.now() - m.majLe > 20000)) void libererPrise(m.id);
-      setPrises(l.filter((m) => !priseIci(m.id) && m.frames > 0 && m.etat !== "gardee" && (m.etat === "arretee" || Date.now() - m.majLe > 20000)));
-      // écrite il y a peu (plantage juste avant le lancement, ou un autre onglet) : on regarde de nouveau dans 20 s
-      if (l.some((m) => !priseIci(m.id) && m.etat === "rec" && Date.now() - m.majLe <= 20000)) { window.clearTimeout(relire); relire = window.setTimeout(lire, 21000); }
-    }).catch(() => {});
-    let relire = 0;
-    lire();
-    const u = surChangement(lire);
-    window.addEventListener("hashchange", lire);
-    return () => { vivant = false; u(); window.clearTimeout(relire); window.removeEventListener("hashchange", lire); };
-  }, []);
-  if (!prises.length && !fait) return null;
-  const recuperer = async (m: MetaPrise) => {
-    setOccupe(m.id);
-    try { const d = await recupererPrise(m); setFait(`✓ Récupéré : ${mmss(d)} rangées dans Mes enregistrements.`); }
-    catch { setFait("Impossible de récupérer cet enregistrement (stockage plein ?)."); }
-    setOccupe(""); setPrises((l) => l.filter((x) => x.id !== m.id));
-  };
-  const jeter = async (m: MetaPrise) => { await libererPrise(m.id); setPrises((l) => l.filter((x) => x.id !== m.id)); };
-  return (
-    <div className="recup-prises" role="alert">
-      {prises.map((m) => (
-        <div key={m.id} className="recup-ligne">
-          <span>
-            <b>{m.etat === "rec" ? "⚠ Un enregistrement s'est arrêté avant la fin" : "Un enregistrement n'a pas été gardé"}</b>
-            {" "}· {mmss(m.frames / m.sr)} enregistrées le {new Date(m.debut).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · {NOM_MODULE[m.source.module]}{m.source.titre && m.source.titre !== NOM_MODULE[m.source.module] ? ` : ${m.source.titre}` : ""}
-          </span>
-          <span className="recup-btns">
-            <button type="button" className="px-btn green" disabled={occupe !== ""} onClick={() => void recuperer(m)}>{occupe === m.id ? "Récupération…" : "💾 Récupérer dans Mes enregistrements"}</button>
-            <button type="button" className="e2-ui-btn" disabled={occupe !== ""} onClick={() => void jeter(m)}>🗑 Jeter</button>
-          </span>
-        </div>
-      ))}
-      {fait && <div className="recup-ligne"><span>{fait} <a href="#enregistrements">Voir</a></span><button type="button" className="e2-ui-btn" onClick={() => setFait("")}>✕</button></div>}
-    </div>
-  );
-}

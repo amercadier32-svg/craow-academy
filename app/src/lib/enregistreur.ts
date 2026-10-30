@@ -3,6 +3,7 @@
 // en PCM 24 bits. Seules les crêtes (une toutes les 50 ms) restent en mémoire pour la forme d'onde.
 // Si l'onglet se ferme ou plante, les morceaux déjà écrits sont récupérés au prochain lancement (RecupPrises).
 // Tout reste dans le navigateur.
+import { slug as slugTexte } from "./texte";
 import { contexte, declarerLecteur, liberer, prendreLaMain, sortieDirecte } from "./moteurAudio";
 import { capterEntree, contexteEntree, getEntree } from "./audioEntree";
 import { ajouterEnregistrement, ecrireMetaPrise, ecrireMorceau, effacerPrise, lireMorceaux, type MetaPrise, type Morceau } from "./recordings";
@@ -238,7 +239,7 @@ export async function wavDe(p: Prise, debut: number, fin: number, gain = 1, bits
 /** Gain qui amène la crête à −1 dBFS. */
 export const gainNormalise = (pic: number) => (pic > 1e-5 ? Math.pow(10, -1 / 20) / pic : 1);
 
-const slug = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+const slug = (s: string) => slugTexte(s).slice(0, 40);
 /** « 2026-10-29_17h05_recette_kick-tribe-sature.wav » */
 export function nomAuto(module: string, titre: string, d = new Date()) {
   const p = (x: number) => String(x).padStart(2, "0");

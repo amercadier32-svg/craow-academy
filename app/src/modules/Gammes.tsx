@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { BoutonLecture } from "../components/Lecteur";
 import { Etoile } from "../components/Etoile";
 import { Fenetre } from "../components/Fenetre";
 import { fermerFenetre, ouvrirFenetre, useEtatPage } from "../lib/retour";
@@ -9,6 +10,7 @@ import { engine, useEngine } from "../lib/seq";
 import { Badge, ObservationBox, SourceRef } from "../components/common";
 import { Infos, Rangement } from "../components/Rangement";
 import { FiltreMenu, type FmValeur } from "../components/FiltreMenu";
+import { Deroulant } from "../components/Deroulant";
 import { estFavori, idFavori, useStore } from "../lib/store";
 import { SeqPlayer, useSeqEdit, type SeqData } from "../components/SeqPlayer";
 
@@ -36,6 +38,10 @@ const scaleEvents = (g: Gamme, k: Key) => {
 };
 
 // Familles de gammes : un classement de l'app (Pratique), pour s'y retrouver dans les 35 gammes du Guide p. 15.
+/** Les gammes utiles pour tes styles (Tribe, Tekno, Mentale, Acid…) : en avant en haut de la page.
+ *  Toutes les autres sont dans « Plus de gammes » (fermé par défaut). Rien n'est supprimé. */
+export const GAMMES_UTILES = [7, 4, 3, 9, 16, 1];
+
 export const FAMILLES_G: { id: string; nom: string; texte: string; icone: string; couleur: string; n: number[] }[] = [
   { id: "modes", nom: "Les 7 modes", texte: "Ionian à Locrian", icone: "gammes", couleur: "#ffd84d", n: [2, 3, 4, 5, 6, 7, 8] },
   { id: "mineures", nom: "Mineures et blues", texte: "Harm, Melo, Blues", icone: "melodie", couleur: "#ffb020", n: [9, 10, 11, 12] },
@@ -89,16 +95,6 @@ export default function Gammes({ focus }: { focus?: string }) {
         <SurLaMachine />
       </Infos>
 
-      <Rangement
-        racine="Gammes" sansAriane
-        categories={FAMILLES_G.map((f) => ({
-          id: f.id, nom: f.nom, texte: f.texte, icone: f.icone, couleur: f.couleur, n: f.n.filter(duStyle).length,
-          elements: f.n.filter(duStyle).map((n) => ({ id: String(n), nom: label(gammeByN.get(n)!) })),
-        }))}
-        cat={cat} onCat={setCat} element={el} boutonTout={false}
-        onElement={(id) => { setEl(id ?? el); if (id ?? el) choose(Number(id ?? el)); }}
-        labelCategorie="Famille de gammes" labelElement="Gamme"
-      />
       <FiltreMenu valeur={fl} onChange={setFl} resultat={`${nb} gamme${nb > 1 ? "s" : ""}`}
         groupes={[
           { id: "style", titre: "Style", options: visibles.map((s) => ({ id: s.id, nom: s.nom, n: GAMMES.filter((g) => aStyle(g.n, s.id)).length })) },
@@ -106,6 +102,34 @@ export default function Gammes({ focus }: { focus?: string }) {
         ]}
         autres={cat ? [{ id: cat, nom: FAMILLES_G.find((f) => f.id === cat)?.nom ?? cat, couleur: FAMILLES_G.find((f) => f.id === cat)?.couleur, retirer: () => { setCat(null); setEl(null); } }] : []}
         onToutEffacer={() => { setCat(null); setEl(null); }} />
+      <section className="gm-utiles" aria-label="Les gammes utiles pour tes styles">
+        <h3>Les gammes utiles pour tes styles</h3>
+        <div className="gm-utiles-grille">
+          {GAMMES_UTILES.filter(duStyle).map((n) => {
+            const g = gammeByN.get(n)!;
+            return (
+              <button key={n} type="button" className={`gm-utile ${ouverte && sel === n ? "on" : ""}`} onClick={() => choose(n)}>
+                <b>{n} · {g.nom}</b>
+                <small>{INFO[n]?.caractere ?? ""}</small>
+                {fav(n) && <span className="gm-utile-fav" aria-label="favori">★</span>}
+              </button>
+            );
+          })}
+          {GAMMES_UTILES.filter(duStyle).length === 0 && <p className="small muted">Aucune gamme utile avec ces filtres : regarde dans « Plus de gammes ».</p>}
+        </div>
+      </section>
+      <Deroulant id="gammes.plus" icone="gammes" couleur="#ffd84d" titre="Plus de gammes" texte="Les 29 autres gammes de l'E2, rangées par familles." badge={GAMMES.filter((g) => !GAMMES_UTILES.includes(g.n) && duStyle(g.n)).length}>
+        <Rangement
+          racine="Gammes" sansAriane
+          categories={FAMILLES_G.map((f) => ({ ...f, n: f.n.filter((n) => !GAMMES_UTILES.includes(n) && duStyle(n)) })).filter((f) => f.n.length).map((f) => ({
+            id: f.id, nom: f.nom, texte: f.texte, icone: f.icone, couleur: f.couleur, n: f.n.length,
+            elements: f.n.map((n) => ({ id: String(n), nom: label(gammeByN.get(n)!) })),
+          }))}
+          cat={cat} onCat={setCat} element={el} boutonTout={false}
+          onElement={(id) => { setEl(id ?? el); if (id ?? el) choose(Number(id ?? el)); }}
+          labelCategorie="Famille de gammes" labelElement="Gamme"
+        />
+      </Deroulant>
 
       {ouverte && (
         <Fenetre sorte="fiche" titre={`${sel} · ${gammeByN.get(sel)!.nom}`} label={gammeByN.get(sel)!.nom} onFermer={fermer}
@@ -376,9 +400,7 @@ function Fiche({ g, player }: { g: Gamme; player: ReturnType<typeof usePlayer> }
             </tbody>
           </table>
 
-          <button type="button" className={`e2-ui-btn play ${player.playing === sid ? "on" : ""}`} onClick={() => player.run(sid, scaleEvents(g, k))}>
-            {player.playing === sid ? "■ Stop" : `▶ Écouter la gamme en ${k.en}`}
-          </button>
+          <BoutonLecture joue={player.playing === sid} onClick={() => player.run(sid, scaleEvents(g, k))} libelle={`Écouter la gamme en ${k.en}`} />
         </div>
         <div>
           <h4>Sur un clavier, KEY = {k.en}</h4>

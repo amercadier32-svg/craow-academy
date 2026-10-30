@@ -2,7 +2,7 @@
 // et les aperçus). Séparé des pages pour qu'ouvrir Recettes ne charge pas tout le module Morceau.
 import { lireJson } from "./stockage";
 import type { Grille } from "../content/grilles";
-import { KNOBS_APERCU, RECETTES, type Recette } from "../content/recettes";
+import { KNOBS_APERCU, recetteParId, type Recette } from "../content/recettes";
 import { ETAPES, type EtapeId, type Section } from "../content/morceau";
 import type { Style } from "../content/styles";
 import { gammeByN, keyByEn, normKey } from "./music";
@@ -10,7 +10,7 @@ import type { Mode, Pas, Piste, SeqState } from "./seq";
 import type { Ton } from "../components/SeqPlayer";
 import { val } from "../components/Machine";
 
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 
 export interface GData { key: string; scale: number; bpm: number; pistes: { mesures: Pas[][]; muet: boolean }[]; base?: Ton }
 export const origineDe = (g: Grille): GData => ({ key: g.key, scale: g.scale, bpm: g.bpm, pistes: g.pistes.map((p) => ({ mesures: p.mesures.map((m) => [...m]), muet: false })) });

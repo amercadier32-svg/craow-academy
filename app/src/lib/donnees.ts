@@ -8,7 +8,7 @@
 import { clesApp, effacer, ecrireTexte, lireJson, lireTexte, surEcriture } from "./stockage";
 
 /** Format actuel des données. À augmenter, avec une migration ci-dessous, quand la forme des données change. */
-export const FORMAT = 2;
+export const FORMAT = 3;
 export const CLE_FORMAT = "e2academy.format";
 const INTERNE = "e2academy.sauvegarde.";   // réglages de la sauvegarde elle-même : jamais copiés ni exportés
 export const CLE_DERNIER_EXPORT = INTERNE + "dernierExport";
@@ -26,7 +26,7 @@ const taille = (c: Cles) => Object.entries(c).reduce((a, [k, v]) => a + (k.lengt
 
 // ---------- Migrations ----------
 interface Migration { vers: number; nom: string; faire: () => void }
-const MIGRATIONS: Migration[] = [
+export const MIGRATIONS: Migration[] = [
   {
     vers: 2,
     nom: "numéro de format ajouté, anciens favoris du Guide des effets repris",
@@ -40,6 +40,23 @@ const MIGRATIONS: Migration[] = [
         ecrireTexte("e2academy.v1", JSON.stringify({ version: 1, ...s, favoris }));
       }
       effacer("e2academy.fx.favoris");
+    },
+  },
+  {
+    vers: 3,
+    nom: "recettes « faites » reprises comme « ✓ Testée sur ma machine »",
+    faire() {
+      const s = lireJson<{ faits?: Record<string, string>; testees?: Record<string, unknown> } & Record<string, unknown>>("e2academy.v1", {});
+      const faits = s.faits ?? {};
+      const testees = { ...(s.testees ?? {}) };
+      let n = 0;
+      for (const [id, date] of Object.entries(faits)) {
+        if (!id.startsWith("recette:")) continue;
+        const rc = id.slice(8);
+        if (!testees[rc]) { testees[rc] = { id: rc, on: true, note: "", majLe: typeof date === "string" ? date : new Date().toISOString() }; n++; }
+      }
+      // les « faits » restent aussi tels quels : rien n'est effacé
+      if (n) ecrireTexte("e2academy.v1", JSON.stringify({ version: 1, ...s, testees }));
     },
   },
 ];

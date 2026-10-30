@@ -6,8 +6,8 @@ import { load, knobsDe, pisteDe, origineDe, same, type GData as GDataT } from ".
 import { Etoile } from "../components/Etoile";
 import { Infos, Rangement } from "../components/Rangement";
 import { useEffect, useMemo, useState } from "react";
-import { GRILLES, GRILLE_VIDE, STYLE_GRILLE, type Grille } from "../content/grilles";
-import { RECETTES, type Recette } from "../content/recettes";
+import { GRILLES, GRILLE_VIDE, STYLE_GRILLE, type Grille, COULEUR_GRILLE } from "../content/grilles";
+import { recetteParId, type Recette } from "../content/recettes";
 import { ALL_KEYS, GAMMES, gammeByN, keyByEn } from "../lib/music";
 import { bornes, engine, useEngine, SONS_PERCU, type Pas, type Piste, type SeqState } from "../lib/seq";
 import { Badge, DoneToggle, ObservationBox, SourceRef } from "../components/common";
@@ -15,12 +15,12 @@ import { AdaptBar, STEP_PAGES, nomPas, useAdapt, useKnobRange, usePlayerPrefs } 
 import { CopierPanel, LIGNE_NOTES, LIGNE_SEQUENCER, LIGNE_WRITE, MonEnregistrement, lignesPrep, lignesSequence, lignesSon } from "../components/Machine";
 
 const TOUTES = [...GRILLES, GRILLE_VIDE];
-const rcById = new Map(RECETTES.map((r) => [r.id, r]));
+const rcById = recetteParId;   // table commune (content/recettes.ts)
 export { load, knobsDe, pisteDe };
 
 type GData = GDataT;
 
-const COUL_STYLE: Record<string, string> = { tribe: "#ff6a3d", mentale: "#9b6bff", tekno: "#6aa2ee", vide: "#4fd18b" };
+const COUL_STYLE = COULEUR_GRILLE;
 
 export default function Grilles({ focus }: { focus?: string }) {
   const [sel, setSel] = useState<string | null>(() => (focus && TOUTES.some((g) => g.id === focus) ? focus : GRILLES[0].id));

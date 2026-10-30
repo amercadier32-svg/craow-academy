@@ -12,6 +12,7 @@ export const RACCOURCIS: { groupe: string; liste: Raccourci[] }[] = [
       { touches: ["Échap"], action: "Fermer la fenêtre d'une recette, d'un effet, d'une gamme ou d'un terme du glossaire", ou: "Recettes, Effets, Gammes, Glossaire", lien: "#recettes", fichier: "components/Fenetre.tsx" },
       { touches: ["Double-clic"], action: "Agrandir ou réduire la fenêtre (sur sa barre de titre)", ou: "Recettes, Effets, Gammes, Glossaire", lien: "#recettes", fichier: "components/Fenetre.tsx" },
       { touches: ["Entrée"], action: "Voir tous les résultats de la recherche", ou: "Accueil (barre de recherche)", lien: "#accueil", fichier: "modules/Accueil.tsx" },
+      { touches: ["Échap"], action: "Répondre « Annuler » à une question de confirmation (« Supprimer… ? »)", ou: "Toute l'app", fichier: "components/Confirmer.tsx" },
     ],
   },
   {
@@ -35,20 +36,21 @@ export const RACCOURCIS: { groupe: string; liste: Raccourci[] }[] = [
     ],
   },
   {
-    groupe: "Mastering",
+    groupe: "Studio · Masteriser",
     liste: [
-      { touches: ["Espace"], action: "Lire ou arrêter", ou: "Mastering", lien: "#mastering", fichier: "modules/Mastering.tsx" },
-      { touches: ["Ctrl", "Z"], action: "Annuler le dernier réglage", ou: "Mastering", lien: "#mastering", fichier: "modules/Mastering.tsx" },
-      { touches: ["Ctrl", "Y"], action: "Rétablir (aussi Ctrl + Maj + Z)", ou: "Mastering", lien: "#mastering", fichier: "modules/Mastering.tsx" },
-      { touches: ["Échap"], action: "Fermer l'aide d'un réglage", ou: "Mastering", lien: "#mastering", fichier: "modules/Mastering.tsx" },
-      { touches: ["Entrée"], action: "Valider une valeur tapée ou le nom d'un preset", ou: "Mastering", lien: "#mastering", fichier: "modules/Mastering.tsx" },
+      { touches: ["Espace"], action: "Lire ou arrêter le son en cours (barre du bas)", ou: "Studio, tous les onglets", lien: "#studio/masteriser", fichier: "modules/Mastering.tsx" },
+      { touches: ["Ctrl", "Z"], action: "Annuler le dernier réglage", ou: "Studio, onglet Masteriser", lien: "#studio/masteriser", fichier: "modules/Mastering.tsx" },
+      { touches: ["Ctrl", "Y"], action: "Rétablir (aussi Ctrl + Maj + Z)", ou: "Studio, onglet Masteriser", lien: "#studio/masteriser", fichier: "modules/Mastering.tsx" },
+      { touches: ["Échap"], action: "Fermer l'aide d'un réglage, ou annuler le nom d'un preset en cours de saisie", ou: "Studio, onglet Masteriser", lien: "#studio/masteriser", fichier: "modules/Mastering.tsx" },
+      { touches: ["Entrée"], action: "Valider une valeur tapée ou le nom d'un preset", ou: "Studio, onglet Masteriser", lien: "#studio/masteriser", fichier: "modules/Mastering.tsx" },
     ],
   },
   {
-    groupe: "Visualiseur",
+    groupe: "Studio · Visualiser",
     liste: [
-      { touches: ["R"], action: "Lancer ou arrêter l'enregistrement (mode vidéo)", ou: "Visualiseur, mode vidéo", lien: "#visualiseur/video", fichier: "modules/ModeVideo.tsx" },
-      { touches: ["Échap"], action: "Sortir du mode vidéo", ou: "Visualiseur, mode vidéo", lien: "#visualiseur/video", fichier: "modules/ModeVideo.tsx" },
+      { touches: ["R"], action: "Lancer ou arrêter l'enregistrement (mode vidéo)", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
+      { touches: ["Échap"], action: "Sortir du mode vidéo", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
+      { touches: ["Entrée"], action: "Enregistrer le preset avec le nom tapé", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
     ],
   },
   {

@@ -1111,3 +1111,13 @@ a.src:hover { background: color-mix(in srgb, var(--manuel) 25%, transparent); }
 .cz-mini.cache { display: none; }
 /* panneau ajusté à un petit écran : la petite ligne sous le nom chevauchait les titres */
 @container (max-width: 600px) { .e2-brand small { display: none; } }
+
+/* Gammes : les utiles d'abord (octobre 2026) */
+.gm-utiles h3 { margin: 8px 0; }
+.gm-utiles-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.gm-utile { position: relative; display: grid; gap: 4px; text-align: left; padding: 10px 12px; min-height: 44px; background: #23262f; color: var(--text);
+  border: 3px solid var(--edge); border-left: 6px solid #ffd84d; box-shadow: 0 4px 0 var(--edge); cursor: pointer; font: inherit; }
+.gm-utile:hover, .gm-utile.on { background: #2f333e; }
+.gm-utile b { font-family: var(--px); font-size: 1.15rem; color: #ffd84d; }
+.gm-utile small { color: var(--muted); }
+.gm-utile-fav { position: absolute; top: 6px; right: 8px; color: #ffd84d; }

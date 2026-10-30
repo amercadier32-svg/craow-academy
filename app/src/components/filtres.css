@@ -174,11 +174,6 @@
 .cb-nom { display: grid; gap: 2px; }
 
 /* ---------- Confirmation ---------- */
-.cf-fond { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: #000b; }
-.cf-boite { width: min(440px, 100%); background: var(--panel); border: 2px solid var(--edge); border-top: 5px solid #ff6a3d; box-shadow: 0 6px 0 var(--edge); padding: 16px; }
-.cf-texte { font-family: var(--px); font-size: 1.3rem; margin: 0 0 6px; }
-.cf-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-.e2-ui-btn.cf-oui { background: #7a2c33; }
-.e2-ui-btn.cf-oui:hover { background: #933640; }
 .gen-sel { background: #0b0d12; color: var(--text); border: 2px solid var(--edge); padding: 6px; font: inherit; font-size: 0.9rem; max-width: 100%; }
 .fm-tag-fixe { width: 6px; }
+.badge-gen.badge-perso { background: #4fd18b; color: #111; }

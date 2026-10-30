@@ -1,5 +1,6 @@
 // Page « Mes données » (#donnees, menu ☰ Plus) : place utilisée, copies automatiques, fichier de sauvegarde
 // sur le PC, export / import. Tout est expliqué dans lib/donnees.ts.
+import { confirmer } from "../components/Confirmer";
 import { useEffect, useState } from "react";
 import { Jauge, useEtatSauvegarde, usePlace } from "../components/Jauge";
 import "../components/donnees.css";
@@ -23,7 +24,7 @@ export default function MesDonnees() {
   useEffect(() => { setPersist(place?.persistant); }, [place?.persistant]);
 
   const revenir = async (c: Copie) => {
-    if (!confirm(`Remettre toutes tes données comme le ${dateFr(c.le)} ?\n\nL'état actuel est gardé avant, dans une copie « avant le retour » : tu pourras y revenir.`)) return;
+    if (!(await confirmer(`Remettre toutes tes données comme le ${dateFr(c.le)} ?`, { detail: "L'état actuel est gardé avant, dans une copie « avant le retour » : tu pourras y revenir.", oui: "Revenir à cette copie" }))) return;
     await revenirA(c);
     location.reload();
   };

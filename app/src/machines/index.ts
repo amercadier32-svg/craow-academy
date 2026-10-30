@@ -1,7 +1,7 @@
 // Les machines de l'app et leurs modules, rangés en groupes numérotés.
 // Pour ajouter une machine (ex. la TD-3) : une entrée de plus ici, avec ses groupes,
 // et ses modules dans App.tsx. Le menu « Machines ▼ » et le repère se construisent tout seuls.
-// Mastering, Carnet et Glossaire sont communs : ils ne sont dans aucune machine.
+// Studio, Carnet et Glossaire sont communs : ils ne sont dans aucune machine.
 
 export interface ModuleMachine { id: string; nom: string; icone: string }
 export interface GroupeMachine { num: number; titre: string; couleur: string; modules: ModuleMachine[] }
@@ -14,7 +14,7 @@ export interface Machine {
   pal?: Record<string, string>;
   bientot?: boolean;  // guide pas encore prêt : badge « Bientôt »
   groupes: GroupeMachine[];
-  /** Écrans rattachés à un module du menu (ex. les outils du Labo → Labo). */
+  /** Écrans rattachés à un module du menu (ex. les fiches des styles → Recettes). */
   sousPages?: Record<string, string>;
 }
 
@@ -29,21 +29,24 @@ export const MACHINES: Machine[] = [
       { num: 1, titre: "Comprendre la machine", couleur: "#5b8bd0", modules: [
         { id: "carte", nom: "Machine", icone: "machine" },
         { id: "chaine", nom: "Chaîne du son", icone: "chaine" },
+        { id: "setup", nom: "Setup", icone: "setup" },
+        { id: "midi", nom: "MIDI", icone: "midi" },
       ] },
       { num: 2, titre: "Créer", couleur: "#ff6a3d", modules: [
         { id: "recettes", nom: "Recettes", icone: "recettes" },
         { id: "morceau", nom: "Morceau", icone: "morceau" },
         { id: "session", nom: "Session", icone: "session" },
+        { id: "jeu", nom: "Groove", icone: "groove" },
       ] },
       { num: 3, titre: "Théorie", couleur: "#ffd84d", modules: [
         { id: "gammes", nom: "Gammes", icone: "gammes" },
       ] },
       { num: 4, titre: "Sons et effets", couleur: "#e255c8", modules: [
         { id: "effets", nom: "Effets", icone: "effets" },
-        { id: "labo", nom: "Labo", icone: "labo" },
       ] },
     ],
-    sousPages: { jeu: "labo", midi: "labo", setup: "labo", styles: "recettes" },
+    // Groove, MIDI et Setup étaient dans le Labo ; depuis octobre 2026 ils sont rangés directement dans les groupes.
+    sousPages: { styles: "recettes" },
   },
   {
     id: "td3",

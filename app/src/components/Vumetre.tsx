@@ -1,5 +1,6 @@
 // Vumètre en direct de l'entrée audio : deux barres de LED (gauche / droite), crête maintenue, voyant de saturation.
 // Valeurs en dBFS (0 = le maximum avant saturation), comme sur l'écran d'un logiciel d'enregistrement.
+import { imageASauter } from "../lib/moteurAudio";
 import { useEffect, useRef, useState } from "react";
 import { fmtDb, lireNiveaux, versDb } from "../lib/audioEntree";
 
@@ -24,8 +25,10 @@ export function Vumetre({ actif, mono, compact, onStats }: { actif: boolean; mon
     let raf = 0, dernierTxt = 0;
     const tenue: [number, number] = [-120, -120], tenueT = [0, 0];
     const affiche: [number, number] = [-120, -120];
+    const cadence = { t: 0 };
     const boucle = (t: number) => {
       raf = requestAnimationFrame(boucle);
+      if (imageASauter(t, cadence)) return;   // 30 images/s sur téléphone
       const n = lireNiveaux();
       const c = cv.current;
       if (!n || !c) return;

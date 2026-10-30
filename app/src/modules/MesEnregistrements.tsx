@@ -1,22 +1,26 @@
-// Page « Mes enregistrements » (#enregistrements, #enregistrements/corbeille, #enregistrements/<clé>).
+// « Mes enregistrements », dans l'onglet Enregistrer du Studio (#studio/enregistrer, …/corbeille, …/<clé>).
 // Tous les enregistrements gardés sur cet appareil : ceux faits dans l'app (recettes, exercices, relevés, Mastering…),
 // l'audio des sessions et les fichiers ajoutés à la main dans une recette. Menu ☰, favoris ★, corbeille, place prise.
 import { BoutonJeter, Corbeille, EntreeCorbeille } from "../components/Corbeille";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { BarrePixel, Deroulant } from "../components/Deroulant";
-import { EnregistrerVersion, LireRec, MiniOnde, NOM_MODULE, fmtDuree, useLignes } from "../components/Enregistreur";
+import { BarrePixel } from "../components/Deroulant";
+import { LireRec, MiniOnde, NOM_MODULE, fmtDuree, useLignes } from "../components/Enregistreur";
 import { Etoile } from "../components/Etoile";
-import { Confirmer, FiltreMenu, fmVide, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
+import { Confirmer } from "../components/Confirmer";
+import { FiltreMenu, fmVide, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
 import { PixelArt } from "../components/PixelArt";
 import { RECETTES } from "../content/recettes";
 import { GRILLES } from "../content/grilles";
 import { effacerEnregistrement, fmtTaille, lireEnregistrement, majMeta, placeStockage, type Ligne, type MetaRec, type ModuleRec } from "../lib/recordings";
 import { estFavori, getState, idFavori, useStore } from "../lib/store";
 import { telecharger } from "../lib/telecharger";
+import { ouvrirEnregistrementDansStudio } from "../lib/studioSon";
+
+const ICI = "#studio/enregistrer";
 import "../components/enregistreur.css";
 
 const COUL: Record<ModuleRec, string> = {
-  recette: "#ff6a3d", exercice: "#ffd84d", releve: "#3fd6d0", session: "#3fd6d0", reference: "#9b6bff", mastering: "#ffb020", visualiseur: "#4fd18b", libre: "#ff3b3b", fichier: "#8a8f9c",
+  recette: "#ff6a3d", exercice: "#ffd84d", releve: "#3fd6d0", session: "#3fd6d0", reference: "#9b6bff", mastering: "#ffb020", visualiseur: "#4fd18b", libre: "#ff3b3b", fichier: "#8a8f9c", studio: "#ff3b3b",
 };
 const JOUR = 86400000;
 const SEUIL_ALERTE = 2e9; // au-delà de 2 Go, on prévient (une prise de 40 min fait ≈ 690 Mo)
@@ -42,6 +46,10 @@ const GROUPES = (lignes: (Ligne & { m: MetaRec })[]): FmGroupe[] => [
 ];
 
 export default function MesEnregistrements({ focus }: { focus?: string }) {
+  const ouvrirStudio = (x: Ligne & { m: MetaRec }, onglet: "analyser" | "masteriser") => {
+    setMsg(`Ouverture de « ${x.m.titre} »…`);
+    void ouvrirEnregistrementDansStudio(x.cle).then(() => { location.hash = `#studio/${onglet}`; }).catch((e) => setMsg(String(e.message ?? e)));
+  };
   const st = useStore();
   const brut = useLignes();
   const [filtres, setFiltres] = useState<FmValeur>({});
@@ -82,12 +90,8 @@ export default function MesEnregistrements({ focus }: { focus?: string }) {
 
   return (
     <div className="recs-page">
-      <h2 className="page-title"><PixelArt name="enregistrer" size={34} /> Mes enregistrements</h2>
-      <p className="audio-intro muted">Tes prises de l'E2, gardées dans ce navigateur, sur cet appareil. Elles ne partent pas avec « Exporter mes relevés » : télécharge celles que tu veux garder pour de bon.</p>
-
-      <Deroulant id="recs.nouveau" icone="enregistrer" couleur="#ff3b3b" titre="Nouvel enregistrement" texte="Enregistrer l'E2 par la Scarlett, sans recette ni défi." petit>
-        <EnregistrerVersion source={{ module: "libre", titre: "", href: "#enregistrements" }} libelle="● Ouvrir l'enregistreur" />
-      </Deroulant>
+      <h3 className="studio-titre-section"><PixelArt name="enregistrer" size={26} /> Mes enregistrements</h3>
+      <p className="audio-intro muted">Tes prises de l'E2, gardées dans ce navigateur, sur cet appareil. Elles ne partent pas avec « Exporter mes données » : télécharge celles que tu veux garder pour de bon. « Analyser » et « Masteriser » en font le son en cours du Studio.</p>
 
       <section className={`recs-place ${alerte ? "alerte" : ""}`}>
         <div>
@@ -112,22 +116,22 @@ export default function MesEnregistrements({ focus }: { focus?: string }) {
       <div className="recs-outils">
         <FiltreMenu groupes={groupes} valeur={v} onChange={setFiltres}
           resultat={vue === "corbeille" ? `${corbeille.length} dans la corbeille` : `${filtrees.length} enregistrement${filtrees.length > 1 ? "s" : ""}`}
-          autres={vue === "corbeille" ? [{ id: "corbeille", nom: "🗑 Corbeille", retirer: () => { location.hash = "#enregistrements"; } }] : []}
+          autres={vue === "corbeille" ? [{ id: "corbeille", nom: "🗑 Corbeille", retirer: () => { location.hash = ICI; } }] : []}
           bas={(fermer) => (
-            <EntreeCorbeille n={corbeille.length} ouverte={vue === "corbeille"} onClick={() => { location.hash = vue === "corbeille" ? "#enregistrements" : "#enregistrements/corbeille"; fermer(); }} />
+            <EntreeCorbeille n={corbeille.length} ouverte={vue === "corbeille"} onClick={() => { location.hash = vue === "corbeille" ? ICI : `${ICI}/corbeille`; fermer(); }} />
           )} />
         {vue === "liste" && <input className="recs-cherche" type="search" placeholder="Chercher un nom…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Chercher un enregistrement" />}
       </div>
       {msg && <p className="small ok" role="status">{msg}</p>}
 
       {vue === "corbeille" ? (
-        <Corbeille quoi="un enregistrement" onRetour={() => { location.hash = "#enregistrements"; }}
+        <Corbeille quoi="un enregistrement" onRetour={() => { location.hash = ICI; }}
           onVider={() => setConfirm({ texte: `Supprimer définitivement ${corbeille.length} enregistrement${corbeille.length > 1 ? "s" : ""} ?`, detail: "Les fichiers audio sont effacés de ce navigateur. Tu ne pourras pas les récupérer.", faire: () => { void Promise.all(corbeille.map((x) => effacerEnregistrement(x.cle))); } })}
           onRestaurer={(id) => { const x = corbeille.find((y) => y.cle === id); if (x) restaurer(x); }}
           onSupprimer={(id) => { const x = corbeille.find((y) => y.cle === id); if (x) setConfirm({ texte: `Supprimer définitivement « ${x.m.titre} » ?`, faire: () => void effacerEnregistrement(x.cle) }); }}
           elements={corbeille.map((x) => ({ id: x.cle, avant: <LireRec cle={x.cle} />, titre: x.m.titre, infos: `${NOM_MODULE[x.m.module]} · ${fmtTaille(x.taille)}`, couleur: COUL[x.m.module] }))} />
       ) : brut === null ? <p className="drl-vide">Lecture…</p> : filtrees.length === 0 ? (
-        <p className="drl-vide">{actives.length ? "Aucun enregistrement avec ces filtres." : "Pas encore d'enregistrement. Ouvre une recette et clique « ● Enregistrer ma version », ou utilise « Nouvel enregistrement » ci-dessus."}</p>
+        <p className="drl-vide">{actives.length ? "Aucun enregistrement avec ces filtres." : "Pas encore d'enregistrement. Utilise l'enregistreur ci-dessus, ou « ● Enregistrer ma version » dans une recette."}</p>
       ) : (
         <ul className="recs-liste">
           {filtrees.map((x) => (
@@ -145,8 +149,9 @@ export default function MesEnregistrements({ focus }: { focus?: string }) {
                 <small className="recs-fichier">{x.nom}</small>
               </span>
               <span className="recs-actions">
-                {x.m.href && x.m.href !== "#enregistrements" && <a className="e2-ui-btn" href={x.m.href}>Ouvrir la fiche</a>}
-                <a className="e2-ui-btn" href={`#mastering/rec=${encodeURIComponent(x.cle)}`}>Masteriser</a>
+                {x.m.href && !/^#(enregistrements|visualiseur|mastering|reference|studio)/.test(x.m.href) && <a className="e2-ui-btn" href={x.m.href}>Ouvrir la fiche</a>}
+                <button type="button" className="e2-ui-btn" onClick={() => ouvrirStudio(x, "analyser")}>Analyser</button>
+                <button type="button" className="e2-ui-btn" onClick={() => ouvrirStudio(x, "masteriser")}>Masteriser</button>
                 <button type="button" className="e2-ui-btn" onClick={() => void telechargerUn(x)}>⬇ WAV</button>
                 <Etoile type="enregistrement" cle={x.cle} titre={x.m.titre} />
                 <BoutonJeter className="e2-ui-btn recs-jeter" titre={x.m.titre} onClick={() => jeter(x)} />

@@ -1,14 +1,15 @@
-// Module « Analyser une référence » : comprendre un morceau que tu aimes et partir d'une recette E2 pour t'en approcher.
-// #reference         charger un morceau (WAV, MP3, FLAC), l'analyser, choisir des zones, recettes de départ, comparer
-// #reference/<id>    rouvre une analyse gardée (l'audio n'est pas gardé : il faut recharger le fichier)
+// Onglet « Analyser » du Studio : comprendre un morceau que tu aimes et partir d'une recette E2 pour t'en approcher.
+// #studio/analyser        analyse le son en cours du Studio (ou un fichier chargé ici), zones, recettes de départ, comparer
+// #studio/analyser/<id>   rouvre une analyse gardée (l'audio n'est pas gardé : il faut recharger le fichier)
 // Tout est calculé dans le navigateur ; le fichier n'est envoyé nulle part. Les mesures sont des estimations.
-import { ChoixMode } from "../components/Lecteur";
+import { BoutonLecture, ChoixMode } from "../components/Lecteur";
 import { contexte as contexteMoteur, declarerLecteur, liberer, prendreLaMain, sortieDirecte } from "../lib/moteurAudio";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Badge } from "../components/common";
 import { BarrePixel, Deroulant, ToutOuvrirFermer } from "../components/Deroulant";
 import { Etoile } from "../components/Etoile";
-import { Confirmer, FiltreMenu, fmVide, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
+import { BoutonSupprimer } from "../components/Confirmer";
+import { FiltreMenu, fmVide, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
 import { PixelArt } from "../components/PixelArt";
 import { useKnobRange } from "../components/SeqPlayer";
 import { ELEMENTS, type Recette } from "../content/recettes";
@@ -19,6 +20,7 @@ import { ouvrirAudio } from "../lib/decodage";
 import { EnregistrerVersion } from "../components/Enregistreur";
 import { FREQS_SPECTRE, lufsIntegre, spectreMoyen, type Son } from "../lib/masterAnalyse";
 import { setSpectreRefCourant } from "../lib/visuAudio";
+import { ouvrirDansStudio, sonStudio, useSonStudio } from "../lib/studioSon";
 import { SpectreCourbes } from "../components/SpectreCourbe";
 import { gammeByN, nomMidi } from "../lib/music";
 import { analyserSon, comparer, monoDe, pics, statsZone, tempo, tonalite, trouverKick, type AnaSon, type StatsZone, type Tempo, type Tonalite, type Zone } from "../lib/refAnalyse";
@@ -88,6 +90,7 @@ interface Page {
   zone: Zone | null; zones: ZoneRef[]; zoneActive: string | null;
   propositions: Proposee[]; style: Style | "";
   moi: Son | null; moiMono: Float32Array | null; zoneMoi: Zone | null;
+  vu?: number;                  // version du son en cours du Studio déjà analysée
 }
 const VIDE: Page = { id: null, nom: "", notes: "", fichier: "", duree: 0, son: null, mono: null, global: null, zone: null, zones: [], zoneActive: null, propositions: [], style: "", moi: null, moiMono: null, zoneMoi: null };
 let memoire: Page = VIDE;
@@ -103,7 +106,7 @@ export default function Reference({ focus }: { focus?: string }) {
   const [p, setP] = useState<Page>(() => {
     if (focus && focus !== memoire.id) {
       const a = st.analysesRef?.[focus];
-      if (a && !a.supprimee) return { ...VIDE, id: a.id, nom: a.nom, notes: a.notes, fichier: a.fichier, duree: a.duree, zones: a.zones, enregistre: a, propositions: a.recettes.map((rc) => ({ rc, statut: st.recettesGenerees[rc.id]?.recette ? "gardee" : "proposee" })) };
+      if (a && !a.supprimee) return { ...VIDE, vu: sonStudio()?.version, id: a.id, nom: a.nom, notes: a.notes, fichier: a.fichier, duree: a.duree, zones: a.zones, enregistre: a, propositions: a.recettes.map((rc) => ({ rc, statut: st.recettesGenerees[rc.id]?.recette ? "gardee" : "proposee" })) };
     }
     return memoire;
   });
@@ -115,10 +118,19 @@ export default function Reference({ focus }: { focus?: string }) {
   const [erreur, setErreur] = useState("");
   const [msg, setMsg] = useState("");
 
+  // Un fichier chargé ici devient le son en cours du Studio (il sera aussi dans Masteriser) ; l'analyse suit ci-dessous.
   const charger = async (f: File) => {
     setErreur(""); setCalcul("Lecture du fichier…"); arreterRef();
+    try { await ouvrirDansStudio(f); } catch (e) { setErreur(e instanceof Error ? e.message : String(e)); setCalcul(""); }
+  };
+  const studio = useSonStudio();
+  useEffect(() => {
+    if (studio && studio.version !== p.vu) { maj({ vu: studio.version }); void analyser(studio.son); }
+  }, [studio]); // eslint-disable-line react-hooks/exhaustive-deps
+  const analyser = async (son: Son) => {
+    const f = { name: son.nom };
+    setErreur(""); arreterRef();
     try {
-      const son = await ouvrirAudio(f);
       setCalcul("Analyse du tempo, de la tonalité et du volume…");
       await new Promise((r) => setTimeout(r, 30));
       const mono = monoDe(son.L, son.R);
@@ -128,7 +140,7 @@ export default function Reference({ focus }: { focus?: string }) {
       const beat = Number.isFinite(global.tempo.bpm) ? 60 / global.tempo.bpm : 0.5;
       const zone = memeFichier && p.zones[0] ? { debut: p.zones[0].debut, fin: p.zones[0].fin } : t0 !== null ? { debut: Math.max(0, t0 - 0.005), fin: Math.min(son.L.length / son.sr, t0 + Math.min(beat, 0.7)) } : { debut: 0, fin: Math.min(1, son.L.length / son.sr) };
       setP((o) => ({
-        ...(memeFichier ? o : { ...VIDE, moi: o.moi, moiMono: o.moiMono, zoneMoi: o.zoneMoi, style: o.style }),
+        ...(memeFichier ? o : { ...VIDE, vu: o.vu, moi: o.moi, moiMono: o.moiMono, zoneMoi: o.zoneMoi, style: o.style }),
         son, mono, global, fichier: f.name, duree: son.L.length / son.sr, nom: memeFichier ? o.nom : nomFichier(f.name), zone, zoneActive: memeFichier ? o.zones[0]?.id ?? null : null,
       }));
     } catch (e) { setErreur(e instanceof Error ? e.message : String(e)); }
@@ -162,17 +174,16 @@ export default function Reference({ focus }: { focus?: string }) {
     maj({ id, enregistre: a, zones, zoneActive });
     setMsg(`Analyse « ${a.nom} » enregistrée dans « Mes analyses ». L'audio du morceau n'est pas gardé.`);
   };
-  const nouvelle = () => { arreterRef(); setP({ ...VIDE, style: p.style }); history.replaceState(history.state, "", "#reference"); setMsg(""); };
+  const nouvelle = () => { arreterRef(); setP({ ...VIDE, style: p.style, vu: sonStudio()?.version }); history.replaceState(history.state, "", "#studio/analyser"); setMsg(""); };
 
   const ids = ["ref.charger", "ref.morceau", "ref.son", "ref.recettes", "ref.comparer", "ref.garder", "ref.mes"];
   const aDonnees = Boolean(p.son || p.enregistre);
   return (
     <div className="ref-page">
-      <h2 className="page-title"><PixelArt name="reference" size={36} /> Analyser une référence</h2>
-      <p className="ref-intro">Charge un morceau que tu aimes : l'app estime son tempo, sa tonalité et le son d'un passage (un kick, une basse…), puis propose des recettes E2 pour t'en approcher. <b>Tout reste dans ton navigateur</b> : le fichier n'est envoyé nulle part. <Badge kind="interp">Estimations</Badge></p>
+      <p className="ref-intro">Analyse le son en cours du Studio, ou charge un morceau que tu aimes : l'app estime son tempo, sa tonalité et le son d'un passage (un kick, une basse…), puis propose des recettes E2 pour t'en approcher. <b>Tout reste dans ton navigateur</b> : le fichier n'est envoyé nulle part. <Badge kind="interp">Estimations</Badge></p>
 
       <ToutOuvrirFermer ids={ids} />
-      <Deroulant id="ref.charger" defaut icone="reference" couleur={VIOLET} titre="1. Charger un morceau" texte="WAV, MP3 ou FLAC. Rien n'est envoyé sur internet." badge={p.son ? "chargé" : p.enregistre ? "à recharger" : "WAV · MP3 · FLAC"}>
+      <Deroulant id="ref.charger" defaut icone="reference" couleur={VIOLET} titre="1. Le morceau à analyser" texte="Le son en cours du Studio, ou un fichier WAV, MP3, FLAC. Rien n'est envoyé sur internet." badge={p.son ? "chargé" : p.enregistre ? "à recharger" : "WAV · MP3 · FLAC"}>
         <Chargeur p={p} maj={maj} charger={(f) => void charger(f)} calcul={calcul} erreur={erreur} nouvelle={nouvelle} />
       </Deroulant>
 
@@ -289,7 +300,7 @@ function Morceau({ p, maj, stats, bpm }: { p: Page; maj: (x: Partial<Page>) => v
           {p.zone && <Onde x={p.mono} sr={p.son.sr} {...fenetreZoom(p.zone, p.duree)} zone={p.zone} onZone={(z) => maj({ zone: z, zoneActive: null })} hauteur={120} zoom />}
           <div className="ref-zone-barre">
             {p.zone && <span className="ref-zone-info">Zone : {sec(p.zone.debut)} → {sec(p.zone.fin)} ({fmt((p.zone.fin - p.zone.debut) * 1000, 0)} ms)</span>}
-            <button type="button" className={`px-btn ${lecture === "ref:zone" ? "green" : ""}`} disabled={!p.zone} onClick={() => p.zone && jouerZone("ref:zone", p.son!, p.zone, mode)}>{lecture === "ref:zone" ? "■ Stop" : "▶ Écouter la zone"}</button>
+            <BoutonLecture pixel joue={lecture === "ref:zone"} disabled={!p.zone} onClick={() => p.zone && jouerZone("ref:zone", p.son!, p.zone, mode)} libelle="Écouter la zone" />
             <ModeBtn mode={mode} setMode={setMode} />
             <button type="button" className="e2-ui-btn" onClick={kick}>🔍 Trouver un kick</button>
             {bpm && <>
@@ -503,7 +514,7 @@ function Recettes({ p, maj, ana, bpm }: { p: Page; maj: (x: Partial<Page>) => vo
       <div className="ref-btns">
         <button type="button" className="px-btn" disabled={!ana} onClick={proposer}>🔍 {p.propositions.some((x) => x.statut === "proposee") ? "Proposer d'autres recettes" : "Proposer des recettes"}{ana ? ` (${TYPE_NOM[ana.type].toLowerCase()})` : ""}</button>
         <ModeBtn mode={mode} setMode={setMode} />
-        {p.son && p.zone && <button type="button" className={`e2-ui-btn ${lecture === "ref:zone" ? "on" : ""}`} onClick={() => jouerZone("ref:zone", p.son!, p.zone!, mode)}>{lecture === "ref:zone" ? "■ Stop" : "▶ La référence"}</button>}
+        {p.son && p.zone && <BoutonLecture joue={lecture === "ref:zone"} onClick={() => jouerZone("ref:zone", p.son!, p.zone!, mode)} libelle="La référence" />}
       </div>
       {!ana && !p.propositions.length && <p className="drl-vide">{p.son ? "Choisis d'abord une zone avec un son." : "Recharge le fichier pour proposer des recettes."}</p>}
       {annonce && <p className="ref-ok">{annonce} <a href="#recettes">Ouvrir Recettes</a></p>}
@@ -538,7 +549,7 @@ function CarteRecette({ rc, gardee, joue, onEcouter, onGarder, onJeter, refBtn }
         ))}
       </ul>
       <div className="ref-btns">
-        <button type="button" className={`px-btn ${joue ? "green" : ""}`} onClick={onEcouter}>{joue ? "■ Stop" : "▶ Écouter l'aperçu"}</button>
+        <BoutonLecture pixel joue={joue} onClick={onEcouter} libelle="Écouter l'aperçu" />
         {refBtn}
         {gardee ? <a className="e2-ui-btn" href={`#recettes/${rc.id}`}>✓ Gardée · ouvrir</a> : <>
           <button type="button" className="px-btn green" onClick={onGarder}>✓ Garder</button>
@@ -578,11 +589,11 @@ function Comparer({ p, maj, ana }: { p: Page; maj: (x: Partial<Page>) => void; a
         <input type="file" accept={FORMATS} onChange={(e) => { const f = e.target.files?.[0]; if (f) void charger(f); e.target.value = ""; }} />
         <span><b>{p.moi ? `🎛 ${p.moi.nom} · changer` : "Charger mon enregistrement E2"}</b> (WAV de préférence)</span>
       </label>
-      <EnregistrerVersion source={{ module: "reference", ref: p.id ?? undefined, titre: `Mon son pour ${p.nom || "la référence"}`, href: p.id ? `#reference/${p.id}` : "#reference" }}
+      <EnregistrerVersion source={{ module: "reference", ref: p.id ?? undefined, titre: `Mon son pour ${p.nom || "la référence"}`, href: p.id ? `#studio/analyser/${p.id}` : "#studio/analyser" }}
         bpm={p.global && Number.isFinite(p.global.tempo.bpm) ? Math.round(p.global.tempo.bpm) : undefined} sansVersions
         libelle="● Enregistrer mon son" texte="Joue ton son sur l'E2 et compare-le tout de suite."
         utiliser={{ libelle: "🔍 Comparer avec la référence", action: (f) => charger(f) }} />
-      {p.global && <p className="small"><a href={`#visualiseur/ref=${encodeURIComponent(p.id ?? "courant")}`}>📈 Comparer en direct : le spectre de l'E2 par-dessus celui de la référence, dans le Visualiseur</a></p>}
+      {p.global && <p className="small"><a href={`#studio/visualiser/ref=${encodeURIComponent(p.id ?? "courant")}`}>📈 Comparer en direct : le spectre de l'E2 par-dessus celui de la référence, dans l'onglet Visualiser</a></p>}
       {err && <p className="ss-err">{err}</p>}
       {p.moi && p.moiMono && (
         <>
@@ -645,7 +656,6 @@ function MesAnalyses({ actuelle }: { actuelle: string | null }) {
     { id: "autres", titre: "Afficher", options: [{ id: "favoris", nom: "★ Mes favoris" }, { id: "recettes", nom: "Avec des recettes" }] },
   ];
   const [f, setF] = useState<FmValeur>(() => fmVide(groupes));
-  const [suppr, setSuppr] = useState<AnalyseRef | null>(null);
   const tranche = (b?: number) => (!b ? "" : b < 130 ? "lent" : b <= 160 ? "moyen" : "rapide");
   const liste = toutes.filter((a) => (!f.ton?.length || f.ton.includes(`${a.key} ${a.mineur ? "mineur" : "majeur"}`))
     && (!f.bpm?.length || f.bpm.includes(tranche(a.bpm)))
@@ -662,13 +672,12 @@ function MesAnalyses({ actuelle }: { actuelle: string | null }) {
             <span className="small muted">{new Date(a.le).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })} · {a.bpm ? `${fmt(a.bpm)} BPM` : "BPM ?"}{a.key ? ` · ${a.key} ${a.mineur ? "mineur" : "majeur"}` : ""} · {a.zones.length} zone(s) · {a.recettes.length} recette(s)</span>
             {a.notes && <p className="small">{a.notes}</p>}
             <div className="ref-btns">
-              <a className="chipbtn" href={`#reference/${a.id}`}>📂 Ouvrir</a>
-              <button type="button" className="chipbtn" onClick={() => setSuppr(a)}>🗑</button>
+              <a className="chipbtn" href={`#studio/analyser/${a.id}`}>📂 Ouvrir</a>
+              <BoutonSupprimer quoi={`l'analyse « ${a.nom} »`} detail="Les recettes que tu as gardées restent dans Recettes." onSupprimer={() => supprimerAnalyse(a.id)} />
             </div>
           </li>
         ))}
       </ul>
-      {suppr && <Confirmer texte={`Supprimer l'analyse « ${suppr.nom} » ?`} detail="Les recettes que tu as gardées restent dans Recettes." oui="Supprimer" onNon={() => setSuppr(null)} onOui={() => { supprimerAnalyse(suppr.id); setSuppr(null); }} />}
     </div>
   );
 }

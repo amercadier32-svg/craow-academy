@@ -29,3 +29,21 @@
 .rc-padcases i.on { background: #ff6a3d; border-color: #ffb08f; color: #1a0b05; font-weight: 700; }
 .rc-padcases i.tie { background: #ff6a3d55; border-color: #ff6a3d; color: #ffd8c8; }
 @media (max-width: 560px) { .rc-padcases i { font-size: 0.6rem; } .rc-padligne { grid-template-columns: 44px 1fr; } }
+
+/* Simplification (octobre 2026) : bouton 🎲 par sous-catégorie, recette vierge, compteur et case « Testée sur ma machine » */
+.acc-ligne { display: flex; align-items: stretch; }
+.acc-ligne .acc-tete { flex: 1; min-width: 0; }
+.acc-de { flex: none; min-width: 52px; font-size: 1.35rem; background: #23262f; border: 0; border-left: 2px solid var(--edge); color: var(--text); cursor: pointer; }
+.acc-de:hover { background: var(--cc, #474c5a); }
+.rc-haut { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 0 8px; }
+.rc-compteur { margin: 0; font-size: 1.05rem; }
+.rc-compteur b { color: #4fd18b; }
+.gen-fenetre { margin-bottom: 12px; padding: 10px 12px; border: 2px solid var(--edge); background: #1a1d24; }
+.gen-fenetre .gen-actions { margin-top: 6px; }
+.rc-vierge-reg input[type="text"] { padding: 6px 8px; background: #0c0d11; color: var(--text); border: 2px solid var(--edge); font: inherit; min-width: 0; flex: 1; }
+.rc-testee { border-left: 6px solid #8a8f9c; }
+.rc-testee.on { border-left-color: #4fd18b; }
+.rc-testee-case { display: flex; align-items: center; gap: 10px; font-size: 1.15rem; cursor: pointer; }
+.rc-testee-case input { width: 24px; height: 24px; accent-color: #4fd18b; }
+.rc-testee-note { display: grid; gap: 4px; }
+.rc-testee-note textarea { width: 100%; padding: 6px 8px; background: #0c0d11; color: var(--text); border: 2px solid var(--edge); font: inherit; }

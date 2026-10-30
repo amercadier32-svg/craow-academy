@@ -5,6 +5,14 @@
 // (ex. Documents\CrAoW ACADEMY\Enregistrements) : le reste de l'app ne passe que par ici.
 // « morceaux » : la prise en cours, écrite sur le disque toutes les 5 secondes (jusqu'à 40 minutes) :
 //        « <id>:meta » = ses infos, « <id>:c000001 »… = le son, par morceaux. Après un plantage, on la retrouve là.
+/** Le module d'où vient un enregistrement, en clair. */
+export const NOM_MODULE: Record<ModuleRec, string> = {
+  recette: "Recette", exercice: "Exercice d'écoute", releve: "Relevé de potard", session: "Session", reference: "Analyser une référence",
+  mastering: "Mastering", visualiseur: "Visualiseur en direct", libre: "Enregistrement libre", fichier: "Fichier ajouté", studio: "Studio",
+};
+/** Durée en minutes:secondes (secondes arrondies au-dessus). */
+export const mmss = (s: number) => { const t = Math.max(0, Math.ceil(s)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
+
 const DB = "e2academy-audio";
 const STORE = "enregistrements";
 const MORCEAUX = "morceaux";
@@ -40,7 +48,7 @@ async function run<T>(mode: IDBTransactionMode, f: (s: IDBObjectStore) => IDBReq
 }
 
 /** D'où vient un enregistrement. */
-export type ModuleRec = "recette" | "exercice" | "releve" | "session" | "reference" | "mastering" | "visualiseur" | "libre" | "fichier";
+export type ModuleRec = "recette" | "exercice" | "releve" | "session" | "reference" | "mastering" | "visualiseur" | "libre" | "fichier" | "studio";
 export interface MetaRec {
   id: string;
   titre: string;

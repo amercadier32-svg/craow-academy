@@ -4,6 +4,7 @@ import Accueil from "./modules/Accueil";
 import { MenuPlus } from "./components/MenuPlus";
 import { SessionVeille } from "./components/SessionVeille";
 import { RappelExport } from "./components/RappelExport";
+import { HoteConfirmer } from "./components/Confirmer";
 import { StylesCss } from "./components/Styles";
 import { PixelArt } from "./components/PixelArt";
 import { MenuMachines, Repere } from "./components/MenuMachines";
@@ -23,21 +24,18 @@ const Effets = lazy(() => import("./modules/Effets"));
 const Midi = lazy(() => import("./modules/Midi"));
 const Jeu = lazy(() => import("./modules/Jeu"));
 const Setup = lazy(() => import("./modules/Setup"));
-const Mastering = lazy(() => import("./modules/Mastering"));
+const Studio = lazy(() => import("./modules/Studio"));
 const Morceau = lazy(() => import("./modules/Morceau"));
 const PageApprendre = lazy(() => import("./modules/Pages").then((m) => ({ default: m.PageApprendre })));
 const PageMachine = lazy(() => import("./modules/Pages").then((m) => ({ default: m.PageMachine })));
 const Favoris = lazy(() => import("./modules/Favoris"));
 const Styles = lazy(() => import("./modules/Styles"));
 const Session = lazy(() => import("./modules/Session"));
-const Reference = lazy(() => import("./modules/Reference"));
 const ReglagesAudio = lazy(() => import("./modules/ReglagesAudio"));
-const MesEnregistrements = lazy(() => import("./modules/MesEnregistrements"));
-const Visualiseur = lazy(() => import("./modules/Visualiseur"));
 const MesDonnees = lazy(() => import("./modules/MesDonnees"));
 const Raccourcis = lazy(() => import("./modules/Raccourcis"));
 // Le bandeau « prise à récupérer » (après un plantage pendant un enregistrement) se charge juste après l'accueil.
-const RecupPrises = lazy(() => import("./components/Enregistreur").then((m) => ({ default: m.RecupPrises })));
+const RecupPrises = lazy(() => import("./components/RecupPrises"));
 
 // Tous les écrans de l'app (#id dans l'adresse). `menu` = l'entrée du menu principal qui s'allume
 // (« machines » = le menu déroulant ; la machine et le groupe sont dans src/machines/index.ts).
@@ -50,53 +48,47 @@ const MODULES = [
   { id: "morceau", nom: "Construire un morceau", menu: "machines" },
   { id: "gammes", nom: "Gammes et tonalités", menu: "machines" },
   { id: "effets", nom: "Guide des effets et modulations", menu: "machines" },
-  { id: "labo", nom: "Labo", menu: "machines" },
   { id: "jeu", nom: "Swing, Groove, Chord et Gate Arp", menu: "machines" },
   { id: "midi", nom: "MIDI : l'app parle à ton E2", menu: "machines" },
   { id: "setup", nom: "Mon setup : 2 E2, TD-3 et FL Studio", menu: "machines" },
   { id: "electribe2", nom: "Korg Electribe 2", menu: "machines" },
   { id: "td3", nom: "Behringer TD-3", menu: "machines" },
   { id: "carnet", nom: "Carnet", menu: "carnet" },
-  { id: "mastering", nom: "Mastering", menu: "mastering" },
+  { id: "studio", nom: "Studio", menu: "studio" },
   { id: "apprendre", nom: "Apprendre", menu: "accueil" },
   { id: "favoris", nom: "Mes favoris", menu: "favoris" },
   { id: "session", nom: "Session", menu: "machines" },
-  { id: "reference", nom: "Analyser une référence", menu: "reference" },
   { id: "parcours", nom: "Parcours d'apprentissage", menu: "accueil" },
   { id: "quiz", nom: "Quiz et flashcards", menu: "accueil" },
   { id: "glossaire", nom: "Glossaire et recherche", menu: "recherche" },
   { id: "audio", nom: "Réglages audio", menu: "plus" },
-  { id: "enregistrements", nom: "Mes enregistrements", menu: "plus" },
-  { id: "visualiseur", nom: "Visualiseur en direct", menu: "visualiseur" },
   { id: "donnees", nom: "Mes données", menu: "plus" },
   { id: "raccourcis", nom: "Raccourcis clavier", menu: "plus" },
 ] as const;
 
-// Le menu principal, en haut de toutes les pages : Accueil | Machines ▼ | Référence | Visualiseur | Mastering | Carnet | Favoris | 🔍 | ☰ Plus.
-// Accueil, Mastering, Carnet et Favoris sont communs à toutes les machines.
+// Le menu principal, en haut de toutes les pages : Accueil | Machines ▼ | Studio | Carnet | Favoris | 🔍 | ☰ Plus.
+// Accueil, Studio, Carnet et Favoris sont communs à toutes les machines.
 const MENU_AVANT = [{ id: "accueil", nom: "Accueil", icone: "accueil" }] as const;
 const MENU_APRES = [
-  { id: "reference", nom: "Référence", icone: "reference" },
-  { id: "visualiseur", nom: "Visualiseur", icone: "visualiseur" },
-  { id: "mastering", nom: "Mastering", icone: "mastering" },
+  { id: "studio", nom: "Studio", icone: "mastering" },
   { id: "carnet", nom: "Carnet", icone: "carnet" },
   { id: "favoris", nom: "Favoris", icone: "favoris" },
 ] as const;
 
-// Les outils du Labo (gros onglets en haut de chacun).
-export const LABO = [
-  { id: "jeu", nom: "Groove", texte: "Swing, Groove, Chord et Gate Arp." },
-  { id: "midi", nom: "MIDI", texte: "L'app parle à ton E2 en USB." },
-  { id: "setup", nom: "Setup", texte: "2 E2, TD-3, Scarlett et FL Studio." },
-] as const;
+const ICONES_PLUS: Record<string, string> = { audio: "audio", donnees: "carnet", raccourcis: "glossaire" };
 
-const ICONES_PLUS: Record<string, string> = { audio: "audio", enregistrements: "enregistrer", visualiseur: "visualiseur", donnees: "carnet", raccourcis: "glossaire" };
+// Anciennes adresses (avant la simplification d'octobre 2026) : elles mènent au même endroit dans le Studio,
+// et l'ancien Labo (#labo) mène à la page de la machine, où Groove, MIDI et Setup sont maintenant rangés.
+const ANCIENNES: Record<string, string> = { enregistrements: "enregistrer", visualiseur: "visualiser", reference: "analyser", mastering: "masteriser" };
 
 type ModuleId = (typeof MODULES)[number]["id"];
 
 // #carte, #chaine… ; #carte/cutoff ouvre directement la fiche d'un contrôle. Sans #, l'accueil.
 function readHash(): { mod: ModuleId; arg?: string } {
-  const [h, arg] = window.location.hash.replace("#", "").split("/");
+  const [h, ...r] = window.location.hash.replace("#", "").split("/");
+  const arg = r.length ? r.join("/") : undefined;   // #studio/analyser/<id> : arg = « analyser/<id> »
+  if (ANCIENNES[h]) return { mod: "studio", arg: [ANCIENNES[h], ...r].join("/") };
+  if (h === "labo") return { mod: "electribe2" };
   // Grilles et Structure ont quitté le Labo (octobre 2026) : les anciens liens ouvrent la grille et la structure de « Construire un morceau ».
   if (h === "grilles" || h === "structure") return { mod: "morceau", arg: h === "grilles" ? "grille" : "structure" };
   return { mod: (MODULES.find((m) => m.id === h)?.id ?? "accueil") as ModuleId, arg };
@@ -174,11 +166,11 @@ export default function App() {
         </nav>
         </div>
         </div>
-        <Repere ecran={mod} nomSousPage={(id) => (id === "styles" ? (arg === "gerer" ? "Gérer les styles" : "Les styles") : LABO.find((t) => t.id === id)?.nom)} />
+        <Repere ecran={mod} nomSousPage={(id) => (id === "styles" ? (arg === "gerer" ? "Gérer les styles" : "Les styles") : undefined)} />
       </header>
-      {pos?.sousPage && pos.module?.id === "labo" && <LaboTabs mod={mod} />}
       <PlusTard><Suspense fallback={null}><RecupPrises /></Suspense></PlusTard>
       <RappelExport />
+      <HoteConfirmer />
       <main>
         <ErreurModule key={mod}>
         <Suspense fallback={<div className="chargement-module" role="status">Chargement…</div>}>
@@ -196,8 +188,6 @@ export default function App() {
           <Recettes key={arg ?? ""} focus={arg} />
         ) : mod === "effets" ? (
           <Effets key={arg ?? ""} focus={arg} />
-        ) : mod === "labo" ? (
-          <LaboHub />
         ) : mod === "quiz" ? (
           <Quiz key={arg ?? ""} focus={arg} />
         ) : mod === "glossaire" ? (
@@ -212,8 +202,8 @@ export default function App() {
           <Setup />
         ) : mod === "morceau" ? (
           <Morceau key={arg ?? ""} focus={arg} />
-        ) : mod === "mastering" ? (
-          <Mastering key={arg ?? ""} focus={arg} />
+        ) : mod === "studio" ? (
+          <Studio arg={arg} />
         ) : mod === "electribe2" ? (
           <PageMachine id="electribe2" />
         ) : mod === "apprendre" ? (
@@ -222,12 +212,6 @@ export default function App() {
           <Styles key={arg ?? ""} focus={arg} />
         ) : mod === "session" ? (
           <Session key={arg ?? ""} focus={arg} machine="electribe2" />
-        ) : mod === "reference" ? (
-          <Reference key={arg ?? ""} focus={arg} />
-        ) : mod === "visualiseur" ? (
-          <Visualiseur key={arg ?? ""} focus={arg} />
-        ) : mod === "enregistrements" ? (
-          <MesEnregistrements key={arg ?? ""} focus={arg} />
         ) : mod === "audio" ? (
           <ReglagesAudio />
         ) : mod === "donnees" ? (
@@ -253,32 +237,6 @@ export default function App() {
         </ErreurModule>
       </main>
       <SessionVeille surSession={mod === "session" && arg === "en-cours"} />
-    </div>
-  );
-}
-
-function LaboTabs({ mod }: { mod: string }) {
-  return (
-    <div className="rg-tabs labo-tabs" role="navigation" aria-label="Outils du Labo">
-      {LABO.map((t) => <a key={t.id} href={`#${t.id}`} className={`rg-tab ${t.id === mod ? "on" : ""}`} aria-current={t.id === mod ? "page" : undefined}>{t.nom}</a>)}
-    </div>
-  );
-}
-
-function LaboHub() {
-  return (
-    <div className="labo-hub">
-      <h2 className="page-title">Labo</h2>
-      <p className="muted">Les outils pour composer et jouer avec ta machine.</p>
-      <div className="rg-cats">
-        {LABO.map((t) => (
-          <a key={t.id} href={`#${t.id}`} className="rg-cat" style={{ "--cc": "#3fd6d0" } as React.CSSProperties}>
-            <PixelArt name="labo" size={40} />
-            <span className="rg-cat-nom">{t.nom}</span>
-            <span className="rg-cat-txt">{t.texte}</span>
-          </a>
-        ))}
-      </div>
     </div>
   );
 }

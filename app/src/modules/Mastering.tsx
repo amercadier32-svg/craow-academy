@@ -1,6 +1,10 @@
-// Module « Mastering » : un chemin en 3 étapes (Importer, Régler, Exporter), un mode Simple et un mode Avancé
-// qui partagent les mêmes réglages, et une barre de lecture fixe en bas (A/B au même volume, bypass, mono, mesures).
+// Onglet « Masteriser » du Studio : un chemin en 3 étapes (Le son, Régler, Exporter), 6 gros curseurs (mode Simple),
+// et la barre de lecture fixe en bas (A/B au même volume, bypass, mono, mesures), partagée par les 4 onglets du Studio.
+// Le son masterisé est le « son en cours » du Studio (lib/studioSon.ts).
 // Tout reste sur l'appareil : aucun fichier n'est envoyé nulle part.
+import { Deroulant } from "../components/Deroulant";
+import { BoutonSupprimer } from "../components/Confirmer";
+import { imageASauter } from "../lib/moteurAudio";
 import { BoutonLecture, ChoixMode } from "../components/Lecteur";
 import { lireJson, ecrireJson } from "../lib/stockage";
 import { noterExport } from "../lib/exportsMaster";
@@ -11,16 +15,15 @@ import { Badge, DoneToggle, ObservationBox } from "../components/common";
 import { PixelArt } from "../components/PixelArt";
 import { Etoile } from "../components/Etoile";
 import { telecharger } from "../lib/telecharger";
-import { EnregistrerVersion } from "../components/Enregistreur";
-import { lireEnregistrement } from "../lib/recordings";
+import { ouvrirEnregistrementDansStudio, poserSonStudio, useSonStudio } from "../lib/studioSon";
 import { alertes, fmtTemps, FREQS_SPECTRE, lireWav, sonDemo, spectreExtrait, type Analyse, type Son } from "../lib/masterAnalyse";
-import { completer, copie, courbeEq, NOMS_BANDES, reglagesNeutres, type Bande, type Reglages } from "../lib/masterDsp";
+import { completer, copie, courbeEq, NOMS_BANDES, type Reglages } from "../lib/masterDsp";
 import { Lecteur, type Source } from "../lib/masterLecteur";
 import { demander } from "../lib/masterClient";
 import { ecrireMp3, mp3Possible } from "../lib/masterMp3";
-import { avecProtections, compDepuis, CURSEURS, ecrireSimple, egaux, FREQ_PASSE_HAUT, lireSimples, protections, reglagesSimples, type CleSimple, type InfoCurseur } from "../lib/masterSimple";
+import { avecProtections, compDepuis, CURSEURS, ecrireSimple, egaux, estSimple, FREQ_PASSE_HAUT, lireSimples, protections, reglagesSimples, versSimple, type CleSimple, type InfoCurseur } from "../lib/masterSimple";
 import { useStyles } from "../content/styles";
-import { AIDES, BLOCS_M, LECONS, POINTS_DEPART, PRESETS_RAPIDES, reglagesPreset, type Aide, type BlocId, type Lecon } from "../content/mastering";
+import { AIDES, BLOCS_M, LECONS, POINTS_DEPART, PRESETS_RAPIDES, reglagesPreset, type Aide, type Lecon } from "../content/mastering";
 import { Cretes, dessinerCourbes, fDeX, preparerCanvas as preparerCourbe, prefsSpectre, usePrefsSpectre, xDeF, zoneCourbe, type Courbe } from "../lib/spectreCourbe";
 import { ReglagesSpectre } from "../components/SpectreCourbe";
 import "./mastering.css";
@@ -40,16 +43,15 @@ const fHz = (f: number) => (f >= 1000 ? `${f1(f / 1000, f >= 10000 || f % 1000 =
 
 export interface PresetPerso { id: string; nom: string; reglages: Reglages; majLe: string }
 
-type Mode = "simple" | "avance";
-interface Prefs { boucle: boolean; compensation: boolean; mode: Mode; analyse: boolean; preset: string | null }
+interface Prefs { boucle: boolean; compensation: boolean; analyse: boolean; preset: string | null }
 interface Etat { r: Reglages; preset: string | null }
 const FORMATS = ".wav,.mp3,.flac,.m4a,.aac,audio/*";
 
 /** Ce que l'adresse demande : #mastering/eq, /lecon-comp, /depart-tribe, /analyse, /exporter… */
-function initialRoute(focus?: string): { mode?: Mode; bloc?: BlocId; aide?: string; depart?: Etat; analyse?: boolean; cible?: string } {
+function initialRoute(focus?: string): { aide?: string; depart?: Etat; analyse?: boolean; cible?: string } {
   if (!focus) return {};
-  if (BLOCS_M.some((b) => b.id === focus)) return { mode: "avance", bloc: focus as BlocId, cible: "ms-etape-2" };
-  if (focus === "chaine") return { mode: "avance", cible: "ms-etape-2" };
+  // anciens liens vers le mode Avancé (#mastering/eq, /chaine…) : l'étape « Régler » avec les 6 curseurs
+  if (BLOCS_M.some((b) => b.id === focus) || focus === "chaine") return { cible: "ms-etape-2" };
   if (focus.startsWith("lecon-")) return { aide: focus.slice(6) };
   if (focus.startsWith("depart-")) {
     const p = POINTS_DEPART.find((x) => x.id === focus.slice(7));
@@ -61,10 +63,11 @@ function initialRoute(focus?: string): { mode?: Mode; bloc?: BlocId; aide?: stri
   return {};
 }
 
-export default function Mastering({ focus }: { focus?: string }) {
+/** `visible` = false : l'onglet Masteriser est caché, mais le lecteur et la barre du bas restent (partagés par le Studio). */
+export default function Mastering({ focus, visible = true }: { focus?: string; visible?: boolean }) {
   const lecteur = useMemo(() => new Lecteur(), []);
   useEffect(() => () => lecteur.fermer(), [lecteur]);
-  const prefs0 = useMemo<Prefs>(() => ({ boucle: true, compensation: true, mode: "simple", analyse: false, preset: null, ...lireLS<Partial<Prefs>>(CLE_PREFS, {}) }), []);
+  const prefs0 = useMemo<Prefs>(() => ({ boucle: true, compensation: true, analyse: false, preset: null, ...lireLS<Partial<Prefs>>(CLE_PREFS, {}) }), []);
   const init = useMemo(() => initialRoute(focus), [focus]);
 
   const [son, setSon] = useState<Son | null>(null);
@@ -74,12 +77,9 @@ export default function Mastering({ focus }: { focus?: string }) {
   const [calcul, setCalcul] = useState(false);
   const [ref, setRef] = useState<Son | null>(null);
   const [refAna, setRefAna] = useState<Analyse | null>(null);
-  const [mode, setMode] = useState<Mode>(init.mode ?? prefs0.mode);
-  const [bloc, setBloc] = useState<BlocId>(init.bloc ?? "eq");
   const [reglages, setReglagesBrut] = useState<Reglages>(() => {
     if (init.depart) return init.depart.r;
-    const r = completer(lireLS<Partial<Reglages> | undefined>(CLE_REGLAGES, undefined));
-    return (init.mode ?? prefs0.mode) === "simple" ? avecProtections(r) : r;
+    return avecProtections(completer(lireLS<Partial<Reglages> | undefined>(CLE_REGLAGES, undefined)));
   });
   const [preset, setPresetBrut] = useState<string | null>(init.depart ? init.depart.preset : prefs0.preset);
   const [persos, setPersosBrut] = useState<PresetPerso[]>(() => lireLS<PresetPerso[]>(CLE_PRESETS, []));
@@ -94,7 +94,7 @@ export default function Mastering({ focus }: { focus?: string }) {
   const [analyseOuverte, setAnalyseOuverte] = useState<boolean>(init.analyse ?? prefs0.analyse);
   const [aide, setAide] = useState<string | null>(init.aide ?? null);
 
-  useEffect(() => ecrireLS(CLE_PREFS, { boucle, compensation, mode, analyse: analyseOuverte, preset }), [boucle, compensation, mode, analyseOuverte, preset]);
+  useEffect(() => ecrireLS(CLE_PREFS, { boucle, compensation, analyse: analyseOuverte, preset }), [boucle, compensation, analyseOuverte, preset]);
   useEffect(() => { if (init.cible) setTimeout(() => document.getElementById(init.cible!)?.scrollIntoView({ block: "start" }), 50); }, [init]);
 
   // ---- réglages + historique (Annuler / Rétablir)
@@ -150,7 +150,7 @@ export default function Mastering({ focus }: { focus?: string }) {
         if (/\.wave?$/i.test(f.name)) throw e;
         s = await decoderNavigateur(buf, f.name); // MP3, FLAC, M4A, AAC : décodés par le navigateur
       }
-      if (pour === "son") chargerSon(s);
+      if (pour === "son") poserSonStudio(s, "fichier");   // devient le son en cours du Studio (chargé ci-dessous)
       else {
         setRef(s); setRefAna(null); lecteur.ref = s; lecteur.refPos = 0;
         await demander({ type: "charger", cle: "ref", L: s.L, R: s.R, sr: s.sr });
@@ -158,13 +158,14 @@ export default function Mastering({ focus }: { focus?: string }) {
       }
     } catch (e) { setErreur(e instanceof Error ? e.message : String(e)); }
   }, [chargerSon, lecteur]);
-  const ouvrirFichierRef = useRef(ouvrirFichier); ouvrirFichierRef.current = ouvrirFichier;
-  // #mastering/rec=<clé> : ouvre un enregistrement de « Mes enregistrements »
+  // #studio/masteriser/rec=<clé> : ouvre un enregistrement de « Mes enregistrements »
   useEffect(() => {
     if (!focus?.startsWith("rec=")) return;
-    const cle = decodeURIComponent(focus.slice(4));
-    void lireEnregistrement(cle).then((e) => { if (e) void ouvrirFichierRef.current?.(new File([e.blob], e.nom, { type: e.blob.type || "audio/wav" }), "son"); });
+    void ouvrirEnregistrementDansStudio(decodeURIComponent(focus.slice(4))).catch((e) => setErreur(String(e.message ?? e)));
   }, [focus]);
+  // Le son en cours du Studio (enregistré, importé, ouvert depuis Mes enregistrements) : chargé ici sans réimporter.
+  const studio = useSonStudio();
+  useEffect(() => { if (studio && studio.son !== son) chargerSon(studio.son); }, [studio]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const retirerRef = useCallback(() => {
     setRef(null); setRefAna(null); lecteur.ref = null;
@@ -224,7 +225,7 @@ export default function Mastering({ focus }: { focus?: string }) {
       }
       if (e.key === "Escape" && aide) { setAide(null); return; }
       if (e.code !== "Space" || /INPUT|TEXTAREA|SELECT|BUTTON|SUMMARY/.test(t.tagName)) return;
-      if (!lecteur.son) return;
+      if (!lecteur.son || document.querySelector(".visu-video")) return;
       e.preventDefault(); void jouer();
     };
     window.addEventListener("keydown", k);
@@ -240,15 +241,15 @@ export default function Mastering({ focus }: { focus?: string }) {
   }, [changer, lancer]);
 
   const choisirPreset = useCallback((id: string, r: Reglages) => {
-    changer(mode === "simple" ? avecProtections(r) : r, id);
+    changer(avecProtections(r), id);
     setSource("B"); setBypass(false);
     void lancer();
-  }, [changer, lancer, mode]);
+  }, [changer, lancer]);
 
   const ctx: Ctx = {
     son, avant, apres: apresAJour, apresAncien: apres?.a ?? null, calcul, ref, refAna, reglages,
     setReglages: (r: Reglages) => changer(r, null, true), changer, lecteur, cpt, luA, luB, luR, gains, compensation, setCompensation,
-    source, setSource, bypass, setBypass, ecouter, ouvrirFichier, chargerSon, retirerRef, mono, setMono, setAide,
+    source, setSource, bypass, setBypass, ecouter, ouvrirFichier, retirerRef, mono, setMono, setAide,
   };
   const barre = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -261,12 +262,20 @@ export default function Mastering({ focus }: { focus?: string }) {
   const peutAnnuler = hist.current.passe.length > 0, peutRetablir = hist.current.futur.length > 0;
   const off = !son;
 
+  const barreEtAide = (
+    <>
+      <Barre refDiv={barre} ctx={ctx} lecture={lecture} jouer={jouer} boucle={boucle} setBoucle={setBoucle} zone={zone} setZone={setZone} />
+      {aide && <PanneauAide ctx={ctx} id={aide} fermer={() => setAide(null)} />}
+    </>
+  );
+  if (!visible) return barreEtAide;
+
   return (
     <div className="ms ms2">
-      <h2 className="page-title">Mastering</h2>
       <p className="ms-local"><PixelArt name="mastering" size={18} /> Tout se passe dans ton navigateur : ton son n'est envoyé nulle part.</p>
+      <PresetsAvances persos={persos} />
 
-      <Etape n={1} id="ms-etape-1" titre="Importer" sous={son ? son.nom : "WAV, MP3, FLAC, M4A ou AAC"}>
+      <Etape n={1} id="ms-etape-1" titre="Le son" sous={son ? son.nom : "WAV, MP3, FLAC, M4A ou AAC"}>
         <Import ctx={ctx} />
         {erreur && <p className="ms-erreur" role="alert">{erreur}</p>}
         <BlocAnalyse ctx={ctx} ouvert={analyseOuverte} setOuvert={setAnalyseOuverte} />
@@ -277,17 +286,13 @@ export default function Mastering({ focus }: { focus?: string }) {
           <span className="ms-et-outils">
             <button type="button" className="chipbtn" onClick={annuler} disabled={!peutAnnuler} title="Annuler (Ctrl+Z)">↶ Annuler</button>
             <button type="button" className="chipbtn" onClick={retablir} disabled={!peutRetablir} title="Rétablir (Ctrl+Y)">↷ Rétablir</button>
-            <span className="ms-mode" role="radiogroup" aria-label="Mode de réglage">
-              <button type="button" role="radio" aria-checked={mode === "simple"} className={mode === "simple" ? "on" : ""} onClick={() => setMode("simple")}>Simple</button>
-              <button type="button" role="radio" aria-checked={mode === "avance"} className={mode === "avance" ? "on" : ""} onClick={() => setMode("avance")}>Avancé</button>
-            </span>
           </span>
         )}>
         <Presets ctx={ctx} preset={preset} choisir={choisirPreset} persos={persos} setPersos={setPersos} />
-        {mode === "simple" ? <ModeSimple ctx={ctx} /> : <PanneauChaine ctx={ctx} bloc={bloc} setBloc={(b) => setBloc(b as BlocId)} />}
+        <ModeSimple ctx={ctx} />
         <div className="ms-et-pied">
           <button type="button" className="chipbtn" onClick={() => changer(reglagesSimples(), null)}>Tout remettre à zéro</button>
-          <span className="small muted">Ctrl+Z annule, Ctrl+Y rétablit. Simple et Avancé règlent la même chaîne : changer de mode ne change pas le son.</span>
+          <span className="small muted">Ctrl+Z annule, Ctrl+Y rétablit.</span>
         </div>
       </Etape>
 
@@ -295,9 +300,21 @@ export default function Mastering({ focus }: { focus?: string }) {
         <Export ctx={ctx} />
       </Etape>
 
-      <Barre refDiv={barre} ctx={ctx} lecture={lecture} jouer={jouer} boucle={boucle} setBoucle={setBoucle} zone={zone} setZone={setZone} />
-      {aide && <PanneauAide ctx={ctx} id={aide} fermer={() => setAide(null)} />}
+      {barreEtAide}
     </div>
+  );
+}
+
+/** Mes presets qui utilisaient des réglages de l'ancien mode Avancé : ils sonnent comme avant, mais ne se convertissent pas exactement en 6 curseurs. */
+function PresetsAvances({ persos }: { persos: PresetPerso[] }) {
+  const avances = persos.filter((p) => !estSimple(completer(p.reglages)));
+  if (!avances.length) return null;
+  return (
+    <p className="audio-alerte orange small" role="note">
+      ⚠ {avances.length === 1 ? "Ton preset" : "Tes presets"} {avances.map((p) => `« ${p.nom} »`).join(", ")} {avances.length === 1 ? "utilise" : "utilisent"} des réglages de l'ancien mode Avancé
+      qui n'ont pas de curseur (EQ 2 et 4, largeur stéréo, temps du compresseur…). {avances.length === 1 ? "Il sonne" : "Ils sonnent"} exactement comme avant ; si tu bouges un curseur, ces réglages restent.
+      Le bouton « ⇢ 6 curseurs » à côté du preset le convertit au plus proche (après, il ne sonne plus tout à fait pareil).
+    </p>
   );
 }
 
@@ -313,7 +330,7 @@ interface Ctx {
   bypass: boolean; setBypass: (b: boolean) => void;
   ecouter: (r: Reglages, comp?: boolean) => Promise<void>;
   ouvrirFichier: (f: File, pour: "son" | "ref") => Promise<void>;
-  chargerSon: (s: Son) => void; retirerRef: () => void;
+  retirerRef: () => void;
   mono: boolean; setMono: (b: boolean) => void;
   setAide: (id: string | null) => void;
 }
@@ -361,14 +378,12 @@ function Import({ ctx }: { ctx: Ctx }) {
         </div>
         <div className="ms-depot-btns">
           <button type="button" className="px-btn green" onClick={() => input.current?.click()}>Choisir un fichier</button>
-          <button type="button" className="px-btn" onClick={() => ctx.chargerSon(sonDemo())} title="Une boucle de 8 mesures générée par l'app, pour essayer sans fichier">Son de démo</button>
+          <button type="button" className="px-btn" onClick={() => poserSonStudio(sonDemo(), "demo")} title="Une boucle de 8 mesures générée par l'app, pour essayer sans fichier">Son de démo</button>
         </div>
         <input ref={input} type="file" accept={FORMATS} hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) void ctx.ouvrirFichier(f, "son"); e.target.value = ""; }} />
       </Depot>
 
-      <EnregistrerVersion source={{ module: "mastering", titre: "Pour le mastering", href: "#mastering" }} libelle="● Enregistrer l'E2 puis masteriser" sansVersions
-        texte="Par la Scarlett : enregistre, coupe, puis « Masteriser ce son »."
-        utiliser={{ libelle: "🎚 Masteriser ce son", action: (f) => ctx.ouvrirFichier(f, "son") }} />
+      <p className="small muted">Pour masteriser ton E2 : enregistre-le dans l'onglet <a href="#studio/enregistrer">● Enregistrer</a>, la prise arrive ici toute seule. Le son chargé est le même dans les 4 onglets du Studio.</p>
 
       <Depot className="ms-depot ms-depot-ref" onFichier={(f) => void ctx.ouvrirFichier(f, "ref")}>
         {ctx.ref ? (
@@ -408,10 +423,8 @@ function BlocAnalyse({ ctx, ouvert, setOuvert }: { ctx: Ctx; ouvert: boolean; se
   const graves = liste.filter((x) => x.niveau !== "info").length;
   const norm = (x: Analyse) => x.spectre.map((v) => v - x.lufs - 35);
   return (
-    <details className="ms-analyse" open={ouvert} onToggle={(e) => setOuvert((e.currentTarget as HTMLDetailsElement).open)}>
-      <summary>
-        <b>Analyse</b>
-        {!ctx.son ? <span className="muted">se remplit dès que le son est chargé</span>
+    <Deroulant compact id="mastering.analyse" etat={[ouvert, setOuvert]} couleur="#ffb020" titre="Analyse" texte={
+        !ctx.son ? <span className="muted">se remplit dès que le son est chargé</span>
           : !a ? <span className="muted">mesure en cours…</span>
           : (
             <span className="ms-an-res">
@@ -419,8 +432,7 @@ function BlocAnalyse({ ctx, ouvert, setOuvert }: { ctx: Ctx; ouvert: boolean; se
               <span>crête {f1(a.creteVraie)} dBTP</span>
               <span className={graves ? "alerte" : "ok"}>{graves ? `${graves} alerte${graves > 1 ? "s" : ""}` : "rien d'alarmant"}</span>
             </span>
-          )}
-      </summary>
+          )}>
       {ctx.son && a && (
         <div className="ms-an-corps">
           <h4>Alertes en mots simples <Badge kind="pratique">Repères, pas des règles</Badge></h4>
@@ -459,7 +471,7 @@ function BlocAnalyse({ ctx, ouvert, setOuvert }: { ctx: Ctx; ouvert: boolean; se
           <p className="small muted">Les mesures marquées <span className="ms-approx">≈</span> sont approchées : calcul maison inspiré des normes publiques (UIT-R BS.1770 pour le LUFS, EBU R128 pour la plage de volume), pas un appareil certifié.</p>
         </div>
       )}
-    </details>
+    </Deroulant>
   );
 }
 
@@ -525,7 +537,9 @@ function Presets({ ctx, preset, choisir, persos, setPersos }: { ctx: Ctx; preset
             <span key={x.id} className={`ms-pr perso ${preset === `perso-${x.id}` ? "on" : ""}`} style={{ "--cc": "#9cc4ff" } as CSSProperties}>
               <button type="button" onClick={() => choisir(`perso-${x.id}`, completer(x.reglages))} aria-pressed={preset === `perso-${x.id}`} title={`Enregistré le ${x.majLe.slice(0, 10)}`}>{x.nom}</button>
               <Etoile type="master" cle={`perso-${x.id}`} titre={x.nom} data={() => x} />
-              <button type="button" className="ms-pr-x" onClick={() => { if (confirm(`Supprimer « ${x.nom} » ?`)) setPersos(persos.filter((y) => y.id !== x.id)); }} aria-label={`Supprimer ${x.nom}`}>✕</button>
+              {!estSimple(completer(x.reglages)) && <button type="button" className="chipbtn ms-pr-conv" title="Convertir ce preset en 6 curseurs (au plus proche)"
+                onClick={() => setPersos(persos.map((y) => (y.id === x.id ? { ...y, reglages: versSimple(completer(y.reglages)), majLe: new Date().toISOString() } : y)))}>⇢ 6 curseurs</button>}
+              <BoutonSupprimer className="ms-pr-x" quoi={`le preset « ${x.nom} »`} onSupprimer={() => setPersos(persos.filter((y) => y.id !== x.id))}>✕</BoutonSupprimer>
             </span>
           ))}
           {saisie ? (
@@ -579,7 +593,7 @@ function ModeSimple({ ctx }: { ctx: Ctx }) {
     volume: `gain du limiteur, plafond ${f1(r.lim.plafond)} dB`,
   };
   const direct: Partial<Record<CleSimple, number>> = ctx.lecteur.lecture ? { comp: r.comp.on ? ctx.cpt.grComp : 0, volume: r.lim.on ? ctx.cpt.grLim : 0 } : {};
-  // ce que le mode Simple ne montre pas (réglé en Avancé ou par un preset)
+  // ce que les 6 curseurs ne montrent pas (réglé par un preset de style ou un ancien preset du mode Avancé)
   const autres: string[] = [];
   if (r.larg.on) autres.push(`stéréo ${Math.round(r.larg.largeur)} %${r.larg.monoGrave ? `, grave en mono sous ${Math.round(r.larg.freqMono)} Hz` : ""}`);
   for (const i of [2, 4]) if (r.eq.on && b[i].on && Math.abs(b[i].g) > 0.01) autres.push(`EQ ${NOMS_BANDES[i].toLowerCase()} ${signe(b[i].g)} dB vers ${fHz(b[i].f)}`);
@@ -592,14 +606,14 @@ function ModeSimple({ ctx }: { ctx: Ctx }) {
             onChange={(x) => ctx.setReglages(ecrireSimple(ctx.reglages, c.cle, x))} />
         ))}
       </div>
-      {autres.length > 0 && <p className="small ms-autres">Aussi dans ce réglage : {autres.join(" ; ")}. Visible et modifiable en mode Avancé.</p>}
+      {autres.length > 0 && <p className="small ms-autres">Aussi dans ce réglage : {autres.join(" ; ")}. Réglé par le preset : pas de curseur pour ça.</p>}
       <div className="ms-protec">
         <span className="ms-protec-titre">Toujours actifs <BoutonAide id="protections" ctx={ctx} nom="Protections" /></span>
         <span className={`ms-led-txt ${pr.passeHaut ? "on" : ""}`}>Passe-haut {fHz(pr.passeHaut ? b[0].f : FREQ_PASSE_HAUT)}</span>
         <span className={`ms-led-txt ${pr.limiteur ? "on" : ""}`}>Limiteur, plafond {f1(r.lim.plafond)} dB</span>
         <span className={`ms-led-txt ${pr.limiteur ? "on" : ""}`}>Anti-écrêtage</span>
         {(!pr.passeHaut || !pr.limiteur) && (
-          <span className="ms-protec-off">Éteint en mode Avancé. <button type="button" className="chipbtn" onClick={() => ctx.changer(avecProtections(ctx.reglages))}>Rallumer</button></span>
+          <span className="ms-protec-off">Éteint par un ancien réglage. <button type="button" className="chipbtn" onClick={() => ctx.changer(avecProtections(ctx.reglages))}>Rallumer</button></span>
         )}
       </div>
     </div>
@@ -827,19 +841,12 @@ function useTick(l: Lecteur, actif: boolean) {
 function useAnim(dessiner: () => void, deps: unknown[]) {
   useEffect(() => {
     let id = 0;
-    const f = () => { dessiner(); id = requestAnimationFrame(f); };
+    const cadence = { t: 0 };
+    const f = (t: number) => { id = requestAnimationFrame(f); if (!imageASauter(t, cadence)) dessiner(); };   // 30 images/s sur téléphone
     id = requestAnimationFrame(f);
     return () => cancelAnimationFrame(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
-}
-
-function preparerCanvas(c: HTMLCanvasElement) {
-  const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
-  if (c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); }
-  const g = c.getContext("2d")!;
-  g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return { g, w, h };
 }
 
 function FormeOnde({ ctx, zone, setZone }: { ctx: Ctx; zone: [number, number] | null; setZone: (z: [number, number] | null) => void }) {
@@ -859,7 +866,8 @@ function FormeOnde({ ctx, zone, setZone }: { ctx: Ctx; zone: [number, number] | 
   const [sel, setSel] = useState<[number, number] | null>(null);
   useAnim(() => {
     const c = ref.current; if (!c) return;
-    const { g, w, h } = preparerCanvas(c);
+    const pc = preparerCourbe(c); if (!pc) return;
+    const { g, w, h } = pc;
     g.clearRect(0, 0, w, h);
     const n = s.L.length, z = sel ?? zone;
     if (z) { g.fillStyle = "#ffd84d22"; g.fillRect((z[0] / n) * w, 0, ((z[1] - z[0]) / n) * w, h); g.fillStyle = "#ffd84d"; g.fillRect((z[0] / n) * w, 0, 2, h); g.fillRect((z[1] / n) * w - 2, 0, 2, h); }
@@ -978,7 +986,8 @@ function Vectorscope({ ctx }: { ctx: Ctx }) {
   const n = useRef(0);
   useAnim(() => {
     const c = ref.current; if (!c) return;
-    const { g, w, h } = preparerCanvas(c);
+    const pc = preparerCourbe(c); if (!pc) return;
+    const { g, w, h } = pc;
     g.fillStyle = "#0b0d12"; g.fillRect(0, 0, w, h);
     g.strokeStyle = "#ffffff1a"; g.beginPath(); g.moveTo(w / 2, 0); g.lineTo(w / 2, h); g.moveTo(0, h / 2); g.lineTo(w, h / 2); g.stroke();
     g.fillStyle = "#a3abba"; g.font = "10px ui-monospace, monospace"; g.fillText("G", 4, 12); g.fillText("D", w - 10, 12); g.fillText("Mono", w / 2 + 3, 12);
@@ -1032,152 +1041,6 @@ function Mesures({ a, b, noms }: { a: Analyse; b?: Analyse | null; noms?: [strin
         ))}
       </tbody>
     </table>
-  );
-}
-
-// ------------------------------------------------------------------ 3. Chaîne
-function SchemaChaine({ ctx, bloc, setBloc }: { ctx: Ctx; bloc: BlocId; setBloc: (b: BlocId) => void }) {
-  const r = ctx.reglages;
-  const basculer = (id: BlocId) => { const n = copie(r); n[id].on = !n[id].on; ctx.setReglages(n); };
-  return (
-    <div className="ms-schema" role="group" aria-label="Schéma de la chaîne : clique sur un bloc pour le régler">
-      <span className="ms-sch-bout">Entrée</span>
-      {BLOCS_M.map((b) => {
-        const gr = b.id === "comp" ? ctx.cpt.grComp : b.id === "lim" ? ctx.cpt.grLim : null;
-        return (
-          <span key={b.id} className="ms-sch-pas">
-            <i className="ms-sch-fl" aria-hidden>→</i>
-            <span className={`ms-sch-bloc ${bloc === b.id ? "sel" : ""} ${r[b.id].on ? "on" : "off"}`} style={{ "--cc": b.couleur } as CSSProperties}>
-              <button type="button" className="ms-sch-nom" onClick={() => setBloc(b.id)} aria-pressed={bloc === b.id}>{b.court}</button>
-              <button type="button" className="ms-led" onClick={() => basculer(b.id)} aria-pressed={r[b.id].on} title={r[b.id].on ? "Allumé : clique pour éteindre" : "Éteint : clique pour allumer"}>{r[b.id].on ? "ON" : "OFF"}</button>
-              {gr !== null && r[b.id].on && <small className="ms-sch-gr">-{f1(gr)} dB</small>}
-            </span>
-          </span>
-        );
-      })}
-      <i className="ms-sch-fl" aria-hidden>→</i>
-      <span className="ms-sch-bout">Sortie</span>
-    </div>
-  );
-}
-
-function Reglage({ label, val, min, max, pas, unite, onChange, aide, log, avant }: { label: string; val: number; min: number; max: number; pas: number; unite: string; onChange: (v: number) => void; aide?: string; log?: boolean; avant?: number }) {
-  const bouge = avant !== undefined && Math.abs(avant - val) > 1e-6;
-  // log : curseur logarithmique (fréquences), sinon 20 Hz → 20 kHz serait impossible à régler
-  const versPos = (v: number) => (Math.log(v / min) / Math.log(max / min)) * 1000;
-  const depuisPos = (p: number) => { const v = min * Math.pow(max / min, p / 1000); return v >= 1000 ? Math.round(v / 10) * 10 : Math.round(v); };
-  const [txt, setTxt] = useState(String(val));
-  useEffect(() => setTxt(String(val)), [val]);
-  const valider = (s: string) => { const v = Number(s.replace(",", ".")); if (Number.isFinite(v)) onChange(Math.min(max, Math.max(min, v))); else setTxt(String(val)); };
-  return (
-    <label className={`ms-reglage ${bouge ? "bouge" : ""}`}>
-      <span className="ms-reg-nom">{label}{bouge && <em className="ms-avant">avant : {f1(avant!, avant! % 1 ? 2 : 0)} {unite}</em>}{aide && <small>{aide}</small>}</span>
-      {log
-        ? <input type="range" min={0} max={1000} step={1} value={versPos(val)} onChange={(e) => onChange(depuisPos(Number(e.target.value)))} aria-label={label} />
-        : <input type="range" min={min} max={max} step={pas} value={val} onChange={(e) => onChange(Number(e.target.value))} aria-label={label} />}
-      <span className="ms-reg-val">
-        <input type="text" inputMode="decimal" value={txt} onChange={(e) => setTxt(e.target.value)} onBlur={(e) => valider(e.target.value)} onKeyDown={(e) => e.key === "Enter" && valider((e.target as HTMLInputElement).value)} aria-label={`${label} (${unite})`} />
-        <small>{unite}</small>
-      </span>
-    </label>
-  );
-}
-
-function PanneauChaine({ ctx, bloc, setBloc }: { ctx: Ctx; bloc: BlocId; setBloc: (b: string) => void }) {
-  const info = BLOCS_M.find((b) => b.id === bloc)!;
-  const r = ctx.reglages;
-  const maj = (f: (n: Reglages) => void) => { const n = copie(r); f(n); ctx.setReglages(n); };
-  const neutre = reglagesNeutres();
-  return (
-    <section className="ms-panneau">
-      <SchemaChaine ctx={ctx} bloc={bloc} setBloc={setBloc} />
-      <div className="ms-bloc" style={{ "--cc": info.couleur } as CSSProperties}>
-        <div className="ms-bloc-tete">
-          <h3>{info.nom}</h3>
-          <button type="button" className={`e2-ui-btn ${r[bloc].on ? "lit" : ""}`} aria-pressed={r[bloc].on} onClick={() => maj((n) => { n[bloc].on = !n[bloc].on; })}>{r[bloc].on ? "● Allumé" : "○ Éteint"}</button>
-          <button type="button" className="chipbtn" onClick={() => maj((n) => { (n as unknown as Record<string, unknown>)[bloc] = { ...neutre[bloc], on: n[bloc].on }; })}>Remettre à zéro</button>
-        </div>
-        <div className="ms-explic">
-          <p><b>À quoi ça sert</b> {info.sert}</p>
-          <p><b>Quand l'utiliser</b> {info.quand} <Badge kind="pratique" /></p>
-          <p className="ms-attention"><b>Attention</b> {info.attention}</p>
-        </div>
-        {bloc === "eq" && <ReglagesEq ctx={ctx} maj={maj} />}
-        {bloc === "comp" && (
-          <div className="ms-regs">
-            <GrosMetre label="Réduction de gain du compresseur" val={ctx.cpt.grComp} actif={r.comp.on} lecture={ctx.lecteur.lecture} />
-            <Reglage label="Seuil" val={r.comp.seuil} min={-40} max={0} pas={0.5} unite="dB" onChange={(v) => maj((n) => { n.comp.seuil = v; })} aide="Au-dessus, le son est compressé." />
-            <Reglage label="Ratio" val={r.comp.ratio} min={1} max={10} pas={0.1} unite=": 1" onChange={(v) => maj((n) => { n.comp.ratio = v; })} aide="2 : 1 = 2 dB au-dessus du seuil n'en donnent plus qu'un." />
-            <Reglage label="Attaque" val={r.comp.attaque} min={0.1} max={100} pas={0.1} unite="ms" onChange={(v) => maj((n) => { n.comp.attaque = v; })} aide="Temps pour réagir." />
-            <Reglage label="Relâchement" val={r.comp.relachement} min={10} max={1000} pas={5} unite="ms" onChange={(v) => maj((n) => { n.comp.relachement = v; })} aide="Temps pour relâcher." />
-            <Reglage label="Genou" val={r.comp.genou} min={0} max={12} pas={0.5} unite="dB" onChange={(v) => maj((n) => { n.comp.genou = v; })} aide="0 = net, plus grand = plus doux autour du seuil." />
-            <Reglage label="Gain de sortie" val={r.comp.gain} min={-6} max={12} pas={0.5} unite="dB" onChange={(v) => maj((n) => { n.comp.gain = v; })} aide="Pour rattraper le volume perdu." />
-          </div>
-        )}
-        {bloc === "sat" && (
-          <div className="ms-regs">
-            <Reglage label="Drive" val={r.sat.drive} min={0} max={18} pas={0.5} unite="dB" onChange={(v) => maj((n) => { n.sat.drive = v; })} aide="Plus il est haut, plus les crêtes sont arrondies." />
-            <Reglage label="Mix" val={r.sat.mix} min={0} max={100} pas={1} unite="%" onChange={(v) => maj((n) => { n.sat.mix = v; })} aide="Part du son saturé mélangé au son propre." />
-          </div>
-        )}
-        {bloc === "larg" && (
-          <div className="ms-grille2">
-            <div className="ms-regs">
-              <Reglage label="Largeur" val={r.larg.largeur} min={0} max={200} pas={1} unite="%" onChange={(v) => maj((n) => { n.larg.largeur = v; })} aide="0 % = mono, 100 % = inchangé, 200 % = très large." />
-              <label className="ms-check"><input type="checkbox" checked={r.larg.monoGrave} onChange={(e) => maj((n) => { n.larg.monoGrave = e.target.checked; })} /> Grave en mono</label>
-              <Reglage log label="Grave en mono sous" val={r.larg.freqMono} min={40} max={300} pas={5} unite="Hz" onChange={(v) => maj((n) => { n.larg.freqMono = v; })} />
-            </div>
-            <div><Vectorscope ctx={ctx} /><button type="button" className={`chipbtn ${ctx.mono ? "on" : ""}`} onClick={() => ctx.setMono(!ctx.mono)}>Écouter en mono</button></div>
-          </div>
-        )}
-        {bloc === "lim" && (
-          <div className="ms-regs">
-            <GrosMetre label="Réduction de gain du limiteur" val={ctx.cpt.grLim} actif={r.lim.on} lecture={ctx.lecteur.lecture} />
-            <Reglage label="Gain d'entrée" val={r.lim.gain} min={-12} max={18} pas={0.5} unite="dB" onChange={(v) => maj((n) => { n.lim.gain = v; })} aide="Pousse le son contre le plafond : c'est ce qui monte le volume." />
-            <Reglage label="Plafond" val={r.lim.plafond} min={-6} max={0} pas={0.1} unite="dBFS" onChange={(v) => maj((n) => { n.lim.plafond = v; })} aide="Aucun échantillon ne dépasse cette valeur." />
-            <Reglage label="Relâchement" val={r.lim.relachement} min={5} max={500} pas={5} unite="ms" onChange={(v) => maj((n) => { n.lim.relachement = v; })} aide="Court = plus fort mais risque de grésillement dans le grave." />
-            {ctx.apres && <p className="small">Après la chaîne : crête {f1(ctx.apres.crete)} dBFS, crête vraie estimée {f1(ctx.apres.creteVraie)} dBTP <span className="ms-approx">≈</span>, volume perçu {f1(ctx.apres.lufs)} LUFS <span className="ms-approx">≈</span>.</p>}
-            <p className="small muted">Le plafond agit sur les échantillons. Entre deux échantillons, l'onde peut dépasser un peu (crête vraie) : garde de la marge, par exemple -1 dB.</p>
-          </div>
-        )}
-      </div>
-      <p className="small muted">Tous les blocs se règlent en direct pendant la lecture. Compare avec le bouton A / B de la barre du bas.</p>
-    </section>
-  );
-}
-
-function GrosMetre({ label, val, actif, lecture }: { label: string; val: number; actif: boolean; lecture: boolean }) {
-  const v = actif && lecture ? val : 0;
-  return (
-    <div className="ms-gros-metre">
-      <span>{label}</span>
-      <i><b style={{ width: `${Math.min(100, (v / 20) * 100)}%` }} /></i>
-      <strong>-{f1(v)} dB</strong>
-      {!lecture && <small className="muted">lance la lecture</small>}
-    </div>
-  );
-}
-
-const TYPES: Record<Bande["type"], string> = { hp: "coupe-bas", ls: "plateau grave", pk: "cloche", hs: "plateau aigu", lp: "coupe-haut" };
-
-function ReglagesEq({ ctx, maj }: { ctx: Ctx; maj: (f: (n: Reglages) => void) => void }) {
-  const r = ctx.reglages;
-  return (
-    <>
-      <Spectre ctx={ctx} eq hauteur={260} courbes={ctx.avant ? [{ nom: "Moyenne avant", couleur: "#8a91a0", v: ctx.avant.spectre, pointille: true }] : []} />
-      <ReglagesSpectre compact />
-      <Legende items={[{ nom: "Courbe de l'EQ (glisse les carrés)", couleur: "#ffd84d" }, { nom: "Après (en direct)", couleur: "#4fd18b" }, { nom: "Moyenne avant", couleur: "#8a91a0", pointille: true }]} />
-      <div className="ms-bandes">
-        {r.eq.bandes.map((b, i) => (
-          <div key={i} className={`ms-bande ${b.on ? "" : "off"}`}>
-            <label className="ms-bande-tete"><input type="checkbox" checked={b.on} onChange={(e) => maj((n) => { n.eq.bandes[i].on = e.target.checked; })} /> <b>{i + 1}. {NOMS_BANDES[i]}</b> <small>{TYPES[b.type]}</small></label>
-            <Reglage log label="Fréquence" val={b.f} min={20} max={20000} pas={1} unite="Hz" onChange={(v) => maj((n) => { n.eq.bandes[i].f = v; })} />
-            {b.type !== "hp" && b.type !== "lp" && <Reglage label="Gain" val={b.g} min={-15} max={15} pas={0.1} unite="dB" onChange={(v) => maj((n) => { n.eq.bandes[i].g = v; })} />}
-            <Reglage label="Q" val={b.q} min={0.1} max={10} pas={0.01} unite="" onChange={(v) => maj((n) => { n.eq.bandes[i].q = v; })} />
-          </div>
-        ))}
-      </div>
-    </>
   );
 }
 

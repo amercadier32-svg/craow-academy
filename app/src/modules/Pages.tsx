@@ -8,7 +8,7 @@ import { BLOCS } from "../content/chain";
 import { GAMMES } from "../lib/music";
 import { allControls } from "../lib/data";
 import { useStore } from "../lib/store";
-import { defisDeMachine } from "../lib/sessionMachines";
+import { defisDeMachine } from "../lib/sessionDefis";
 import { CarteModule, type Carte } from "./Accueil";
 import { Deroulant, ToutOuvrirFermer } from "../components/Deroulant";
 
@@ -21,7 +21,9 @@ const INFOS: Record<string, { texte: string; badge: () => string | number }> = {
   session: { texte: "Des défis chronométrés pour finir des sons au lieu de chercher la perfection.", badge: () => defisDeMachine("electribe2").length },
   gammes: { texte: "Les gammes de l'E2, à voir et à écouter.", badge: () => GAMMES.length },
   effets: { texte: "Insert FX, Master FX et modulations.", badge: () => FICHES.length },
-  labo: { texte: "Groove, MIDI et setup.", badge: () => 3 },
+  jeu: { texte: "Swing, Groove, Chord et Gate Arp, à écouter et à refaire.", badge: () => 4 },
+  midi: { texte: "L'app parle à ton E2 en USB.", badge: () => "USB" },
+  setup: { texte: "2 E2, TD-3, Scarlett et FL Studio : les branchements.", badge: () => "PC" },
 };
 
 export function PageMachine({ id }: { id: string }) {

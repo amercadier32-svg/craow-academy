@@ -14,3 +14,5 @@ export { GENERATEURS, genererVariante } from "../src/lib/generateur";
 export { DOCS, allControls, parameters, oscillators, effects, procedures } from "../src/lib/data";
 export { GAMMES, nomMidi, nomPc, notesIn, ALL_KEYS } from "../src/lib/music";
 export { STYLES_LISTE } from "./controle-styles";
+export { blocsComplets, BLOCS as BLOCS_FENETRE } from "../src/content/recetteComplete";
+export { FORMAT, CLE_FORMAT, MIGRATIONS, preparerDonnees, etatFormat } from "../src/lib/donnees";

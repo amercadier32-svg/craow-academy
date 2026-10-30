@@ -1,5 +1,6 @@
 // Carnet : toutes tes notes (« Mes observations ») au même endroit, tes plages relevées, ce que tu as fait,
 // des notes libres, et l'export en JSON ou en Markdown.
+import { confirmer } from "../components/Confirmer";
 import { Infos, Rangement } from "../components/Rangement";
 import { Deroulant, ToutOuvrirFermer } from "../components/Deroulant";
 import { useState } from "react";
@@ -26,7 +27,7 @@ const CATS: { pre: string; nom: string; lien?: (rest: string) => string }[] = [
   { pre: "setup:", nom: "Mon setup", lien: () => "#setup" },
   { pre: "midi:", nom: "MIDI", lien: () => "#midi" },
   { pre: "morceau:", nom: "Morceaux", lien: () => "#morceau/emporter" },
-  { pre: "master:", nom: "Mastering", lien: (r) => (r.startsWith("lecon:") ? `#mastering/lecon-${r.slice(6)}` : "#mastering") },
+  { pre: "master:", nom: "Studio · Masteriser", lien: (r) => (r.startsWith("lecon:") ? `#studio/masteriser/lecon-${r.slice(6)}` : "#studio/masteriser") },
   { pre: "", nom: "Exercices d'écoute (oscillateurs, filtres, effets)" },
 ];
 const catOf = (id: string) => CATS.find((c) => c.pre && id.startsWith(c.pre)) ?? CATS[CATS.length - 1];
@@ -134,7 +135,7 @@ export default function Carnet() {
                   <div className="cn-meta">
                     <span className="small muted">{date(o.majLe)}</span>
                     {c.lien && <a className="small" href={c.lien(rest)}>ouvrir ↗</a>}
-                    <button type="button" className="chipbtn" onClick={() => { if (confirm(`Effacer la note « ${o.titre} » ?`)) setObservation(o.id, o.titre, ""); }}>Effacer</button>
+                    <button type="button" className="chipbtn" onClick={() => { void confirmer(`Effacer la note « ${o.titre} » ?`, { oui: "Effacer" }).then((ok) => { if (ok) setObservation(o.id, o.titre, ""); }); }}>Effacer</button>
                   </div>
                   <ObservationBox id={o.id} titre={o.titre} />
                 </div>

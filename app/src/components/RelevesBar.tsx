@@ -26,7 +26,7 @@ export function RelevesBar() {
     if (!f) return;
     try {
       const r = await importerDonnees(JSON.parse(await f.text()));
-      setMsg({ ok: true, text: `Importé : ${r.plages} plage(s), ${r.observations} note(s), ${r.favoris} favori(s), ${r.recettes} recette(s) (générées, corbeille), ${r.sessions} session(s) ou défi(s), ${r.analyses} analyse(s) de référence et ${r.autres} autre(s) donnée(s) (morceaux, presets, grilles, réglages) mis à jour. Les valeurs déjà plus récentes ici sont gardées. Une copie d'avant l'import est dans « Mes données ».` });
+      setMsg({ ok: true, text: `Importé : ${r.plages} plage(s), ${r.observations} note(s), ${r.favoris} favori(s), ${r.recettes} recette(s) (générées, corbeille), ${r.sessions} session(s) ou défi(s), ${r.analyses} analyse(s) de référence, ${r.testees} recette(s) « testée sur ma machine » et ${r.autres} autre(s) donnée(s) (morceaux, presets, grilles, réglages) mis à jour. Les valeurs déjà plus récentes ici sont gardées. Une copie d'avant l'import est dans « Mes données ».` });
     } catch (e) {
       setMsg({ ok: false, text: e instanceof Error && e.message.includes("CrAoW ACADEMY") ? e.message : "Fichier illisible : choisis un fichier exporté avec « Exporter mes données » (ou un ancien « Exporter mes relevés »)." });
     }

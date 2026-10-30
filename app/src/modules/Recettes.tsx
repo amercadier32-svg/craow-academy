@@ -1,10 +1,10 @@
 import { BoutonJeter, Corbeille, EntreeCorbeille } from "../components/Corbeille";
-import { BoutonsEcoute } from "../components/Lecteur";
-import { lireObjet, ecrireJson } from "../lib/stockage";
+import { lireObjet, ecrireJson, effacer } from "../lib/stockage";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Etoile } from "../components/Etoile";
 import { COULEURS, Infos, Rangement } from "../components/Rangement";
-import { Confirmer, FiltreMenu, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
+import { Confirmer } from "../components/Confirmer";
+import { FiltreMenu, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
 import { PixelArt } from "../components/PixelArt";
 import { GENERATEURS, genererVariante } from "../lib/generateur";
 import { etatRecette, jouerSeq } from "../lib/apercus";
@@ -15,8 +15,8 @@ import { paramById } from "../lib/data";
 import { ALL_KEYS, GAMMES, gammeByN } from "../lib/music";
 import { SONS_PERCU } from "../lib/seq";
 import { CTL, CopierPanel, LIGNE_NOTES, LIGNE_SEQUENCER, LIGNE_WRITE, MonEnregistrement, fusion, lignesPrep, lignesSequence, lignesSon, listPage, val } from "../components/Machine";
-import { estFavori, etatDe, garderRecette, idFavori, listeGenerees, mettreALaCorbeille, restaurerRecette, supprimerDefinitivement, useStore, viderCorbeille } from "../lib/store";
-import { Badge, DoneToggle, ObservationBox, SourceRef, StartValueChip } from "../components/common";
+import { estFavori, estTestee, etatDe, garderRecette, idFavori, listeGenerees, mettreALaCorbeille, restaurerRecette, setTestee, supprimerDefinitivement, useStore, viderCorbeille } from "../lib/store";
+import { Badge, ObservationBox, SourceRef, StartValueChip } from "../components/common";
 import { ExerciseCard } from "../components/ExerciseCard";
 import { SeqPlayer, useKnobRange, usePlayerPrefs, useSeqEdit, type SeqData } from "../components/SeqPlayer";
 import { Editeur } from "./Grilles";
@@ -29,11 +29,23 @@ import { MODS, blocsComplets, modParNom, padTactile, pourquoiMod, reglagesPas, t
 import "./recettes-fenetre.css";
 
 const BPM = 165;
-/** Badge des recettes gardées : « 🎲 Générée » ou « 🔍 D'après une référence » (module Analyser une référence). */
+/** Badge des recettes gardées : « 🎲 Générée », « 🔍 D'après une référence » (onglet Analyser du Studio) ou « ✚ Mes recettes » (recette vierge). */
 function BadgeGen({ rc }: { rc: Recette }) {
   return rc.origine?.type === "reference"
     ? <Badge kind="ref" title={`D'après « ${rc.origine.morceau} »`} />
-    : <Badge kind="genere" />;
+    : rc.origine?.type === "perso" ? <Badge kind="perso" /> : <Badge kind="genere" />;
+}
+const estPerso = (rc: Recette) => rc.origine?.type === "perso";
+
+/** « ✚ Recette vierge » : tous les réglages à leur valeur de départ (« défaut »), 4 mesures vides. */
+function recetteVierge(element: ElementId = "kick"): RecetteEl {
+  const modele = RECETTES.find((x) => x.element === element && !x.kit) ?? RECETTES[0];
+  return {
+    id: `perso-${Date.now().toString(36)}`, nom: "Ma recette", styles: [], fonction: modele.fonction, element, partie: modele.partie,
+    idee: "Mon son, parti d'une recette vierge : tous les réglages à leur valeur de départ.",
+    reglages: [], melodique: { key: "D", scale: 7 }, mesures: [0, 1, 2, 3].map(() => Array(16).fill(null)),
+    relance: "À moi de choisir.", apercu: { ...modele.apercu }, variantes: [], origine: { type: "perso" },
+  };
 }
 
 function origineDe(rc: Recette): SeqData {
@@ -48,10 +60,10 @@ const ICONE_CAT: Record<string, string> = { rythmique: "rythmique", basse: "bass
 type RecetteEl = Recette & { element: ElementId };
 type SourceRc = "pratique" | "mes" | "generees" | "reference";
 const SOURCES: { id: SourceRc; nom: string }[] = [
-  { id: "pratique", nom: "Pratique (recettes de l'app)" }, { id: "mes", nom: "Mes recettes (testées ou avec ma version)" }, { id: "generees", nom: "Générées (🎲 gardées)" }, { id: "reference", nom: "D'après une référence (🔍)" },
+  { id: "pratique", nom: "Pratique (recettes de l'app)" }, { id: "mes", nom: "Mes recettes (créées, testées ou avec ma version)" }, { id: "generees", nom: "Générées (🎲 gardées)" }, { id: "reference", nom: "D'après une référence (🔍)" },
 ];
 const catDe = (x: Recette) => (x.element ? ELEMENTS.get(x.element)?.categorie : undefined);
-const FILTRES0: FmValeur = { style: [], cat: [], el: [], source: [], favoris: [], mod: [] };
+const FILTRES0: FmValeur = { style: [], cat: [], el: [], source: [], favoris: [], mod: [], testee: [] };
 // Filtre « par modulation » : numéro du type (1 à 72), ou « aucune » (pas de modulation, ou Depth = 0).
 const modId = (x: Recette) => {
   const t = x.reglages.find((y) => y.param === "mod.type")?.valeur;
@@ -84,7 +96,9 @@ export default function Recettes({ focus }: { focus?: string }) {
   });
   const [vue, setVue] = useEtatPage<"liste" | "corbeille">("recettes.vue", "liste");
   const [ouverts, setOuverts] = useEtatPage<Set<string>>("recettes.ouverts", () => new Set(depart ? [depart.element] : []));
-  const [onglet, setOnglet] = useEtatPage<Record<string, "recettes" | "generer">>("recettes.onglets", {});
+  // 🎲 d'une sous-catégorie : la recette générée s'ouvre dans la fenêtre avec les réglages du générateur
+  const [genCtx, setGenCtx] = useState<{ element: ElementId; nomEl: string; bases: Recette[] } | null>(null);
+  const [prefsLecteur] = usePlayerPrefs();
   const [sel, setSel] = useState<string | null>(depart ? depart.id : null);
   const [brouillon, setBrouillon] = useState<RecetteEl | null>(null);
   const [confirm, setConfirm] = useState<null | { texte: string; detail?: string; faire: () => void }>(null);
@@ -97,14 +111,16 @@ export default function Recettes({ focus }: { focus?: string }) {
   }, []);
   useEffect(() => { if (!annonce) return; const t = setTimeout(() => setAnnonce(null), 6000); return () => clearTimeout(t); }, [annonce]);
 
-  const sourcesDe = (x: Recette): SourceRc[] => [genIds.has(x.id) ? (x.origine?.type === "reference" ? "reference" : "generees") : "pratique", ...(st.faits[`recette:${x.id}`] || st.observations[`recette:${x.id}`] ? ["mes" as const] : [])];
+  const sourcesDe = (x: Recette): SourceRc[] => [genIds.has(x.id) ? (x.origine?.type === "reference" ? "reference" : estPerso(x) ? "mes" : "generees") : "pratique", ...(estTestee(st, x.id) || st.faits[`recette:${x.id}`] || st.observations[`recette:${x.id}`] ? ["mes" as const] : [])];
   // Filtres qui ne dépendent pas de la place (style, source, favoris).
   const passe = (x: Recette) => (!f.style.length || x.styles.some((s) => f.style.includes(s)))
     && (!f.mod?.length || f.mod.includes(modId(x)))
     && (!f.source.length || sourcesDe(x).some((s) => f.source.includes(s)))
-    && (!f.favoris.length || estFavori(st, idFavori("recette", x.id)));
+    && (!f.favoris.length || estFavori(st, idFavori("recette", x.id)))
+    && (!f.testee?.length || estTestee(st, x.id));
   const filtrees = actives.filter(passe);
-  const autres = f.style.length + f.source.length + f.favoris.length + f.el.length + (f.mod?.length ?? 0) > 0;
+  const autres = f.style.length + f.source.length + f.favoris.length + f.el.length + (f.mod?.length ?? 0) + (f.testee?.length ?? 0) > 0;
+  const nbTestees = actives.filter((x) => estTestee(st, x.id)).length;
   const elsDe = (c: (typeof CATEGORIES)[number]) => {
     const choisis = c.elements.filter((e) => f.el.includes(e.id));
     return choisis.length ? choisis : f.el.length && !f.cat.includes(c.id) ? [] : c.elements;
@@ -123,6 +139,7 @@ export default function Recettes({ focus }: { focus?: string }) {
       id: e.id, nom: e.nom, section: c.nom, couleur: COULEUR_CAT[c.id], n: filtrees.filter((x) => x.element === e.id).length }))) },
     { id: "source", titre: "Source", options: SOURCES.map((s) => ({ ...s, n: actives.filter((x) => sourcesDe(x).includes(s.id)).length })) },
     { id: "favoris", titre: "Favoris", options: [{ id: "oui", nom: "★ Favoris seulement", n: actives.filter((x) => estFavori(st, idFavori("recette", x.id))).length }] },
+    { id: "testee", titre: "Testées sur ma machine", options: [{ id: "oui", nom: "✓ Testées seulement", n: nbTestees }] },
     { id: "mod", titre: "Par modulation", options: [
       { id: "aucune", nom: "Aucune (Depth : 0)", section: "Sans modulation", n: actives.filter((x) => modId(x) === "aucune").length },
       ...MODS_LISTE.map((m) => ({ id: String(m.n), nom: `${m.n} ${m.nom}`, section: SECTION_MOD(m.source), n: actives.filter((x) => modId(x) === String(m.n)).length })),
@@ -147,27 +164,41 @@ export default function Recettes({ focus }: { focus?: string }) {
   });
   const stopSi = (id: string) => { if (engine.snap.owner === `rc:${id}`) engine.stop(); };
   const ecouter = (rc: Recette, mode: Mode) => jouerSeq(`rc:${rc.id}`, etatRecette(rc, range, mode));
+  /** Nouvelle recette pas encore gardée (générée ou vierge) : elle s'ouvre (ou remplace l'autre) dans la fenêtre. */
   const nouveauBrouillon = (rc: Recette, mode?: Mode) => {
     if (brouillon) stopSi(brouillon.id);
     const x = { ...rc, element: rc.element ?? "kick" } as RecetteEl;
     setBrouillon(x);
-    // La fiche s'ouvre avec le bouton « Réglages… » du générateur (une fenêtre cacherait le générateur).
-    if (sel === brouillon?.id) setSel(null);
+    if (!rc || !brouillon || sel !== brouillon.id) ouvrirFenetre("#recettes");
+    setSel(x.id);
     if (mode) ecouter(x, mode);
   };
+  /** Bouton 🎲 d'une sous-catégorie : génère tout de suite avec les derniers réglages du générateur. */
+  const lancerGenerateur = (element: ElementId, nomEl: string, bases: Recette[]) => {
+    const cfg = lireCfgGen(f.style.length === 1 ? f.style[0] as Style : "tous");
+    setGenCtx({ element, nomEl, bases });
+    nouveauBrouillon(GENERATEURS[element]!.generer({ ...cfg, style: tirerStyle(cfg.style, visibles) }, range), prefsLecteur.mode);
+  };
+  const ouvrirVierge = () => { setGenCtx(null); nouveauBrouillon(recetteVierge(f.el.length === 1 ? f.el[0] as ElementId : "kick")); };
   const garder = () => {
     if (!brouillon) return;
     garderRecette(brouillon);
-    setAnnonce({ texte: `« ${brouillon.nom} » est gardée dans ${ELEMENTS.get(brouillon.element)?.nom} avec le badge « Générée ».` });
+    setAnnonce({ texte: `« ${brouillon.nom} » est gardée dans ${ELEMENTS.get(brouillon.element)?.nom} avec le badge « ${estPerso(brouillon) ? "Mes recettes" : "Générée"} ».` });
     setBrouillon(null);
   };
-  const jeterBrouillon = () => { if (brouillon) { stopSi(brouillon.id); if (sel === brouillon.id) fermer(); setBrouillon(null); } };
+  const jeterBrouillon = () => {
+    if (!brouillon) return;
+    stopSi(brouillon.id);
+    if (estPerso(brouillon)) effacer(`e2academy.recette.${brouillon.id}`);   // les notes déjà posées dans le lecteur
+    if (sel === brouillon.id) fermer();
+    setBrouillon(null);
+  };
 
   const rc = brouillon && sel === brouillon.id ? brouillon : actives.find((x) => x.id === sel);
   const carte = (x: RecetteEl, e: { nom: string }) => (
     <div key={x.id} className="rc-card-wrap">
-      <button type="button" className={`rc-card ${sel === x.id ? "on" : ""} ${st.faits[`recette:${x.id}`] ? "done" : ""}`} onClick={() => choose(x.id)}>
-        <span className="rc-role">{x.kit ? `Kit de ${x.kit.pistes.length} parties` : e.nom}{st.faits[`recette:${x.id}`] ? " · testée ✓" : ""}</span>
+      <button type="button" className={`rc-card ${sel === x.id ? "on" : ""} ${estTestee(st, x.id) ? "done" : ""}`} onClick={() => choose(x.id)}>
+        <span className="rc-role">{x.kit ? `Kit de ${x.kit.pistes.length} parties` : e.nom}{estTestee(st, x.id) ? " · ✓ testée sur ma machine" : ""}</span>
         <b>{x.nom}</b>
         <span className="rc-styles">{genIds.has(x.id) && <BadgeGen rc={x} />}{x.styles.map((s) => <span key={s} className={`st st-${s}`}>{STYLE_NOM[s]}</span>)}</span>
         <span className="rc-strip4" aria-hidden>
@@ -182,6 +213,10 @@ export default function Recettes({ focus }: { focus?: string }) {
     <div className="map recettes sans-detail">
       <div className="map-main">
         <h2 className="page-title">Recettes</h2>
+        <div className="rc-haut">
+          <p className="rc-compteur" role="status"><b>✓ {nbTestees}</b> recette{nbTestees > 1 ? "s" : ""} testée{nbTestees > 1 ? "s" : ""} sur <b>{actives.length}</b> <small className="muted">(refaite{nbTestees > 1 ? "s" : ""} sur ma machine)</small></p>
+          <button type="button" className="px-btn green rc-vierge" onClick={ouvrirVierge} title="Tous les paramètres à leur valeur de départ, pour créer ton propre son">✚ Recette vierge</button>
+        </div>
         <p className="rc-approx" role="note"><span aria-hidden>⚠️</span> Les aperçus sonores sont des approximations : ce n'est pas le son réel de l'Electribe.</p>
         <Infos>
           <p>
@@ -190,7 +225,7 @@ export default function Recettes({ focus }: { focus?: string }) {
           <p>
             Base commune : motif vide Init Pattern (201 à 250) <SourceRef src={{ doc: "PG", page: 18 }} compact />, BPM = 165.0 sauf indication, KEY = D, LENGTH = 4 <SourceRef src={{ doc: "PG", page: 3 }} compact />.
           </p>
-          <p>🎲 Générer : dans une sous-catégorie, l'onglet « Générer » tire une recette au hasard dans les listes du manuel. 🗑 envoie une recette dans la Corbeille (menu ☰). Les recettes gardées, générées et supprimées partent avec « Exporter mes relevés ».</p>
+          <p>🎲 : à côté de chaque sous-catégorie, ce bouton tire une recette au hasard dans les listes du manuel et l'ouvre dans la fenêtre (Garder ou Supprimer). ✚ Recette vierge : tous les réglages à leur valeur de départ, pour créer ton son. ✓ Testée sur ma machine : coche-la dans la recette quand tu l'as refaite sur l'E2. 🗑 envoie une recette dans la Corbeille (menu ☰). Tout part avec « Exporter mes données ».</p>
         </Infos>
         <Rangement
           racine="Recettes" sansAriane cats={f.cat}
@@ -247,34 +282,26 @@ export default function Recettes({ focus }: { focus?: string }) {
                 const liste = filtrees.filter((x) => x.element === e.id);
                 const ouvert = ouverts.has(e.id);
                 const gen = GENERATEURS[e.id];
-                const tab = gen ? onglet[e.id] ?? "recettes" : "recettes";
+                const bases = (liste.some((x) => !x.kit) ? liste : actives.filter((x) => x.element === e.id)).filter((x) => !x.kit);
                 return (
                   <div key={e.id} className={`acc ${ouvert ? "on" : ""} ${liste.length === 0 ? "vide" : ""}`}>
-                    <button type="button" className="acc-tete" aria-expanded={ouvert} aria-controls={`acc-${e.id}`} onClick={() => basculer(e.id)}>
-                      <PixelArt name={ICONE_CAT[c.id]} size={22} />
-                      <span className="acc-nom">{e.nom}</span>
-                      {gen && <span className="acc-gen" title="Cette sous-catégorie a un générateur">🎲</span>}
-                      <span className="acc-n">{liste.length}</span>
-                      <span className="acc-chev" aria-hidden>▸</span>
-                    </button>
+                    <div className="acc-ligne">
+                      <button type="button" className="acc-tete" aria-expanded={ouvert} aria-controls={`acc-${e.id}`} onClick={() => basculer(e.id)}>
+                        <PixelArt name={ICONE_CAT[c.id]} size={22} />
+                        <span className="acc-nom">{e.nom}</span>
+                        <span className="acc-n">{liste.length}</span>
+                        <span className="acc-chev" aria-hidden>▸</span>
+                      </button>
+                      {gen && <button type="button" className="acc-de" onClick={() => lancerGenerateur(e.id, e.nom, bases)} title={`Générer une recette « ${e.nom} » au hasard`} aria-label={`Générer une recette ${e.nom} au hasard`}>🎲</button>}
+                    </div>
                     {ouvert && (
                       <div className="acc-corps" id={`acc-${e.id}`}>
-                        {gen && (
-                          <div className="acc-onglets" role="tablist">
-                            <button type="button" role="tab" aria-selected={tab === "recettes"} className={tab === "recettes" ? "on" : ""} onClick={() => setOnglet({ ...onglet, [e.id]: "recettes" })}>Recettes <small>{liste.length}</small></button>
-                            <button type="button" role="tab" aria-selected={tab === "generer"} className={tab === "generer" ? "on" : ""} onClick={() => setOnglet({ ...onglet, [e.id]: "generer" })}>🎲 Générer</button>
-                          </div>
-                        )}
-                        {tab === "generer" ? (
-                          <Generateur element={e.id} nomEl={e.nom} styleDefaut={(f.style.length === 1 ? f.style[0] as Style : "tous")} bases={(liste.some((x) => !x.kit) ? liste : actives.filter((x) => x.element === e.id)).filter((x) => !x.kit)}
-                            brouillon={brouillon?.element === e.id ? brouillon : null} onBrouillon={nouveauBrouillon} onGarder={garder} onJeter={jeterBrouillon}
-                            onVoir={() => brouillon && choose(brouillon.id)} ecouter={ecouter} />
-                        ) : liste.length ? <div className="rc-grid">{liste.map((x) => carte(x, e))}</div>
+                        {liste.length ? <div className="rc-grid">{liste.map((x) => carte(x, e))}</div>
                           : <p className="small muted">{(() => {
                               // Sous-catégorie laissée vide exprès pour ce style : on dit pourquoi.
                               const v = f.style.length === 1 ? VIDES_STYLES[f.style[0]]?.find((x) => x.el === e.id) : undefined;
                               return v ? `Pas de recette ${STYLE_NOM[f.style[0] as Style]} ici, exprès : ${v.pourquoi}.` : "Aucune recette ici avec ces filtres.";
-                            })()}{gen ? " Essaie l'onglet 🎲 Générer : il reprend les recettes des styles proches." : ""}</p>}
+                            })()}{gen ? " Essaie le bouton 🎲 : il reprend les recettes des styles proches." : ""}</p>}
                       </div>
                     )}
                   </div>
@@ -287,6 +314,11 @@ export default function Recettes({ focus }: { focus?: string }) {
       {rc && (
         <Fenetre sorte="recette" titre={rc.nom} label={`Recette ${rc.nom}`} onFermer={fermer}
           etoile={brouillon?.id === rc.id ? undefined : <Etoile type="recette" cle={rc.id} titre={rc.nom} />}>
+          {brouillon?.id === rc.id && genCtx && !estPerso(rc) && (
+            <Generateur element={genCtx.element} nomEl={genCtx.nomEl} styleDefaut={f.style.length === 1 ? f.style[0] as Style : "tous"} bases={genCtx.bases}
+              onBrouillon={nouveauBrouillon} />
+          )}
+          {brouillon?.id === rc.id && estPerso(rc) && <ReglageVierge rc={brouillon} onChange={(x) => setBrouillon({ ...brouillon, ...x } as RecetteEl)} />}
           <Detail key={rc.id} rc={rc} generee={genIds.has(rc.id)} onClose={fermer} onJeter={brouillon?.id === rc.id ? undefined : () => jeter(rc)}
             brouillon={brouillon?.id === rc.id ? { onGarder: garder, onJeter: jeterBrouillon } : undefined} />
         </Fenetre>
@@ -296,46 +328,39 @@ export default function Recettes({ focus }: { focus?: string }) {
   );
 }
 
-// ---------- 🎲 Générer ----------
-interface GenProps {
-  element: ElementId; nomEl: string; styleDefaut: Style | "tous"; bases: Recette[];
-  brouillon: Recette | null; onBrouillon: (rc: Recette, mode?: Mode) => void; onGarder: () => void; onJeter: () => void; onVoir: () => void;
-  ecouter: (rc: Recette, mode: Mode) => void;
-}
+// ---------- 🎲 Générer (dans la fenêtre de recette) ----------
 const CLE_GEN = "e2academy.generateur";
-function Generateur({ element, nomEl, styleDefaut, bases, brouillon, onBrouillon, onGarder, onJeter, onVoir, ecouter }: GenProps) {
+type CfgGen = { style: Style | "tous"; hasard: number; key: string; scale: number; base?: string };
+/** Les derniers réglages du générateur (style, hasard Sage ↔ Expérimental, tonalité). */
+function lireCfgGen(styleDefaut: Style | "tous"): CfgGen {
+  const d = { style: styleDefaut, hasard: 25, key: "D", scale: 0 };
+  return { ...lireObjet(CLE_GEN, d), ...(styleDefaut !== "tous" ? { style: styleDefaut } : {}) };
+}
+/** « Tous » (ou un style masqué entre-temps) : un des styles affichés, au hasard. */
+function tirerStyle(style: Style | "tous", visibles: { id: Style }[]): Style {
+  if (style !== "tous" && visibles.some((s) => s.id === style)) return style;
+  return visibles[Math.floor(Math.random() * visibles.length)]?.id ?? "tekno";
+}
+interface GenProps { element: ElementId; nomEl: string; styleDefaut: Style | "tous"; bases: Recette[]; onBrouillon: (rc: Recette, mode?: Mode) => void }
+function Generateur({ element, nomEl, styleDefaut, bases, onBrouillon }: GenProps) {
   const gen = GENERATEURS[element]!;
   const range = useKnobRange();
   const [prefs] = usePlayerPrefs();
   const { visibles } = useStyles();
   // scale = 0 : « gamme de la fiche » (tirée parmi les gammes conseillées du style). style = « tous » : un style visible au hasard.
-  const [cfg, setCfg] = useState<{ style: Style | "tous"; hasard: number; key: string; scale: number; base?: string }>(() => {
-    const d = { style: styleDefaut, hasard: 25, key: "D", scale: 0 };
-    return { ...lireObjet(CLE_GEN, d), ...(styleDefaut !== "tous" ? { style: styleDefaut } : {}) };
-  });
-  const upd = (p: Partial<typeof cfg>) => setCfg((c) => { const n = { ...c, ...p }; ecrireJson(CLE_GEN, n); return n; });
+  const [cfg, setCfg] = useState<CfgGen>(() => lireCfgGen(styleDefaut));
+  const upd = (p: Partial<CfgGen>) => setCfg((c) => { const n = { ...c, ...p }; ecrireJson(CLE_GEN, n); return n; });
   const base = bases.find((x) => x.id === cfg.base) ?? bases[0];
-  // Un style masqué entre-temps compte comme « Tous ».
   const styleCfg = cfg.style !== "tous" && visibles.some((s) => s.id === cfg.style) ? cfg.style : "tous";
-  const tirerStyle = (): Style => (styleCfg !== "tous" ? styleCfg : (visibles[Math.floor(Math.random() * visibles.length)]?.id ?? "tekno"));
-  const generer = () => onBrouillon(gen.generer({ ...cfg, style: tirerStyle() }, range), prefs.mode);
-  const variante = () => base && onBrouillon(genererVariante(base, { ...cfg, style: base.styles[0] ?? tirerStyle(), scale: cfg.scale || (base.melodique?.scale ?? 7) }, range), prefs.mode);
+  const generer = () => onBrouillon(gen.generer({ ...cfg, style: tirerStyle(styleCfg, visibles) }, range), prefs.mode);
+  const variante = () => base && onBrouillon(genererVariante(base, { ...cfg, style: base.styles[0] ?? tirerStyle(styleCfg, visibles), scale: cfg.scale || (base.melodique?.scale ?? 7) }, range), prefs.mode);
   const h = cfg.hasard;
   const fiche = styleCfg !== "tous" ? FICHE[styleCfg] : null;
 
   return (
-    <div className="gen">
+    <div className="gen gen-fenetre">
       <div className="gen-reglages">
-        <div className="gen-ligne">
-          <span className="gen-lab">Style</span>
-        </div>
-        <SelecteurStyles valeur={styleCfg === "tous" ? [] : [styleCfg]} onChange={(v) => upd({ style: v[0] ?? "tous" })} label="Style de la recette générée" tous="Tous" />
-        {fiche ? (
-          <div className="gen-fiche" style={{ "--sc": fiche.couleur } as CSSProperties}>
-            <span><b>Fiche {fiche.nom}</b> · {fiche.bpm.min} à {fiche.bpm.max} BPM · gammes : {fiche.gammes.map((g) => gammeByN.get(g.n)?.nom).join(", ")}</span>
-            <span className="muted">{element === "kick" ? `Kick : ${fiche.kick}` : fiche.caractere[0]} <a href={`#styles/${fiche.id}`}>Voir la fiche →</a></span>
-          </div>
-        ) : <p className="small muted gen-aide">Tous : à chaque clic, un des styles affichés est tiré au hasard, et la recette suit sa fiche (BPM, gammes, type de son).</p>}
+        <p className="rc-role">🎲 Générateur · {nomEl}</p>
         <label className="gen-ligne gen-hasard">
           <span className="gen-lab">Hasard</span>
           <span className="gen-bout">Sage</span>
@@ -343,24 +368,30 @@ function Generateur({ element, nomEl, styleDefaut, bases, brouillon, onBrouillon
           <span className="gen-bout">Expérimental</span>
           <kbd>{h} %</kbd>
         </label>
-        {!gen.percu && (
-          <div className="gen-ligne">
-            <span className="gen-lab">Tonalité</span>
-            <select className="gen-sel" value={cfg.key} onChange={(e) => upd({ key: e.target.value })} aria-label="KEY">
-              {ALL_KEYS.map((k) => <option key={k.en} value={k.en}>KEY = {k.en} ({k.fr})</option>)}
-            </select>
-            <select className="gen-sel" value={cfg.scale} onChange={(e) => upd({ scale: Number(e.target.value) })} aria-label="SCALE">
-              <option value={0}>SCALE = gamme conseillée par la fiche du style</option>
-              {GAMMES.map((g) => <option key={g.n} value={g.n}>SCALE = {g.nom}</option>)}
-            </select>
-          </div>
-        )}
         <p className="small muted gen-aide">
           {h <= 20 ? "Sage : des réglages classiques du style, le motif bouge peu." : h >= 80 ? "Expérimental : n'importe quel oscillateur de la catégorie, des effets et modulations inattendus, des coups en plus." : "Entre les deux : surtout les choix du style, avec quelques surprises."}
           {gen.percu ? ` ${nomEl} : percussion, pas de notes, la tonalité ne change rien ici.` : " Les notes sont tirées dans la tonalité et la gamme choisies (4 mesures)."}
         </p>
-        <div className="gen-actions">
-          <button type="button" className="e2-ui-btn gen-go" onClick={generer}><PixelArt name="hasard" size={20} /> Générer une recette</button>
+        <Infos titre="Style, tonalité et variante">
+          <SelecteurStyles valeur={styleCfg === "tous" ? [] : [styleCfg]} onChange={(v) => upd({ style: v[0] ?? "tous" })} label="Style de la recette générée" tous="Tous" />
+          {fiche ? (
+            <div className="gen-fiche" style={{ "--sc": fiche.couleur } as CSSProperties}>
+              <span><b>Fiche {fiche.nom}</b> · {fiche.bpm.min} à {fiche.bpm.max} BPM · gammes : {fiche.gammes.map((g) => gammeByN.get(g.n)?.nom).join(", ")}</span>
+              <span className="muted">{element === "kick" ? `Kick : ${fiche.kick}` : fiche.caractere[0]} <a href={`#styles/${fiche.id}`}>Voir la fiche →</a></span>
+            </div>
+          ) : <p className="small muted gen-aide">Tous : à chaque clic, un des styles affichés est tiré au hasard, et la recette suit sa fiche (BPM, gammes, type de son).</p>}
+          {!gen.percu && (
+            <div className="gen-ligne">
+              <span className="gen-lab">Tonalité</span>
+              <select className="gen-sel" value={cfg.key} onChange={(e) => upd({ key: e.target.value })} aria-label="KEY">
+                {ALL_KEYS.map((k) => <option key={k.en} value={k.en}>KEY = {k.en} ({k.fr})</option>)}
+              </select>
+              <select className="gen-sel" value={cfg.scale} onChange={(e) => upd({ scale: Number(e.target.value) })} aria-label="SCALE">
+                <option value={0}>SCALE = gamme conseillée par la fiche du style</option>
+                {GAMMES.map((g) => <option key={g.n} value={g.n}>SCALE = {g.nom}</option>)}
+              </select>
+            </div>
+          )}
           {bases.length > 0 && (
             <span className="gen-var">
               <select value={base?.id} onChange={(e) => upd({ base: e.target.value })} aria-label="Recette de départ pour la variante">
@@ -369,27 +400,31 @@ function Generateur({ element, nomEl, styleDefaut, bases, brouillon, onBrouillon
               <button type="button" className="e2-ui-btn" onClick={variante}>Générer une variante</button>
             </span>
           )}
+        </Infos>
+        <div className="gen-actions">
+          <button type="button" className="e2-ui-btn gen-go" onClick={generer}><PixelArt name="hasard" size={20} /> En générer une autre</button>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {brouillon ? (
-        <div className="gen-res">
-          <p className="rc-role">Recette générée · pas encore gardée</p>
-          <b className="gen-nom">{brouillon.nom}</b>
-          <span className="rc-styles"><Badge kind="genere" />{brouillon.styles.map((s) => <span key={s} className={`st st-${s}`}>{STYLE_NOM[s]}</span>)}<kbd>{brouillon.bpm ?? BPM} BPM</kbd>{brouillon.melodique && !gen.percu && <kbd>KEY = {brouillon.melodique.key} · {gammeByN.get(brouillon.melodique.scale)?.nom}</kbd>}</span>
-          <p className="small">{brouillon.idee}</p>
-          <p className="small gen-regl">{brouillon.reglages.map((x) => <kbd key={x.param}>{paramById.get(x.param)?.nom} = {x.valeur}</kbd>)}</p>
-          <span className="rc-strip4" aria-hidden>{brouillon.mesures.map((m, b) => <span key={b}>{m.map((p, j) => <i key={j} className={p === null ? "" : p === "~" ? "tie" : "on"} />)}</span>)}</span>
-          <div className="gen-btns">
-            <BoutonsEcoute joue={null} onJouer={(m) => ecouter(brouillon, m)} />
-            <button type="button" className="e2-ui-btn" onClick={onVoir}>Réglages et Copier vers ma machine</button>
-          </div>
-          <div className="gen-btns gen-choix">
-            <button type="button" className="e2-ui-btn gen-garder" onClick={onGarder}>✔ Garder</button>
-            <button type="button" className="e2-ui-btn gen-jeter" onClick={() => { onJeter(); generer(); }}>🗑 Supprimer et en générer une autre</button>
-          </div>
-        </div>
-      ) : <p className="small muted">Règle le style et le hasard, puis « Générer une recette ». Elle se joue tout de suite ; garde-la si elle te plaît.</p>}
+/** Recette vierge pas encore gardée : son nom et sa sous-catégorie. */
+function ReglageVierge({ rc, onChange }: { rc: Recette; onChange: (x: Partial<Recette>) => void }) {
+  const choisirEl = (el: ElementId) => {
+    const m = RECETTES.find((x) => x.element === el && !x.kit) ?? RECETTES[0];
+    onChange({ element: el, fonction: m.fonction, partie: m.partie, apercu: { ...m.apercu } });
+  };
+  return (
+    <div className="gen gen-fenetre rc-vierge-reg">
+      <p className="rc-role">✚ Recette vierge · tous les réglages à leur valeur de départ</p>
+      <label className="gen-ligne"><span className="gen-lab">Nom</span><input type="text" value={rc.nom} onChange={(e) => onChange({ nom: e.target.value })} aria-label="Nom de ma recette" /></label>
+      <label className="gen-ligne"><span className="gen-lab">Rangée dans</span>
+        <select className="gen-sel" value={rc.element} onChange={(e) => choisirEl(e.target.value as ElementId)} aria-label="Sous-catégorie">
+          {CATEGORIES.map((c) => <optgroup key={c.id} label={c.nom}>{c.elements.map((e) => <option key={e.id} value={e.id}>{e.nom}</option>)}</optgroup>)}
+        </select>
+      </label>
+      <p className="small muted">Pose tes notes et tes potards dans le lecteur ci-dessous, puis « ✔ Garder » : la recette rejoint sa sous-catégorie avec le badge « Mes recettes ». Tes valeurs de l'E2 vont dans « Ma version ».</p>
     </div>
   );
 }
@@ -425,6 +460,7 @@ function DetailKit({ rc, onClose }: { rc: Recette; onClose: () => void }) {
         })}</p>
       </div>
       <Editeur g={g} sansTitre noteId={`recette:${rc.id}`} />
+      <CaseTestee id={rc.id} />
     </div>
   );
 }
@@ -434,7 +470,8 @@ function DetailSimple({ rc, onClose, onJeter, brouillon, generee }: { rc: Recett
   const variante = vi === null ? undefined : rc.variantes[vi];
   const reglages = useMemo(() => fusion(rc.reglages, variante?.reglages), [rc, variante]);
   const origine = useMemo(() => origineDe(rc), [rc]);
-  const edit = useSeqEdit(origine, brouillon ? undefined : `e2academy.recette.${rc.id}`);
+  // recette vierge : les notes posées sont gardées tout de suite (elles suivent la recette quand tu la gardes)
+  const edit = useSeqEdit(origine, brouillon && !estPerso(rc) ? undefined : `e2academy.recette.${rc.id}`);
   const blocs = useMemo(() => blocsComplets(reglages), [reglages]);
   const exs = (rc.exercices ?? []).map((id) => exerciseById.get(id)).filter(Boolean) as Exercise[];
   const knobParams = KNOBS_APERCU.filter((k) => reglages.some((x) => x.param === k) || k === "amp.decay");
@@ -458,7 +495,9 @@ function DetailSimple({ rc, onClose, onJeter, brouillon, generee }: { rc: Recett
     <div className="detail-inner">
       <div className="detail-top">
         <div><p className="muted small">Recette · {(rc.element && ELEMENTS.get(rc.element)?.nom) ?? FONCTIONS.find((f) => f.id === rc.fonction)!.nom} · {rc.styles.map((st) => STYLE_NOM[st]).join(", ")} · partie {rc.partie} conseillée</p><h2>{rc.nom} {!brouillon && <Etoile type="recette" cle={rc.id} titre={rc.nom} />}</h2>
-          {(generee || brouillon) && (rc.origine?.type === "reference" ? <><BadgeGen rc={rc} /><Badge kind="genere">Point de départ, à ajuster à l'oreille</Badge></> : <span className="badge-gen">🎲 Générée{brouillon ? " · pas encore gardée" : ""}</span>)}</div>
+          {(generee || brouillon) && (rc.origine?.type === "reference" ? <><BadgeGen rc={rc} /><Badge kind="genere">Point de départ, à ajuster à l'oreille</Badge></>
+            : estPerso(rc) ? <span className="badge-gen badge-perso">✚ Mes recettes{brouillon ? " · pas encore gardée" : ""}</span>
+            : <span className="badge-gen">🎲 Générée{brouillon ? " · pas encore gardée" : ""}</span>)}</div>
         <div className="detail-top-btns">
           {onJeter && <BoutonJeter className="close rc-trash-d" titre="cette recette" onClick={onJeter} />}
           <button type="button" className="close" onClick={onClose} aria-label="Fermer">✕</button>
@@ -549,8 +588,32 @@ function DetailSimple({ rc, onClose, onJeter, brouillon, generee }: { rc: Recett
       {!brouillon && <div className="block">
         <h3>Ma version</h3>
         <ObservationBox id={`recette:${rc.id}`} titre={`Recette · ${rc.nom}`} placeholder="Mes valeurs qui marchent, ce que j'ai changé…" />
-        <DoneToggle id={`recette:${rc.id}`} />
       </div>}
+      {!brouillon && <CaseTestee id={rc.id} />}
+    </div>
+  );
+}
+
+// ---------- ✓ Testée sur ma machine ----------
+function CaseTestee({ id }: { id: string }) {
+  const st = useStore();
+  const t = st.testees?.[id];
+  const on = Boolean(t?.on);
+  const [note, setNote] = useState(t?.note ?? "");
+  return (
+    <div className={`block rc-testee ${on ? "on" : ""}`}>
+      <label className="rc-testee-case">
+        <input type="checkbox" checked={on} onChange={(e) => setTestee(id, { on: e.target.checked })} />
+        <span>✓ Testée sur ma machine</span>
+        {on && t?.majLe && <small className="muted">le {new Date(t.majLe).toLocaleDateString("fr-FR")}</small>}
+      </label>
+      <p className="small muted">Coche quand tu as refait cette recette sur l'E2 et qu'elle sonne bien.</p>
+      {on && (
+        <label className="rc-testee-note">Ce que j'ai dû changer <small className="muted">(facultatif)</small>
+          <textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => { if (note !== (t?.note ?? "")) setTestee(id, { note }); }}
+            placeholder="Ex. Decay à 70 au lieu de 60, cutoff plus bas…" />
+        </label>
+      )}
     </div>
   );
 }

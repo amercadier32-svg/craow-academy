@@ -144,3 +144,5 @@ export const GRILLE_VIDE: Grille = {
 };
 
 export const STYLE_GRILLE: Record<Style, string> = { tekno: "Tekno", tribe: "Tribe", mentale: "Mentale" };
+/** Couleur de chaque style de grille (« vide » = la grille vide). */
+export const COULEUR_GRILLE: Record<string, string> = { tribe: "#ff6a3d", mentale: "#9b6bff", tekno: "#6aa2ee", vide: "#4fd18b" };
