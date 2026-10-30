@@ -6,7 +6,7 @@ import { PixelArt } from "./PixelArt";
 import { Jauge, usePlace } from "./Jauge";
 
 export const PAGES_PLUS = [
-  { id: "audio", nom: "Réglages audio", texte: "Entrée de la Scarlett, test, mono / stéréo", icone: "audio" },
+  { id: "audio", nom: "Réglages audio et vidéo", texte: "Entrée de la Scarlett, test, mono / stéréo, webcam", icone: "audio" },
   { id: "donnees", nom: "Mes données", texte: "Sauvegarde, export, place utilisée", icone: "carnet" },
   { id: "raccourcis", nom: "Raccourcis clavier", texte: "Toutes les touches de l'app", icone: "glossaire" },
 ] as const;

@@ -81,3 +81,11 @@
 div.audio-aides { padding: 4px 14px; }
 div.audio-aides p, div.audio-aides ol { margin: 0; }
 div.audio-aides ol { padding-left: 22px; display: grid; gap: 4px; }
+
+/* Webcam (mode vidéo) */
+.audio-webcam { display: grid; gap: 8px; }
+.audio-webcam h3 { margin-bottom: 0; }
+.audio-webcam p { margin: 0; }
+.audio-webcam-apercu { position: relative; width: min(100%, 420px); aspect-ratio: 16 / 9; background: #0c0d11; border: 2px solid var(--edge); display: grid; place-items: center; overflow: hidden; }
+.audio-webcam-apercu video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.audio-webcam-apercu video.cachee { visibility: hidden; }

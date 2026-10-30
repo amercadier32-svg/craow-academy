@@ -6,8 +6,11 @@
 //   contour ou ombre, position.
 // - Fond : couleur, ou image / vidéo importée depuis l'appareil (gardée dans le navigateur, jamais publiée),
 //   remplir ou ajuster, opacité, flou, assombrissement, pulsation au kick ; galerie avec suppression.
+// - Webcam : calque déplaçable et redimensionnable (rectangle, coins arrondis ou cercle), contour réglable qui
+//   peut pulser au kick, miroir, opacité, ou plein écran (webcam en fond). Caméra choisie dans « Réglages audio et
+//   vidéo » ; l'image reste sur l'appareil, et la caméra s'éteint quand on la masque ou qu'on quitte le mode vidéo.
 // - Presets : tous ces choix enregistrés ensemble.
-// Échap pour sortir, R pour lancer / arrêter l'enregistrement.
+// Échap pour sortir, R pour lancer / arrêter l'enregistrement, C pour afficher / masquer la webcam.
 import { Deroulant } from "../components/Deroulant";
 import { BoutonSupprimer, confirmer } from "../components/Confirmer";
 import { imageASauter } from "../lib/moteurAudio";
@@ -21,6 +24,7 @@ import { prefsSpectre } from "../lib/spectreCourbe";
 import { lireJson, ecrireJson } from "../lib/stockage";
 import { POLICES, chargerPolices, famille } from "../lib/policesVideo";
 import { ACCEPT, ajouterFond, effacerFond, fmtMo, lireFond, listerFonds, surChangementFonds, type InfosFond } from "../lib/fondsVideo";
+import { erreurCamera, fermerCamera, lireWebcam, ouvrirCamera } from "../lib/webcam";
 import "./mode-video.css";
 
 // ---------------------------------------------------------------- Réglages
@@ -50,7 +54,14 @@ export interface TexteV { on: boolean; valeur: string; police: string; taille: n
 type CleTexte = "artiste" | "morceau" | "bpm";
 /** `incrust` : fond vert (incrustation, « chroma key ») ou transparent, pour OBS. Absent = fond normal. */
 export interface FondV { mediaId: string | null; couleur: string; grille: boolean; ajuster: "remplir" | "ajuster"; opacite: number; flou: number; sombre: number; pulse: boolean; incrust?: "vert" | "transparent" }
-export interface ConfigVideo { format: "16:9" | "9:16"; couches: Couche[]; textes: Record<CleTexte, TexteV>; fond: FondV; ondeDuree: number }
+/** Webcam : position en % de l'écran vidéo ; `epais` = épaisseur du contour en pixels pour une image de 1080 de haut. */
+export interface WebcamV {
+  on: boolean; x: number; y: number; w: number; h: number;
+  forme: "rectangle" | "arrondi" | "cercle"; bord: string; epais: number; pulse: boolean;
+  miroir: boolean; opacite: number; plein: boolean;
+}
+export interface ConfigVideo { format: "16:9" | "9:16"; couches: Couche[]; textes: Record<CleTexte, TexteV>; fond: FondV; ondeDuree: number; webcam: WebcamV }
+type IdCalque = TypeVisu | "webcam";
 
 const c0 = (type: TypeVisu, on: boolean, x: number, y: number, w: number, h: number, couleur: string, extra: Partial<Couche> = {}): Couche =>
   ({ type, on, x, y, w, h, couleur, epais: 3, opacite: 1, pulse: false, reperes: false, palette: true, ...extra });
@@ -71,6 +82,7 @@ export const CONFIG0: ConfigVideo = {
   },
   fond: { mediaId: null, couleur: "#0c0d11", grille: true, ajuster: "remplir", opacite: 1, flou: 0, sombre: 0.35, pulse: true },
   ondeDuree: 8,
+  webcam: { on: false, x: 70, y: 6, w: 26, h: 26, forme: "arrondi", bord: "#ffffff", epais: 6, pulse: false, miroir: true, opacite: 1, plein: false },
 };
 const CLE = "e2academy.video";
 const CLE_PRESETS = "e2academy.video.presets";
@@ -85,6 +97,7 @@ function completer(x: Partial<ConfigVideo>): ConfigVideo {
     ...CONFIG0, ...x, couches,
     textes: { artiste: { ...CONFIG0.textes.artiste, ...t.artiste }, morceau: { ...CONFIG0.textes.morceau, ...t.morceau }, bpm: { ...CONFIG0.textes.bpm, ...t.bpm } },
     fond: { ...CONFIG0.fond, ...(x.fond ?? {}) },
+    webcam: { ...CONFIG0.webcam, ...(x.webcam ?? {}) },
   };
 }
 function lireConfig(ancien?: AncienVideo): ConfigVideo {
@@ -147,10 +160,12 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
   const majCouche = (t: TypeVisu, x: Partial<Couche>) => maj((c) => ({ ...c, couches: c.couches.map((k) => (k.type === t ? { ...k, ...x } : k)) }));
   const majTexte = (t: CleTexte, x: Partial<TexteV>) => maj((c) => ({ ...c, textes: { ...c.textes, [t]: { ...c.textes[t], ...x } } }));
   const majFond = (x: Partial<FondV>) => maj((c) => ({ ...c, fond: { ...c.fond, ...x } }));
+  const majWebcam = (x: Partial<WebcamV>) => maj((c) => ({ ...c, webcam: { ...c.webcam, ...x } }));
+  const basculerWebcam = () => maj((c) => ({ ...c, webcam: { ...c.webcam, on: !c.webcam.on } }));
 
   const [reglage, setReglage] = useState(true);
   const [deplacer, setDeplacer] = useState(true);
-  const [sel, setSel] = useState<TypeVisu | null>(null);
+  const [sel, setSel] = useState<IdCalque | null>(null);
   const e = useEntree("visualiseur-video", true);
   const souci = problemeEntree(e);
   const [fenetre, setFenetre] = useState({ w: window.innerWidth, h: window.innerHeight });
@@ -180,7 +195,21 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
     return () => { fini = true; if (url) URL.revokeObjectURL(url); };
   }, [cfg.fond.mediaId]);
 
-  // ---- Échap, plein écran, R, taille de la fenêtre
+  // ---- webcam : allumée seulement quand elle est affichée ; éteinte en la masquant ou en quittant le mode vidéo
+  const [camFlux, setCamFlux] = useState<MediaStream | null>(null);
+  const [camErreur, setCamErreur] = useState<string | null>(null);
+  const [camEssai, setCamEssai] = useState(0);
+  useEffect(() => {
+    setCamErreur(null);
+    if (!cfg.webcam.on) { setCamFlux(null); return; }
+    let s: MediaStream | null = null, fini = false;
+    ouvrirCamera().then((x) => { if (fini) { fermerCamera(x); return; } s = x; setCamFlux(x); })
+      .catch((err) => { if (!fini) setCamErreur(erreurCamera(err)); });
+    return () => { fini = true; fermerCamera(s); setCamFlux(null); };
+  }, [cfg.webcam.on, camEssai]);
+  const brancherCam = (v: HTMLVideoElement | null) => { if (v && v.srcObject !== camFlux) v.srcObject = camFlux; };
+
+  // ---- Échap, plein écran, R, C, taille de la fenêtre
   const recRef = useRef(() => {});
   const gardeAuto = useRef(false);
   recRef.current = () => {
@@ -199,6 +228,7 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
       const saisie = cible && /^(INPUT|TEXTAREA|SELECT)$/.test(cible.tagName);
       if (x.key === "Escape") { if (saisie) { (cible as HTMLElement).blur(); return; } sortir(); }
       if ((x.key === "r" || x.key === "R") && !x.ctrlKey && !x.metaKey && !x.altKey && !saisie) { x.preventDefault(); recRef.current(); }
+      if ((x.key === "c" || x.key === "C") && !x.ctrlKey && !x.metaKey && !x.altKey && !saisie) { x.preventDefault(); basculerWebcam(); }
     };
     const fs = () => { if (!document.fullscreenElement && !reglage) sortir(); };
     const rz = () => setFenetre({ w: window.innerWidth, h: window.innerHeight });
@@ -224,6 +254,7 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
   const canvases = useRef<Partial<Record<TypeVisu, HTMLCanvasElement | null>>>({});
   const couchesEl = useRef<Partial<Record<TypeVisu, HTMLDivElement | null>>>({});
   const fondEl = useRef<HTMLDivElement>(null);
+  const camCadre = useRef<HTMLDivElement>(null);
   const videoEl = useRef<HTMLVideoElement>(null);
   const bpmEl = useRef<HTMLSpanElement>(null);
   const cfgRef = useRef(cfg); cfgRef.current = cfg;
@@ -258,6 +289,14 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
           case "stereo": dessinerStereo(cv, img, { theme: thx, gain: 6, couleur: x.couleur, fond: null, barre: x.reperes, epais: x.epais * k, textes: x.reperes }); break;
         }
       }
+      // contour de la webcam qui pulse au kick (plus épais, avec un halo)
+      const cc = camCadre.current;
+      if (cc) {
+        const w = c.webcam, b = (w.epais * ahRef.current) / 1080;
+        const pp = w.pulse && w.epais > 0 ? p : 0;
+        cc.style.borderWidth = `${(b * (1 + pp * 0.9)).toFixed(2)}px`;
+        cc.style.boxShadow = pp > 0.02 ? `0 0 ${(pp * 28 * k).toFixed(1)}px ${(pp * 6 * k).toFixed(1)}px ${w.bord}` : "";
+      }
       // fond qui pulse au kick (un peu agrandi s'il est flou, pour cacher les bords)
       if (fondEl.current) {
         const base = c.fond.flou > 0 ? 1.06 : 1;
@@ -281,12 +320,13 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
   }, [e.statut]);
 
   // ---- déplacer / redimensionner une visualisation
-  const prise = useRef<{ t: TypeVisu; mode: "deplacer" | "taille"; x0: number; y0: number; r0: { x: number; y: number; w: number; h: number } } | null>(null);
+  const prise = useRef<{ t: IdCalque; mode: "deplacer" | "taille"; x0: number; y0: number; r0: { x: number; y: number; w: number; h: number } } | null>(null);
   const edition = reglage && deplacer;
-  const surDown = (ev: PE, t: TypeVisu, mode: "deplacer" | "taille") => {
+  const majCalque = (t: IdCalque, x: Partial<Couche & WebcamV>) => (t === "webcam" ? majWebcam(x) : majCouche(t, x));
+  const surDown = (ev: PE, t: IdCalque, mode: "deplacer" | "taille") => {
     if (!edition) return;
     ev.stopPropagation(); ev.preventDefault();
-    const k = cfg.couches.find((x) => x.type === t)!;
+    const k = t === "webcam" ? cfg.webcam : cfg.couches.find((x) => x.type === t)!;
     prise.current = { t, mode, x0: ev.clientX, y0: ev.clientY, r0: { x: k.x, y: k.y, w: k.w, h: k.h } };
     setSel(t);
     (ev.currentTarget as HTMLElement).setPointerCapture(ev.pointerId);
@@ -295,8 +335,8 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
     const pz = prise.current; if (!pz) return;
     const dx = ((ev.clientX - pz.x0) / aw) * 100, dy = ((ev.clientY - pz.y0) / ah) * 100;
     const arr = (v: number) => Math.round(v * 2) / 2;
-    if (pz.mode === "deplacer") majCouche(pz.t, { x: arr(Math.max(-pz.r0.w + 5, Math.min(95, pz.r0.x + dx))), y: arr(Math.max(-pz.r0.h + 5, Math.min(95, pz.r0.y + dy))) });
-    else majCouche(pz.t, { w: arr(Math.max(4, Math.min(200, pz.r0.w + dx))), h: arr(Math.max(4, Math.min(200, pz.r0.h + dy))) });
+    if (pz.mode === "deplacer") majCalque(pz.t, { x: arr(Math.max(-pz.r0.w + 5, Math.min(95, pz.r0.x + dx))), y: arr(Math.max(-pz.r0.h + 5, Math.min(95, pz.r0.y + dy))) });
+    else majCalque(pz.t, { w: arr(Math.max(4, Math.min(200, pz.r0.w + dx))), h: arr(Math.max(4, Math.min(200, pz.r0.h + dy))) });
   };
   const surUp = () => { prise.current = null; };
 
@@ -333,6 +373,13 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
             {cfg.fond.sombre > 0 && <div className="vv-sombre" style={{ background: `rgba(0,0,0,${cfg.fond.sombre})` }} />}
           </div>
           )}
+          {/* webcam en plein écran : en fond, sous les visualisations */}
+          {cfg.webcam.on && cfg.webcam.plein && (
+            <div className="vv-webcam-plein" style={{ opacity: cfg.webcam.opacite }}>
+              {camFlux ? <video ref={brancherCam} autoPlay muted playsInline className={cfg.webcam.miroir ? "miroir" : ""} />
+                : <span className="vv-webcam-msg">{camErreur ?? "Ouverture de la webcam…"}</span>}
+            </div>
+          )}
           {/* visualisations */}
           {cfg.couches.map((k) => (
             <div key={k.type} ref={(el) => { couchesEl.current[k.type] = el; }}
@@ -343,6 +390,22 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
               {edition && k.on && <><span className="vv-etiq">{VISUS_VIDEO.find((v) => v.id === k.type)!.nom}</span><span className="vv-poignee" aria-label="Redimensionner" onPointerDown={(ev) => surDown(ev, k.type, "taille")} /></>}
             </div>
           ))}
+          {/* webcam en calque */}
+          {cfg.webcam.on && !cfg.webcam.plein && (() => {
+            const w = cfg.webcam, cercle = w.forme === "cercle";
+            return (
+              <div className={`vv-couche vv-webcam ${edition ? "edition" : ""} ${sel === "webcam" ? "choisie" : ""} ${cercle ? "cercle" : ""}`}
+                style={{ left: `${w.x}%`, top: `${w.y}%`, width: `${w.w}%`, height: cercle ? "auto" : `${w.h}%`, opacity: w.opacite }}
+                onPointerDown={(ev) => surDown(ev, "webcam", "deplacer")}>
+                <div ref={camCadre} className="vv-webcam-cadre"
+                  style={{ borderRadius: cercle ? "50%" : w.forme === "arrondi" ? `${Math.round(ah * 0.045)}px` : 0, borderColor: w.bord, borderWidth: `${(w.epais * ah) / 1080}px`, borderStyle: w.epais > 0 ? "solid" : "none" }}>
+                  {camFlux ? <video ref={brancherCam} autoPlay muted playsInline className={w.miroir ? "miroir" : ""} />
+                    : <span className="vv-webcam-msg">{camErreur ?? "Ouverture de la webcam…"}</span>}
+                </div>
+                {edition && <><span className="vv-etiq">Webcam</span><span className="vv-poignee" aria-label="Redimensionner" onPointerDown={(ev) => surDown(ev, "webcam", "taille")} /></>}
+              </div>
+            );
+          })()}
           {/* textes */}
           <div className={`vv-textes ${policesPretes ? "" : "chargement"}`}>
             {POSITIONS.map((p) => {
@@ -361,12 +424,13 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
         </p>
       )}
       {r.phase !== "rec" && r.msg && !reglage && souris && <p className="visu-video-rec garde">✓ {r.msg}</p>}
-      {!reglage && souris && <p className="visu-video-aide">Échap pour sortir · R : {r.phase === "rec" ? "arrêter" : "enregistrer"} · <button type="button" onClick={() => setReglage(true)}>⚙ Réglages</button></p>}
+      {!reglage && souris && <p className="visu-video-aide">Échap pour sortir · R : {r.phase === "rec" ? "arrêter" : "enregistrer"} · <button type="button" onClick={basculerWebcam}>📷 C : {cfg.webcam.on ? "masquer" : "afficher"} la webcam</button> · <button type="button" onClick={() => setReglage(true)}>⚙ Réglages</button></p>}
 
       {reglage && (
         <Reglages cfg={cfg} maj={maj} majCouche={majCouche} majTexte={majTexte} majFond={majFond} sel={sel} setSel={setSel}
           deplacer={deplacer} setDeplacer={setDeplacer} r={r} lancer={lancer} sortir={sortir}
-          media={media?.infos ?? null} mediaAbsent={mediaAbsent} saccade={saccade} />
+          media={media?.infos ?? null} mediaAbsent={mediaAbsent} saccade={saccade}
+          majWebcam={majWebcam} basculerWebcam={basculerWebcam} camErreur={camErreur} camAllumee={Boolean(camFlux)} camReessayer={() => setCamEssai((n) => n + 1)} />
       )}
     </div>
   );
@@ -376,8 +440,9 @@ export default function ModeVideo({ ancien, onSortir, r }: { ancien?: AncienVide
 function Reglages(p: {
   cfg: ConfigVideo; maj: (f: (c: ConfigVideo) => ConfigVideo) => void;
   majCouche: (t: TypeVisu, x: Partial<Couche>) => void; majTexte: (t: CleTexte, x: Partial<TexteV>) => void; majFond: (x: Partial<FondV>) => void;
-  sel: TypeVisu | null; setSel: (t: TypeVisu | null) => void; deplacer: boolean; setDeplacer: (b: boolean) => void;
+  sel: IdCalque | null; setSel: (t: IdCalque | null) => void; deplacer: boolean; setDeplacer: (b: boolean) => void;
   r: EtatEnregistreur; lancer: () => void; sortir: () => void; media: InfosFond | null; mediaAbsent: boolean; saccade: boolean;
+  majWebcam: (x: Partial<WebcamV>) => void; basculerWebcam: () => void; camErreur: string | null; camAllumee: boolean; camReessayer: () => void;
 }) {
   const { cfg, maj, majCouche, majTexte, majFond, sel, setSel } = p;
   return (
@@ -385,11 +450,12 @@ function Reglages(p: {
       <div className="vv-reglages-tete">
         <h3>🎬 Mode vidéo</h3>
         <div className="vv-btns">
+          <button type="button" className={`px-btn ${cfg.webcam.on ? "on" : ""}`} aria-pressed={cfg.webcam.on} onClick={p.basculerWebcam} title="Afficher ou masquer la webcam (touche C)">📷 {cfg.webcam.on ? "Masquer" : "Webcam"}</button>
           <button type="button" className="px-btn green" onClick={p.lancer}>▶ Plein écran</button>
           <button type="button" className="px-btn" onClick={p.sortir}>✕ Quitter</button>
         </div>
       </div>
-      <p className="small muted">Plein écran sans menus, pour OBS (capture de fenêtre), TikTok ou YouTube. <b>Échap</b> pour sortir. <b>R</b> lance et arrête l'enregistrement (jusqu'à {DUREE_MAX_S / 60} min) : à l'arrêt, la prise entière va dans Mes enregistrements.</p>
+      <p className="small muted">Plein écran sans menus, pour OBS (capture de fenêtre), TikTok ou YouTube. <b>Échap</b> pour sortir. <b>R</b> lance et arrête l'enregistrement (jusqu'à {DUREE_MAX_S / 60} min) : à l'arrêt, la prise entière va dans Mes enregistrements. <b>C</b> affiche ou masque la webcam.</p>
       {p.r.phase === "rec" && <InfosRec r={p.r} />}
 
       <div className="vv-ligne"><span>Format</span>
@@ -451,6 +517,10 @@ function Reglages(p: {
 
       <Deroulant compact id="video.fond" couleur="#4aa3ff" titre="Fond (image ou vidéo)">
         <ReglageFond fond={cfg.fond} majFond={majFond} media={p.media} absent={p.mediaAbsent} saccade={p.saccade} />
+      </Deroulant>
+
+      <Deroulant compact id="video.webcam" couleur="#e255c8" titre="Webcam">
+        <ReglageWebcam w={cfg.webcam} maj={p.majWebcam} erreur={p.camErreur} allumee={p.camAllumee} reessayer={p.camReessayer} />
       </Deroulant>
 
       <Deroulant compact id="video.presets" couleur="#ff6a3d" titre="Presets du mode vidéo">
@@ -578,6 +648,44 @@ function ReglageFond({ fond, majFond, media, absent, saccade }: { fond: FondV; m
   );
 }
 
+const FORMES: { id: WebcamV["forme"]; nom: string }[] = [{ id: "rectangle", nom: "▭ Rectangle" }, { id: "arrondi", nom: "▢ Coins arrondis" }, { id: "cercle", nom: "◯ Cercle" }];
+function ReglageWebcam({ w, maj, erreur, allumee, reessayer }: { w: WebcamV; maj: (x: Partial<WebcamV>) => void; erreur: string | null; allumee: boolean; reessayer: () => void }) {
+  const cam = lireWebcam();
+  return (
+    <div className="vv-webcam-reg">
+      <label className="vv-ligne"><input type="checkbox" checked={w.on} onChange={(e) => maj({ on: e.target.checked })} /> Afficher la webcam <small className="muted">(touche <b>C</b>)</small></label>
+      <p className="small muted">Caméra : <b>{cam.label || "caméra par défaut"}</b> · à changer dans <a href="#audio">Réglages audio et vidéo</a> (avec un aperçu).</p>
+      <p className="small muted">🔒 L'image de la webcam reste sur ton PC : rien n'est envoyé sur internet. La caméra s'éteint quand tu masques la webcam ou que tu quittes le mode vidéo.</p>
+      {w.on && !allumee && !erreur && <p className="small">Ouverture de la webcam… (clique sur « Autoriser » si le navigateur le demande)</p>}
+      {erreur && <div className="audio-alerte orange small" role="alert">{erreur} <button type="button" className="chipbtn" onClick={reessayer}>↻ Réessayer</button></div>}
+      <label className="vv-ligne"><input type="checkbox" checked={w.plein} onChange={(e) => maj({ plein: e.target.checked })} /> Webcam en plein écran <small className="muted">(en fond, sous les visualisations)</small></label>
+      {!w.plein && (
+        <>
+          <div className="vv-ligne"><span>Forme</span>
+            {FORMES.map((f) => <button key={f.id} type="button" className={`chipbtn ${w.forme === f.id ? "on" : ""}`} onClick={() => maj({ forme: f.id })}>{f.nom}</button>)}
+          </div>
+          <div className="vv-ligne"><span>Contour</span><input type="color" value={w.bord} onChange={(e) => maj({ bord: e.target.value })} aria-label="Couleur du contour" /></div>
+          <Curseur nom="Épaisseur" min={0} max={30} pas={1} v={w.epais} f={(v) => maj({ epais: v })} txt={w.epais ? `${w.epais}` : "aucun"} />
+          <label className="vv-ligne"><input type="checkbox" checked={w.pulse} disabled={!w.epais} onChange={(e) => maj({ pulse: e.target.checked })} /> Le contour pulse au kick</label>
+        </>
+      )}
+      <label className="vv-ligne"><input type="checkbox" checked={w.miroir} onChange={(e) => maj({ miroir: e.target.checked })} /> Effet miroir (comme dans une glace)</label>
+      <Curseur nom="Opacité" min={0.1} max={1} pas={0.05} v={w.opacite} f={(v) => maj({ opacite: v })} txt={`${Math.round(w.opacite * 100)} %`} />
+      {!w.plein && (
+        <>
+          <p className="small muted">Glisse la webcam dans l'image pour la déplacer, tire le coin en bas à droite pour la redimensionner.</p>
+          <div className="vv-ligne vv-pos-num">
+            <span>Position</span>
+            {(w.forme === "cercle" ? (["x", "y", "w"] as const) : (["x", "y", "w", "h"] as const)).map((c) => (
+              <label key={c}>{({ x: "X", y: "Y", w: w.forme === "cercle" ? "Taille" : "Largeur", h: "Hauteur" })[c]} <input type="number" min={-50} max={200} step={1} value={w[c]} onChange={(e) => maj({ [c]: Number(e.target.value) })} /> %</label>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function Presets({ cfg, appliquer }: { cfg: ConfigVideo; appliquer: (c: ConfigVideo) => void }) {
   const [liste, setListe] = useState<PresetVideo[]>(() => lireJson<PresetVideo[]>(CLE_PRESETS, []));
   const [nom, setNom] = useState("");
@@ -589,15 +697,15 @@ function Presets({ cfg, appliquer }: { cfg: ConfigVideo; appliquer: (c: ConfigVi
     if (existe && !(await confirmer(`Remplacer le preset « ${existe.nom} » ?`, { oui: "Remplacer" }))) return;
     const p: PresetVideo = { id: existe?.id ?? `pv-${Date.now().toString(36)}`, nom: n, config: cfg, creeLe: new Date().toISOString() };
     garder(existe ? liste.map((x) => (x.id === existe.id ? p : x)) : [p, ...liste]);
-    setNom(""); setMsg(`✓ « ${n} » enregistré (visualisations, disposition, polices et fond).`);
+    setNom(""); setMsg(`✓ « ${n} » enregistré (visualisations, disposition, polices, fond et webcam).`);
   };
   const resume = useMemo(() => (c: ConfigVideo) => {
     const v = c.couches.filter((k) => k.on).map((k) => VISUS_VIDEO.find((x) => x.id === k.type)!.nom.split(" ")[0].toLowerCase());
-    return `${c.format} · ${v.join(", ") || "aucune visualisation"} · ${c.fond.mediaId ? "fond image/vidéo" : "fond couleur"}`;
+    return `${c.format} · ${v.join(", ") || "aucune visualisation"} · ${c.fond.mediaId ? "fond image/vidéo" : "fond couleur"}${c.webcam?.on ? " · webcam" : ""}`;
   }, []);
   return (
     <div className="vv-presets">
-      <p className="small muted">Un preset garde tout ensemble : visualisations, positions, couleurs, polices, textes et fond. Le fond lui-même reste dans ta galerie, sur cet appareil.</p>
+      <p className="small muted">Un preset garde tout ensemble : visualisations, positions, couleurs, polices, textes, fond et webcam (affichée ou non, forme, contour, position). Le fond lui-même reste dans ta galerie, sur cet appareil.</p>
       <div className="vv-ligne">
         <input type="text" value={nom} maxLength={40} placeholder="Nom du preset (ex. Live Tribe)" onChange={(e) => setNom(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") ajouter(); }} aria-label="Nom du preset" />
         <button type="button" className="px-btn green" onClick={ajouter}>💾 Enregistrer</button>

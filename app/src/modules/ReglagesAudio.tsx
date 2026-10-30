@@ -1,6 +1,7 @@
-// Page « Réglages audio » (#audio), commune à « Enregistrement » et « Visualiseur en direct ».
+// Page « Réglages audio et vidéo » (#audio), commune à « Enregistrement » et « Visualiseur en direct ».
 // Choix de l'entrée (Scarlett 4i4), de la paire d'entrées, mono / stéréo, test avec vumètre, fréquence d'échantillonnage.
-import { useEffect, useState } from "react";
+// Choix de la webcam du mode vidéo, avec un aperçu.
+import { useEffect, useRef, useState } from "react";
 import { Badge } from "../components/common";
 import { Deroulant } from "../components/Deroulant";
 import { PixelArt } from "../components/PixelArt";
@@ -8,6 +9,7 @@ import { Vumetre, type StatsVu } from "../components/Vumetre";
 import {
   appareilDePaire, fmtHz, listerAppareils, paireEffective, prendreEntree, reessayer, rendreEntree, setReglages, useEntreeEtat, type EtatEntree,
 } from "../lib/audioEntree";
+import { ecrireWebcam, erreurCamera, fermerCamera, lireWebcam, listerCameras, ouvrirCamera, type Camera } from "../lib/webcam";
 import "./audio.css";
 
 const QUI = "reglages-audio";
@@ -40,7 +42,7 @@ export default function ReglagesAudio() {
 
   return (
     <div className="audio-page">
-      <h2 className="page-title"><PixelArt name="audio" size={34} /> Réglages audio</h2>
+      <h2 className="page-title"><PixelArt name="audio" size={34} /> Réglages audio et vidéo</h2>
       <p className="audio-intro muted">L'entrée de ta carte son, pour les onglets <a href="#studio/enregistrer">Enregistrer</a> et <a href="#studio/visualiser">Visualiser</a> du Studio. Réglée une fois ici, elle sert partout.</p>
 
       {!r.permissionExpliquee && (
@@ -132,6 +134,8 @@ export default function ReglagesAudio() {
         </dl>
       </section>
 
+      <ReglageWebcam />
+
       <section className="audio-rappel">
         <span className="audio-rappel-ic" aria-hidden>🎧</span>
         <p><b>Écoute ta machine par le direct monitor de la Scarlett</b>, pas par l'app. L'app n'envoie jamais l'entrée vers les haut-parleurs : pas de retard, pas de larsen. <Badge kind="pratique" /></p>
@@ -182,5 +186,55 @@ function ErreurBox({ e }: { e: EtatEntree }) {
       <b>{e.erreur.titre}</b>
       <ul>{e.erreur.aides.map((a) => <li key={a}>{a}</li>)}</ul>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------- Webcam (mode vidéo)
+function ReglageWebcam() {
+  const [r, setR] = useState(lireWebcam);
+  const [cameras, setCameras] = useState<Camera[]>([]);
+  const [apercu, setApercu] = useState(false);
+  const [statut, setStatut] = useState<"arret" | "demande" | "ouvert" | "erreur">("arret");
+  const [erreur, setErreur] = useState<string | null>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  useEffect(() => { void listerCameras().then(setCameras); }, []);
+  // aperçu : la caméra s'ouvre seulement pendant l'aperçu, et s'éteint en quittant la page
+  useEffect(() => {
+    if (!apercu) { setStatut("arret"); return; }
+    let s: MediaStream | null = null, fini = false;
+    setStatut("demande"); setErreur(null);
+    ouvrirCamera(r).then((x) => {
+      if (fini) { fermerCamera(x); return; }
+      s = x; setStatut("ouvert");
+      if (video.current) video.current.srcObject = x;
+      void listerCameras().then(setCameras);
+    }).catch((e) => { if (!fini) { setStatut("erreur"); setErreur(erreurCamera(e)); } });
+    return () => { fini = true; fermerCamera(s); if (video.current) video.current.srcObject = null; };
+  }, [apercu, r.deviceId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const choisir = (id: string) => { const n = { deviceId: id, label: cameras.find((c) => c.id === id)?.label ?? "" }; setR(n); ecrireWebcam(n); };
+  const sansNoms = cameras.length > 0 && cameras.every((c) => /^Caméra \d+$/.test(c.label));
+  return (
+    <section className="audio-carte audio-webcam">
+      <h3>4. Webcam (mode vidéo)</h3>
+      <p className="small muted">La caméra qui s'affiche dans le mode vidéo du Studio (onglet Visualiser). L'image reste sur ton PC : rien n'est envoyé sur internet. La caméra s'allume seulement pendant l'aperçu et dans le mode vidéo.</p>
+      <label className="audio-champ">Caméra
+        <select value={r.deviceId} onChange={(ev) => choisir(ev.target.value)}>
+          <option value="">Caméra par défaut</option>
+          {cameras.filter((c) => c.id && c.id !== "default").map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+        </select>
+      </label>
+      {(sansNoms || !cameras.length) && <p className="small muted">{cameras.length ? "Les noms des caméras apparaissent après la première autorisation : clique sur « Aperçu »." : "Aucune caméra trouvée pour l'instant : branche-la, puis clique sur « Aperçu »."}</p>}
+      <div className="audio-test-btns">
+        {!apercu ? <button type="button" className="px-btn green" onClick={() => setApercu(true)}>▶ Aperçu</button>
+          : <button type="button" className="px-btn" onClick={() => setApercu(false)}>⏹ Arrêter l'aperçu</button>}
+        {statut === "erreur" && <button type="button" className="px-btn" onClick={() => { setApercu(false); window.setTimeout(() => setApercu(true), 50); }}>↻ Réessayer</button>}
+        <span className={`audio-etat ${statut}`}>{statut === "demande" ? "Autorisation demandée… clique sur « Autoriser » en haut de la fenêtre" : statut === "ouvert" ? "● Caméra allumée" : statut === "erreur" ? "Caméra indisponible" : "Caméra éteinte"}</span>
+      </div>
+      <div className="audio-webcam-apercu">
+        <video ref={video} autoPlay muted playsInline className={statut === "ouvert" ? "" : "cachee"} />
+        {statut !== "ouvert" && <span className="muted small">{statut === "demande" ? "Ouverture…" : "Aperçu éteint"}</span>}
+      </div>
+      {erreur && <p className="audio-alerte rouge small" role="alert">{erreur}</p>}
+    </section>
   );
 }

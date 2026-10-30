@@ -49,6 +49,7 @@ export const RACCOURCIS: { groupe: string; liste: Raccourci[] }[] = [
     groupe: "Studio · Visualiser",
     liste: [
       { touches: ["R"], action: "Lancer ou arrêter l'enregistrement (mode vidéo)", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
+      { touches: ["C"], action: "Afficher ou masquer la webcam (mode vidéo)", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
       { touches: ["Échap"], action: "Sortir du mode vidéo", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
       { touches: ["Entrée"], action: "Enregistrer le preset avec le nom tapé", ou: "Studio, onglet Visualiser, mode vidéo", lien: "#studio/visualiser/video", fichier: "modules/ModeVideo.tsx" },
     ],

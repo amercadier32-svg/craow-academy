@@ -107,3 +107,12 @@
 /* Fond vert / transparent pour OBS */
 html.fond-transparent, html.fond-transparent body, html.fond-transparent .app, html.fond-transparent .vv2, html.fond-transparent .vv-zone { background: transparent !important; }
 html.fond-transparent .vv2.avec-reglages .vv-zone { background: repeating-conic-gradient(#2a2d36 0 25%, #1d1f26 0 50%) 0 0 / 24px 24px !important; }
+
+/* Webcam */
+.vv-webcam-plein { position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; }
+.vv-webcam-plein video, .vv-webcam-cadre video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.vv-webcam video.miroir, .vv-webcam-plein video.miroir { transform: scaleX(-1); }
+.vv-webcam.cercle { aspect-ratio: 1; }
+.vv-webcam-cadre { position: absolute; inset: 0; overflow: hidden; background: #0c0d11; box-sizing: border-box; display: grid; place-items: center; }
+.vv-webcam-msg { position: relative; padding: 6px 10px; color: #fff; background: #000a; font-size: 0.85rem; text-align: center; max-width: 90%; }
+.vv-webcam-reg { display: grid; gap: 8px; }

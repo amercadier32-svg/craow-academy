@@ -38,7 +38,7 @@ const PAGES: { titre: string; texte: string; lien: string; mots: string }[] = [
   { titre: "Carnet", texte: "Toutes tes notes.", lien: "#carnet", mots: "carnet notes observations" },
   { titre: "Mes favoris", texte: "Tout ce que tu as marqué d'une étoile.", lien: "#favoris", mots: "favoris etoile" },
   { titre: "Mes données", texte: "Sauvegarde, export, import, place utilisée.", lien: "#donnees", mots: "donnees sauvegarde export import" },
-  { titre: "Réglages audio", texte: "Entrée de la Scarlett, test, mono / stéréo.", lien: "#audio", mots: "reglages audio entree scarlett frequence" },
+  { titre: "Réglages audio et vidéo", texte: "Entrée de la Scarlett, test, mono / stéréo, webcam du mode vidéo.", lien: "#audio", mots: "reglages audio video entree scarlett frequence webcam camera" },
   { titre: "Raccourcis clavier", texte: "Toutes les touches de l'app.", lien: "#raccourcis", mots: "raccourcis clavier touches" },
 ];
 export interface Entree { type: Type; titre: string; texte: string; plus?: string[]; kind: "manuel" | "pratique"; source?: Source; lien?: string; cle: string }

@@ -61,7 +61,7 @@ const MODULES = [
   { id: "parcours", nom: "Parcours d'apprentissage", menu: "accueil" },
   { id: "quiz", nom: "Quiz et flashcards", menu: "accueil" },
   { id: "glossaire", nom: "Glossaire et recherche", menu: "recherche" },
-  { id: "audio", nom: "Réglages audio", menu: "plus" },
+  { id: "audio", nom: "Réglages audio et vidéo", menu: "plus" },
   { id: "donnees", nom: "Mes données", menu: "plus" },
   { id: "raccourcis", nom: "Raccourcis clavier", menu: "plus" },
 ] as const;
