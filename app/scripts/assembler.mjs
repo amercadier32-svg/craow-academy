@@ -15,7 +15,11 @@ const js = readdirSync(new URL("assets/", dist)).filter((f) => f.endsWith(".js")
 const chargeur = readFileSync(new URL("./chargeur.js", import.meta.url), "utf8");
 
 // Dans une balise <script>, « </script » et « <!-- » couperaient le texte : on les écrit autrement (même sens en JavaScript).
-const proteger = (t) => t.replace(/<\/(script)/gi, "<\\/$1").replace(/<!--/g, "<\\!--");
+// Dans un morceau, « </script », « </body », « </head » et « </html » (ex. la fiche imprimable du Morceau)
+// deviennent « <\/… » : même texte pour JavaScript, mais ni le navigateur ni l'assemblage ne les prennent pour la fin de la page.
+const proteger = (t) => t.replace(/<\/(script|body|head|html)/gi, "<\\/$1").replace(/<!--/g, "<\\!--");
+// Ajoute du texte juste avant la DERNIÈRE balise (la vraie fin de la page, jamais une balise écrite dans un morceau).
+const avantDerniere = (t, balise, ajout) => { const i = t.lastIndexOf(balise); return i < 0 ? t + ajout : t.slice(0, i) + ajout + t.slice(i); };
 const protegerCss = (t) => t.replace(/<\/(style)/gi, "<\\/$1");
 
 const morceaux = js.map((f) => `<script type="text/plain" data-c="${f}">${proteger(readFileSync(new URL("assets/" + f, dist), "utf8"))}</script>`).join("\n");
@@ -29,9 +33,8 @@ if (enLigne) {
   rmSync(site, { recursive: true, force: true });
   mkdirSync(site, { recursive: true });
   for (const f of readdirSync(extra)) if (!f.endsWith(".md")) copyFileSync(new URL(f, extra), new URL(f, site));
-  const page = sortie
-    .replace("</head>", () => `<link rel="manifest" href="manifest.webmanifest">\n<link rel="icon" type="image/png" href="icone-192.png">\n<link rel="apple-touch-icon" href="icone-apple.png">\n<meta name="apple-mobile-web-app-title" content="CrAoW">\n</head>`)
-    .replace("</body>", () => `<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});</script>\n</body>`);
+  const avecTete = avantDerniere(sortie, "</head>", `<link rel="manifest" href="manifest.webmanifest">\n<link rel="icon" type="image/png" href="icone-192.png">\n<link rel="apple-touch-icon" href="icone-apple.png">\n<meta name="apple-mobile-web-app-title" content="CrAoW">\n`);
+  const page = avantDerniere(avecTete, "</body>", `<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});</script>\n`);
   writeFileSync(new URL("index.html", site), page);
   writeFileSync(new URL(".nojekyll", site), "");
   console.log(`→ version en ligne prête dans app/site/ (${(page.length / 1024).toFixed(0)} Ko, ${js.length} morceaux)`);
