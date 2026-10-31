@@ -142,6 +142,7 @@ export default function App() {
     <div className={`app mod-${mod} ${pos ? "avec-repere" : ""}`}>
       <StylesCss />
       <header className="top">
+        <span className="version-app" title="Version de l'app (numéro · commit · date du build)">{__VERSION__}</span>
         <div className="top-ligne">
         <div className="top-fleches" role="group" aria-label="Navigation">
           <button type="button" className="fleche-nav" disabled={!nav.arriere} onClick={() => history.back()} aria-label="Page précédente" title="Revenir à la page précédente, exactement où tu étais (Alt + ←)">←</button>

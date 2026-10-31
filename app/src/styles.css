@@ -1121,3 +1121,6 @@ a.src:hover { background: color-mix(in srgb, var(--manuel) 25%, transparent); }
 .gm-utile b { font-family: var(--px); font-size: 1.15rem; color: #ffd84d; }
 .gm-utile small { color: var(--muted); }
 .gm-utile-fav { position: absolute; top: 6px; right: 8px; color: #ffd84d; }
+
+/* Numéro de version, en haut à droite */
+.version-app { position: fixed; top: 3px; right: 8px; z-index: 50; font-size: 11px; line-height: 1; opacity: .7; pointer-events: none; white-space: nowrap; }
