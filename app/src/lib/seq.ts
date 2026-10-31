@@ -30,6 +30,7 @@ export interface SeqState {
   ifx?: string;              // type d'Insert Fx (nom de la liste)
   mod?: string;              // type de modulation (nom de la liste)
   filtre?: "lpf" | "hpf" | "bpf";
+  osc?: string;              // type d'oscillateur de la recette (nom de la liste) : choisit le profil du kick
   kickRepere: boolean;       // grosse caisse de repère sur les pas 1, 5, 9, 13
   mode: Mode;
   range: Range;
@@ -45,6 +46,7 @@ export interface Piste {
   ifx?: string;
   mod?: string;
   filtre?: "lpf" | "hpf" | "bpf";
+  osc?: string;
   mesures: Pas[][];
   muet?: boolean;
 }
@@ -53,6 +55,32 @@ type Bus = { inp: GainNode; shaper: WaveShaperNode; drive: number; pan: StereoPa
 export const stepSec = (bpm: number) => 60 / bpm / 4;
 const clamp = (x: number) => Math.max(0, Math.min(1, x));
 const freq = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
+
+
+// ---------- Kick : 3 profils généraux (le nom du type d'oscillateur choisit lequel ; à affiner plus tard par type) ----------
+interface ProfilKick { ratio: number; sweep: number; drive: number; clic: number; clicHz: number }
+const PROFILS_KICK: Record<"dur" | "standard" | "doux", ProfilKick> = {
+  dur: { ratio: 5.5, sweep: 0.07, drive: 0.3, clic: 1, clicHz: 2500 },
+  standard: { ratio: 3.5, sweep: 0.045, drive: 0.08, clic: 0.6, clicHz: 2000 },
+  doux: { ratio: 2.4, sweep: 0.06, drive: 0, clic: 0.25, clicHz: 1500 },
+};
+/** shortcut: reconnaissance par mots du nom (Hardcore, Soft…), types non listés = standard ; affiner quand on aura la liste des types. */
+function profilKick(osc?: string): ProfilKick {
+  if (osc && /hard|gabba|core|dist|punch|tek/i.test(osc)) return PROFILS_KICK.dur;
+  if (osc && /soft|sub|deep|round|smooth|808|boom|low/i.test(osc)) return PROFILS_KICK.doux;
+  return PROFILS_KICK.standard;
+}
+const courbes = new Map<number, Float32Array<ArrayBuffer>>();
+function courbeSat(drive: number): Float32Array<ArrayBuffer> {
+  const q = Math.round(drive * 20) / 20;
+  let c = courbes.get(q);
+  if (!c) {
+    const a = 1 + q * 12, n = 1024; c = new Float32Array(n);
+    for (let x = 0; x < n; x++) c[x] = Math.tanh(a * ((x / (n - 1)) * 2 - 1)) / Math.tanh(a);
+    courbes.set(q, c);
+  }
+  return c;
+}
 
 export function bornes(r: Range): [number, number] {
   return r === "all" ? [0, 63] : [r * 16, r * 16 + 15];
@@ -166,7 +194,7 @@ class Engine {
       const b = this.buses[i];
       if (!b) return;
       const k = tr.knobs;
-      const drive = /Punch|Overdrive|Distortion|Decimator|Bit Crusher/.test(tr.ifx ?? "") ? clamp(k["ifx.edit"] ?? 0.5) : 0;
+      const drive = (tr.son === "kick" ? /Overdrive|Distortion|Decimator|Bit Crusher/ : /Punch|Overdrive|Distortion|Decimator|Bit Crusher/).test(tr.ifx ?? "") ? clamp(k["ifx.edit"] ?? 0.5) : 0;
       if (Math.abs(drive - b.drive) > 0.01) {
         b.drive = drive;
         if (drive <= 0) b.shaper.curve = null;
@@ -308,15 +336,43 @@ class Engine {
     return t + attack + hold + decay * 1.2 + 0.05;
   }
 
+  /** Kick en 3 profils (le type d'oscillateur choisit lequel) : balayage de hauteur aigu → grave, enveloppe à deux vitesses,
+   *  saturation dans la voix et clic de bruit filtré dont le niveau suit « osc.edit » (il s'efface tout seul sur les kicks doux). */
   private kick(t: number, decay: number, peak: number, out: AudioNode, st?: SeqState) {
     const c = this.c!;
+    const pr = profilKick(st?.osc);
+    const kn = st?.knobs ?? {};
+    const edit = clamp(kn["osc.edit"] ?? 0.3), atk = 0.001 + clamp(kn["amp.attack"] ?? 0) * 0.02;
+    // hauteur de la queue : la note de KEY ramenée entre 38 et 76 Hz (47 Hz pour le repère, sans tonalité)
+    let f1 = 47;
+    if (st) { f1 = freq(24 + st.keySemi); while (f1 < 38) f1 *= 2; while (f1 >= 76) f1 /= 2; }
+    const f0 = f1 * pr.ratio * (0.7 + edit * 0.6);
     const o = c.createOscillator();
-    o.frequency.setValueAtTime(170, t);
-    o.frequency.exponentialRampToValueAtTime(47, t + 0.03 + decay * 0.1);
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.exponentialRampToValueAtTime(f1, t + pr.sweep + decay * 0.04);
+    // enveloppe : chute rapide jusqu'à 40 %, puis queue dont la longueur suit « amp.decay »
+    const tau = (0.08 + decay * 0.45) / 3, coude = t + atk + 0.07;
     const g = c.createGain();
-    const end = this.env(g, t, peak, 0.002, 0, 0.1 + decay * 0.5);
-    o.connect(g).connect(out);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(peak, t + atk);
+    g.gain.setTargetAtTime(peak * 0.4, t + atk, 0.02);
+    g.gain.setTargetAtTime(0.0001, coude, tau);
+    const end = coude + tau * 5 + 0.05;
+    this.finVoix = Math.max(this.finVoix, end);
+    // saturation de la voix : le profil, plus « Punch » (réglé par ifx.edit)
+    const punch = st?.ifx && /Punch/.test(st.ifx) ? clamp(kn["ifx.edit"] ?? 0.5) * 0.5 : 0;
+    const drive = Math.min(1, pr.drive + punch);
+    if (drive > 0.02) { const sh = c.createWaveShaper(); sh.curve = courbeSat(drive); o.connect(sh).connect(g); } else o.connect(g);
+    g.connect(out);
     o.start(t); o.stop(end);
+    // clic d'attaque : bruit filtré très court
+    const niveau = pr.clic * edit * 0.6;
+    if (niveau > 0.01) {
+      const n = this.noiseSrc(t), hp = c.createBiquadFilter(), cg = c.createGain();
+      hp.type = "highpass"; hp.frequency.value = pr.clicHz; hp.Q.value = 0.7;
+      cg.gain.setValueAtTime(niveau, t); cg.gain.setTargetAtTime(0.0001, t, 0.004);
+      n.connect(hp).connect(cg).connect(out); n.stop(t + 0.04);
+    }
     const md = st ? modDe(st) : null;
     if (st && md?.cible === "pitch") this.moduler(st, md, t, end, { pitch: [o.detune] });
   }

@@ -33,7 +33,7 @@ export function pisteDe(rc: Recette, mesures: Pas[][], muet: boolean, range: (id
   const knobs: Record<string, number> = {};
   for (const [k, v] of Object.entries(knobsDe(rc))) { const r = range(k); knobs[k] = (v - r.min) / Math.max(1, r.max - r.min); }
   return {
-    son: rc.apercu.son, octave: rc.apercu.octave, knobs,
+    son: rc.apercu.son, octave: rc.apercu.octave, knobs, osc: val(rc.reglages, "osc.type"),
     ifx: val(rc.reglages, "ifx.on") === "ON" ? val(rc.reglages, "ifx.type")?.replace(/^\d+ /, "") : undefined,
     mod: val(rc.reglages, "mod.type")?.replace(/^\d+ /, ""),
     filtre: val(rc.reglages, "filter.hpf") ? "hpf" : val(rc.reglages, "filter.bpf") ? "bpf" : "lpf",
