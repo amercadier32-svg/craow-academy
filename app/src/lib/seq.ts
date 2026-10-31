@@ -60,9 +60,9 @@ const freq = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
 // ---------- Kick : 3 profils généraux (le nom du type d'oscillateur choisit lequel ; à affiner plus tard par type) ----------
 interface ProfilKick { ratio: number; sweep: number; drive: number; clic: number; clicHz: number }
 const PROFILS_KICK: Record<"dur" | "standard" | "doux", ProfilKick> = {
-  dur: { ratio: 5.5, sweep: 0.07, drive: 0.3, clic: 1, clicHz: 2500 },
-  standard: { ratio: 3.5, sweep: 0.045, drive: 0.08, clic: 0.6, clicHz: 2000 },
-  doux: { ratio: 2.4, sweep: 0.06, drive: 0, clic: 0.25, clicHz: 1500 },
+  dur: { ratio: 5.5, sweep: 0.07, drive: 0.55, clic: 1, clicHz: 2500 },
+  standard: { ratio: 3.5, sweep: 0.045, drive: 0.25, clic: 0.7, clicHz: 2000 },
+  doux: { ratio: 2.4, sweep: 0.06, drive: 0.05, clic: 0.3, clicHz: 1500 },
 };
 /** shortcut: reconnaissance par mots du nom (Hardcore, Soft…), types non listés = standard ; affiner quand on aura la liste des types. */
 function profilKick(osc?: string): ProfilKick {
@@ -342,7 +342,7 @@ class Engine {
     const c = this.c!;
     const pr = profilKick(st?.osc);
     const kn = st?.knobs ?? {};
-    const edit = clamp(kn["osc.edit"] ?? 0.3), atk = 0.001 + clamp(kn["amp.attack"] ?? 0) * 0.02;
+    const edit = clamp(kn["osc.edit"] ?? 0.5), atk = 0.001 + clamp(kn["amp.attack"] ?? 0) * 0.02;
     // hauteur de la queue : la note de KEY ramenée entre 38 et 76 Hz (47 Hz pour le repère, sans tonalité)
     let f1 = 47;
     if (st) { f1 = freq(24 + st.keySemi); while (f1 < 38) f1 *= 2; while (f1 >= 76) f1 /= 2; }
@@ -350,12 +350,12 @@ class Engine {
     const o = c.createOscillator();
     o.frequency.setValueAtTime(f0, t);
     o.frequency.exponentialRampToValueAtTime(f1, t + pr.sweep + decay * 0.04);
-    // enveloppe : chute rapide jusqu'à 40 %, puis queue dont la longueur suit « amp.decay »
+    // enveloppe : chute rapide jusqu'à ~75 %, puis queue dont la longueur suit « amp.decay »
     const tau = (0.08 + decay * 0.45) / 3, coude = t + atk + 0.07;
     const g = c.createGain();
     g.gain.setValueAtTime(0.0001, t);
-    g.gain.linearRampToValueAtTime(peak, t + atk);
-    g.gain.setTargetAtTime(peak * 0.4, t + atk, 0.02);
+    g.gain.linearRampToValueAtTime(peak * 1.3, t + atk);
+    g.gain.setTargetAtTime(peak * 1.0, t + atk, 0.03);
     g.gain.setTargetAtTime(0.0001, coude, tau);
     const end = coude + tau * 5 + 0.05;
     this.finVoix = Math.max(this.finVoix, end);
@@ -366,7 +366,7 @@ class Engine {
     g.connect(out);
     o.start(t); o.stop(end);
     // clic d'attaque : bruit filtré très court
-    const niveau = pr.clic * edit * 0.6;
+    const niveau = pr.clic * edit * 1.2;
     if (niveau > 0.01) {
       const n = this.noiseSrc(t), hp = c.createBiquadFilter(), cg = c.createGain();
       hp.type = "highpass"; hp.frequency.value = pr.clicHz; hp.Q.value = 0.7;
