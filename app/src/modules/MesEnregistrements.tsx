@@ -114,7 +114,7 @@ export default function MesEnregistrements({ focus }: { focus?: string }) {
       <BarrePixel couleurs={["#ff3b3b", "#ffb020", "#ffd84d"]} />
 
       <div className="recs-outils">
-        <FiltreMenu groupes={groupes} valeur={v} onChange={setFiltres}
+        <FiltreMenu cle="e2academy.filtres.MesEnregistrements" groupes={groupes} valeur={v} onChange={setFiltres}
           resultat={vue === "corbeille" ? `${corbeille.length} dans la corbeille` : `${filtrees.length} enregistrement${filtrees.length > 1 ? "s" : ""}`}
           autres={vue === "corbeille" ? [{ id: "corbeille", nom: "🗑 Corbeille", retirer: () => { location.hash = ICI; } }] : []}
           bas={(fermer) => (

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Etoile } from "../components/Etoile";
 import { COULEURS, Infos, Rangement } from "../components/Rangement";
 import { Confirmer } from "../components/Confirmer";
+import { toutBasculer, useSections } from "../components/Deroulant";
 import { FiltreMenu, type FmGroupe, type FmValeur } from "../components/FiltreMenu";
 import { PixelArt } from "../components/PixelArt";
 import { GENERATEURS, genererVariante } from "../lib/generateur";
@@ -95,12 +96,19 @@ export default function Recettes({ focus }: { focus?: string }) {
     return { ...FILTRES0, style, cat: depart ? [catDe(depart)!] : [], mod: [] };
   });
   const [vue, setVue] = useEtatPage<"liste" | "corbeille">("recettes.vue", "liste");
-  const [ouverts, setOuverts] = useEtatPage<Set<string>>("recettes.ouverts", () => new Set(depart ? [depart.element] : []));
+  // Sous-catégories ouvertes : mémorisées dans localStorage (fermées par défaut).
+  const sections = useSections();
+  const cleEl = (id: string) => `recettes.${id}`;
+  const estOuvert = (id: string) => Boolean(sections[cleEl(id)]);
+  useEffect(() => { if (depart) toutBasculer([cleEl(depart.element)], true); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // 🎲 d'une sous-catégorie : la recette générée s'ouvre dans la fenêtre avec les réglages du générateur
   const [genCtx, setGenCtx] = useState<{ element: ElementId; nomEl: string; bases: Recette[] } | null>(null);
   const [prefsLecteur] = usePlayerPrefs();
   const [sel, setSel] = useState<string | null>(depart ? depart.id : null);
   const [brouillon, setBrouillon] = useState<RecetteEl | null>(null);
+  // Onglet « Génération aléatoire » de chaque catégorie : les essais restent là (en mémoire) jusqu'à Garder ou Supprimer.
+  const [onglets, setOnglets] = useState<Record<string, "recettes" | "alea">>({});
+  const [essais, setEssais] = useState<RecetteEl[]>([]);
   const [confirm, setConfirm] = useState<null | { texte: string; detail?: string; faire: () => void }>(null);
   const [annonce, setAnnonce] = useState<null | { texte: string; annuler?: () => void }>(null);
   // Retour du navigateur ou geste retour : la fenêtre suit l'adresse (#recettes = fermée, #recettes/<id> = ouverte).
@@ -148,12 +156,15 @@ export default function Recettes({ focus }: { focus?: string }) {
 
   const choose = (id: string) => { setSel(id); ouvrirFenetre(!brouillon || brouillon.id !== id ? `#recettes/${encodeURIComponent(id)}` : "#recettes"); };
   const fermer = () => fermerFenetre("#recettes", () => setSel(null));
-  const basculer = (id: string) => setOuverts((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
-  const jeter = (x: Recette) => {
-    mettreALaCorbeille(x.id, x.nom);
-    if (sel === x.id) fermer();
-    setAnnonce({ texte: `« ${x.nom} » est dans la Corbeille.`, annuler: () => restaurerRecette(x.id, x.nom) });
-  };
+  const basculer = (id: string) => toutBasculer([cleEl(id)], !estOuvert(id));
+  const jeter = (x: Recette) => setConfirm({
+    texte: `Mettre « ${x.nom} » à la Corbeille ?`, detail: "Elle n'est pas effacée : tu pourras la restaurer depuis la Corbeille (menu ☰).",
+    faire: () => {
+      mettreALaCorbeille(x.id, x.nom);
+      if (sel === x.id) fermer();
+      setAnnonce({ texte: `« ${x.nom} » est dans la Corbeille.`, annuler: () => restaurerRecette(x.id, x.nom) });
+    },
+  });
   const supprimer = (x: Recette) => setConfirm({
     texte: `Supprimer définitivement « ${x.nom} » ?`, detail: "Elle disparaît de l'app. Tu ne pourras pas la restaurer.",
     faire: () => supprimerDefinitivement(x.id, x.nom),
@@ -185,6 +196,20 @@ export default function Recettes({ focus }: { focus?: string }) {
     garderRecette(brouillon);
     setAnnonce({ texte: `« ${brouillon.nom} » est gardée dans ${ELEMENTS.get(brouillon.element)?.nom} avec le badge « ${estPerso(brouillon) ? "Mes recettes" : "Générée"} ».` });
     setBrouillon(null);
+  };
+  const genererEssai = (element: ElementId) => {
+    const cfg = lireCfgGen(f.style.length === 1 ? f.style[0] as Style : "tous");
+    const x = GENERATEURS[element]!.generer({ ...cfg, style: tirerStyle(cfg.style, visibles) }, range);
+    setEssais((l) => [{ ...x, element } as RecetteEl, ...l]);
+  };
+  const garderEssai = (x: RecetteEl) => {
+    stopSi(x.id); garderRecette(x); setEssais((l) => l.filter((y) => y.id !== x.id));
+    setAnnonce({ texte: `« ${x.nom} » est gardée dans ${ELEMENTS.get(x.element)?.nom} avec le badge « Générée ».` });
+  };
+  // Supprimer : la recette part directement à la Corbeille (restaurable).
+  const jeterEssai = (x: RecetteEl) => {
+    stopSi(x.id); garderRecette(x); mettreALaCorbeille(x.id, x.nom); setEssais((l) => l.filter((y) => y.id !== x.id));
+    setAnnonce({ texte: `« ${x.nom} » est dans la Corbeille.` });
   };
   const jeterBrouillon = () => {
     if (!brouillon) return;
@@ -237,7 +262,7 @@ export default function Recettes({ focus }: { focus?: string }) {
         />
         <SelecteurStyles valeur={f.style} onChange={(v) => { setVue("liste"); setF({ ...f, style: v }); }} label="Style des recettes" />
         {nbCachees > 0 && <p className="small muted">{nbCachees} recette{nbCachees > 1 ? "s" : ""} de styles masqués {nbCachees > 1 ? "sont cachées" : "est cachée"} (conservée{nbCachees > 1 ? "s" : ""}) : <a href="#styles/gerer">Gérer les styles</a>.</p>}
-        <FiltreMenu groupes={groupes} valeur={f} onChange={(v) => { setVue("liste"); setF(v); if (v.el.length > f.el.length) setOuverts((s) => new Set([...s, ...v.el])); }}
+        <FiltreMenu cle="e2academy.filtres.Recettes" groupes={groupes} valeur={f} onChange={(v) => { setVue("liste"); setF(v); if (v.el.length > f.el.length) toutBasculer(v.el.map(cleEl), true); }}
           resultat={vue === "corbeille" ? `${corbeille.length} dans la corbeille` : catsVues.length ? `${nbVues} recette${nbVues > 1 ? "s" : ""}` : `${filtrees.length} recette${filtrees.length > 1 ? "s" : ""}`}
           autres={vue === "corbeille" ? [{ id: "corbeille", nom: "🗑 Corbeille", retirer: () => setVue("liste") }] : []}
           onToutEffacer={() => setVue("liste")}
@@ -274,13 +299,19 @@ export default function Recettes({ focus }: { focus?: string }) {
               <div className="acc-cat-top">
                 <h3 className="acc-cat-titre"><PixelArt name={ICONE_CAT[c.id]} size={28} /> {c.nom} <small>{n}</small></h3>
                 <div className="acc-cat-btns">
-                  <button type="button" className="e2-ui-btn" onClick={() => setOuverts((s) => new Set([...s, ...els.map((e) => e.id)]))}>Tout ouvrir</button>
-                  <button type="button" className="e2-ui-btn" onClick={() => setOuverts((s) => new Set([...s].filter((id) => !els.some((e) => e.id === id))))}>Tout fermer</button>
+                  <button type="button" className="e2-ui-btn" onClick={() => toutBasculer(els.map((e) => cleEl(e.id)), true)}>Tout ouvrir</button>
+                  <button type="button" className="e2-ui-btn" onClick={() => toutBasculer(els.map((e) => cleEl(e.id)), false)}>Tout fermer</button>
                 </div>
               </div>
-              {els.map((e) => {
+              <div className="acc-cat-btns" role="tablist" aria-label={`${c.nom} : recettes ou génération`}>
+                <button type="button" role="tab" aria-selected={onglets[c.id] !== "alea"} className={`e2-ui-btn ${onglets[c.id] !== "alea" ? "on" : ""}`} onClick={() => setOnglets({ ...onglets, [c.id]: "recettes" })}>Recettes</button>
+                <button type="button" role="tab" aria-selected={onglets[c.id] === "alea"} className={`e2-ui-btn ${onglets[c.id] === "alea" ? "on" : ""}`} onClick={() => setOnglets({ ...onglets, [c.id]: "alea" })}>🎲 Génération aléatoire</button>
+              </div>
+              {onglets[c.id] === "alea" ? (
+                <Aleatoire cat={c} essais={essais.filter((x) => catDe(x) === c.id)} generer={genererEssai} garder={garderEssai} jeter={jeterEssai} ecouter={(x) => ecouter(x, prefsLecteur.mode)} />
+              ) : els.map((e) => {
                 const liste = filtrees.filter((x) => x.element === e.id);
-                const ouvert = ouverts.has(e.id);
+                const ouvert = estOuvert(e.id);
                 const gen = GENERATEURS[e.id];
                 const bases = (liste.some((x) => !x.kit) ? liste : actives.filter((x) => x.element === e.id)).filter((x) => !x.kit);
                 return (
@@ -288,8 +319,7 @@ export default function Recettes({ focus }: { focus?: string }) {
                     <div className="acc-ligne">
                       <button type="button" className="acc-tete" aria-expanded={ouvert} aria-controls={`acc-${e.id}`} onClick={() => basculer(e.id)}>
                         <PixelArt name={ICONE_CAT[c.id]} size={22} />
-                        <span className="acc-nom">{e.nom}</span>
-                        <span className="acc-n">{liste.length}</span>
+                        <span className="acc-nom">{e.nom} ({liste.length})</span>
                         <span className="acc-chev" aria-hidden>▸</span>
                       </button>
                       {gen && <button type="button" className="acc-de" onClick={() => lancerGenerateur(e.id, e.nom, bases)} title={`Générer une recette « ${e.nom} » au hasard`} aria-label={`Générer une recette ${e.nom} au hasard`}>🎲</button>}
@@ -324,6 +354,44 @@ export default function Recettes({ focus }: { focus?: string }) {
         </Fenetre>
       )}
       {confirm && <Confirmer texte={confirm.texte} detail={confirm.detail} onNon={() => setConfirm(null)} onOui={() => { confirm.faire(); setConfirm(null); }} />}
+    </div>
+  );
+}
+
+// ---------- Onglet « Génération aléatoire » d'une catégorie ----------
+interface AleaProps { cat: (typeof CATEGORIES)[number]; essais: RecetteEl[]; generer: (el: ElementId) => void; garder: (x: RecetteEl) => void; jeter: (x: RecetteEl) => void; ecouter: (x: RecetteEl) => void }
+function Aleatoire({ cat, essais, generer, garder, jeter, ecouter }: AleaProps) {
+  const possibles = cat.elements.filter((e) => GENERATEURS[e.id]);
+  const [el, setEl] = useState(possibles[0]?.id as ElementId);
+  if (!possibles.length) return <p className="small muted">Pas de générateur pour cette catégorie.</p>;
+  return (
+    <div className="gen gen-fenetre">
+      <div className="gen-ligne">
+        <select className="gen-sel" value={el} onChange={(e) => setEl(e.target.value as ElementId)} aria-label="Sous-catégorie à générer">
+          {possibles.map((e) => <option key={e.id} value={e.id}>{e.nom}</option>)}
+        </select>
+        <button type="button" className="e2-ui-btn gen-go" onClick={() => generer(el)}>🎲 Générer</button>
+      </div>
+      {essais.length === 0 && <p className="small muted">Choisis une sous-catégorie et appuie sur « Générer » : la recette est tirée au hasard dans les listes du manuel.</p>}
+      <div className="rc-grid">
+        {essais.map((x) => (
+          <div key={x.id} className="rc-card-wrap">
+            <div className="rc-card">
+              <span className="rc-role">{ELEMENTS.get(x.element)?.nom}</span>
+              <b>{x.nom}</b>
+              <span className="rc-styles"><BadgeGen rc={x} />{x.styles.map((s) => <span key={s} className={`st st-${s}`}>{STYLE_NOM[s]}</span>)}</span>
+              <span className="rc-strip4" aria-hidden>
+                {x.mesures.map((m, bi) => <span key={bi}>{m.map((p, i) => <i key={i} className={p === null ? "" : p === "~" ? "tie" : "on"} />)}</span>)}
+              </span>
+            </div>
+            <div className="gen-choix">
+              <button type="button" className="e2-ui-btn" onClick={() => ecouter(x)}>▶ Écouter</button>
+              <button type="button" className="e2-ui-btn gen-garder" onClick={() => garder(x)}>✔ Garder</button>
+              <button type="button" className="e2-ui-btn gen-jeter" onClick={() => jeter(x)}>🗑 Supprimer</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

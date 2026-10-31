@@ -259,7 +259,7 @@ export default function Glossaire({ focus }: { focus?: string }) {
             categories={CATS_LEX.map((c) => ({ id: c.id, nom: c.nom, icone: c.icone, couleur: c.couleur, texte: c.texte, n: LEXIQUE.filter((m) => m.cat === c.id).length,
               elements: LEXIQUE.filter((m) => m.cat === c.id).sort((a, b) => a.fr.localeCompare(b.fr, "fr")).map((m) => ({ id: m.id, nom: m.fr })) }))}
             cat={cat} onCat={(c) => { setCat(c as Cat | null); setEl(null); setFl((v) => ({ ...v, cat: [] })); }} element={el} onElement={voir} />
-          <FiltreMenu valeur={fl} onChange={(v) => { setFl(v); setEl(null); if (v.cat.length) setCat(null); }} resultat={`${cat ? termes.length : filtres.length} terme${(cat ? termes.length : filtres.length) > 1 ? "s" : ""}`}
+          <FiltreMenu cle="e2academy.filtres.Glossaire" valeur={fl} onChange={(v) => { setFl(v); setEl(null); if (v.cat.length) setCat(null); }} resultat={`${cat ? termes.length : filtres.length} terme${(cat ? termes.length : filtres.length) > 1 ? "s" : ""}`}
             groupes={[
               { id: "cat", titre: "Catégorie", options: CATS_LEX.map((c) => ({ id: c.id, nom: c.nom, couleur: c.couleur, n: LEXIQUE.filter((m) => m.cat === c.id).length })) },
               { id: "source", titre: "Source", options: [{ id: "manuel", nom: "Manuel", n: LEXIQUE.filter((m) => m.kind === "manuel").length }, { id: "pratique", nom: "Pratique", n: LEXIQUE.filter((m) => m.kind === "pratique").length }] },

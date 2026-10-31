@@ -144,7 +144,7 @@ export default function Visualiseur({ focus, r }: { focus?: string; r: EtatEnreg
         <>
           <BarreEntree qui={QUI} />
           <div className="visu-outils">
-            <FiltreMenu groupes={groupes} valeur={valeur} onChange={changerFiltres} resultat={`${p.vues.length} affichage${p.vues.length > 1 ? "s" : ""}`} />
+            <FiltreMenu cle="e2academy.filtres.Visualiseur" groupes={groupes} valeur={valeur} onChange={changerFiltres} resultat={`${p.vues.length} affichage${p.vues.length > 1 ? "s" : ""}`} />
             <label className="visu-curseur">Sensibilité <input type="range" min={-12} max={30} step={1} value={p.gain} onChange={(x) => maj({ gain: Number(x.target.value) })} /> <b>{p.gain > 0 ? "+" : ""}{p.gain} dB</b></label>
             <button type="button" className={`px-btn ${fige ? "on-fige" : ""}`} onClick={() => setFige((f) => !f)} aria-pressed={fige}>{fige ? "▶ Reprendre" : "❄ Figer"}</button>
             <button type="button" className={`chipbtn ${p.note ? "on" : ""}`} onClick={() => maj({ note: !p.note })} aria-pressed={p.note}>♪ Note dominante</button>

@@ -25,6 +25,9 @@ export function useOuvert(id: string, defaut = false): [boolean, (v: boolean) =>
   return [s[id] ?? defaut, (v) => ecrire({ ...etat, [id]: v })];
 }
 
+/** Toutes les sections retenues (pour une liste dont les clés sont calculées). */
+export const useSections = () => useSyncExternalStore(abonner, () => etat, () => etat);
+
 /** Ouvre ou ferme d'un coup toutes les sections données. */
 export function toutBasculer(ids: string[], v: boolean) {
   const n = { ...etat };

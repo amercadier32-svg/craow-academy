@@ -66,7 +66,7 @@ export default function Favoris() {
       <Rangement racine="Mes favoris" labelCategorie="Type" sansAriane
         categories={types.map((t) => ({ id: t.id, nom: t.nom, icone: t.icone, couleur: t.couleur, n: parMachine.filter((x) => x.f.type === t.id).length }))}
         cat={type} onCat={(t) => { setType(t); setFl((v) => ({ ...v, cat: [] })); }} />
-      <FiltreMenu valeur={fl} onChange={(v) => { if ((v.machine[0] ?? "tous") !== machine) setType(null); setFl(v); }} resultat={`${liste.length} favori${liste.length > 1 ? "s" : ""}`}
+      <FiltreMenu cle="e2academy.filtres.Favoris" valeur={fl} onChange={(v) => { if ((v.machine[0] ?? "tous") !== machine) setType(null); setFl(v); }} resultat={`${liste.length} favori${liste.length > 1 ? "s" : ""}`}
         groupes={[
           { id: "machine", titre: "Machine", seul: true, options: MACHINES_FAV.map((m) => ({ id: m.id, nom: m.nom, n: tous.filter((x) => x.machine === m.id).length })) },
           { id: "cat", titre: "Catégorie", options: (type ? [type] : types.map((t) => t.id)).flatMap((t) => cats(t).map((c) => ({ ...c, section: typeFav(t as TypeFavori).nom }))) },

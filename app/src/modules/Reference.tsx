@@ -664,7 +664,7 @@ function MesAnalyses({ actuelle }: { actuelle: string | null }) {
   if (!toutes.length) return <p className="drl-vide">Pas encore d'analyse gardée. Analyse un morceau puis « 💾 Enregistrer l'analyse ».</p>;
   return (
     <div className="ref-mes">
-      <FiltreMenu groupes={groupes} valeur={f} onChange={setF} resultat={`${liste.length} analyse${liste.length > 1 ? "s" : ""}`} />
+      <FiltreMenu cle="e2academy.filtres.Reference" groupes={groupes} valeur={f} onChange={setF} resultat={`${liste.length} analyse${liste.length > 1 ? "s" : ""}`} />
       <ul className="ref-mes-liste">
         {liste.map((a) => (
           <li key={a.id} className={a.id === actuelle ? "on" : ""}>

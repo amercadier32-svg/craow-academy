@@ -135,7 +135,7 @@ function Choisir({ focus }: { focus?: string }) {
         </div>
       )}
 
-      <FiltreMenu groupes={groupes} valeur={f} onChange={setF} resultat={`${visiblesDefis.length} défi${visiblesDefis.length > 1 ? "s" : ""}`} />
+      <FiltreMenu cle="e2academy.filtres.Session" groupes={groupes} valeur={f} onChange={setF} resultat={`${visiblesDefis.length} défi${visiblesDefis.length > 1 ? "s" : ""}`} />
 
       <ToutOuvrirFermer ids={[...DUREES.map((d) => `session.duree.${d}`), "session.miens"]} />
       {DUREES.map((d) => {

@@ -1,9 +1,10 @@
 // Menu ☰ de filtres, le même dans toute l'app :
 // une barre avec l'icône ☰ (trois traits) → un panneau où l'on coche ce qu'on veut afficher ;
-// les filtres actifs en petites étiquettes sous la barre (✕ pour en retirer un) et « Tout effacer ».
+// les filtres actifs en petites étiquettes sous la barre (✕ pour en retirer un) et « Tout afficher ».
 import { useFermeture } from "./useFermeture";
 import "./filtres.css";
-import { useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { ecrireJson, lireObjet } from "../lib/stockage";
 
 export interface FmOption { id: string; nom: string; n?: number; couleur?: string; section?: string }
 export interface FmGroupe {
@@ -12,7 +13,7 @@ export interface FmGroupe {
   options: FmOption[];
   /** Un seul choix possible (boutons ronds) au lieu de cases à cocher. */
   seul?: boolean;
-  /** Choix obligatoire (ex. Type d'effet) : toujours une valeur, étiquette sans croix, « Tout effacer » revient à `defaut`. */
+  /** Choix obligatoire (ex. Type d'effet) : toujours une valeur, étiquette sans croix, « Tout afficher » revient à `defaut`. */
   fixe?: boolean;
   defaut?: string;
 }
@@ -32,12 +33,24 @@ interface Props {
   /** Étiquettes en plus (ex. une catégorie choisie ailleurs), avec leur croix. */
   autres?: { id: string; nom: string; couleur?: string; retirer: () => void }[];
   onToutEffacer?: () => void;
+  /** Clé de localStorage : les choix sont gardés sur cet appareil et retrouvés à la prochaine visite. */
+  cle?: string;
 }
 
-export function FiltreMenu({ groupes, valeur, onChange, resultat, bas, autres = [], onToutEffacer }: Props) {
+export function FiltreMenu({ groupes, valeur, onChange, resultat, bas, autres = [], onToutEffacer, cle }: Props) {
   const [ouvert, setOuvert] = useState(false);
   const boite = useRef<HTMLDivElement>(null);
   const n = fmActifs(valeur, groupes) + autres.length;
+
+  // Arrivée sur l'écran : on retrouve les choix gardés (sauf si l'écran arrive déjà filtré, ex. lien depuis une fiche).
+  useEffect(() => {
+    if (!cle || fmActifs(valeur, groupes) > 0) return;
+    const gardes = lireObjet<FmValeur>(cle, {});
+    const retrouves = Object.fromEntries(groupes.filter((g) => !g.fixe && Array.isArray(gardes[g.id]) && gardes[g.id].length).map((g) => [g.id, gardes[g.id].filter((x) => typeof x === "string")]));
+    if (Object.keys(retrouves).length) onChange({ ...valeur, ...retrouves });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const json = JSON.stringify(valeur);
+  useEffect(() => { if (cle) ecrireJson(cle, valeur); }, [cle, json]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useFermeture(ouvert, () => setOuvert(false), boite);
 
@@ -101,7 +114,7 @@ export function FiltreMenu({ groupes, valeur, onChange, resultat, bas, autres = 
           </div>
           {bas && <div className="fm-bas">{bas(() => setOuvert(false))}</div>}
           <div className="fm-actions">
-            <button type="button" className="e2-ui-btn" onClick={toutEffacer} disabled={n === 0}>✕ Tout effacer</button>
+            <button type="button" className="e2-ui-btn" onClick={toutEffacer} disabled={n === 0}>☰ Tout afficher</button>
             <button type="button" className="e2-ui-btn fm-voir" onClick={() => setOuvert(false)}>{resultat ? `Voir ${resultat}` : "Voir"}</button>
           </div>
         </div>
@@ -119,7 +132,7 @@ export function FiltreMenu({ groupes, valeur, onChange, resultat, bas, autres = 
               <small>{t.groupe} :</small> {t.nom}{t.retirer ? <button type="button" onClick={t.retirer} aria-label={`Retirer le filtre ${t.groupe} ${t.nom}`}>✕</button> : <span className="fm-tag-fixe" />}
             </span>
           ))}
-          {n > 0 && <button type="button" className="fm-clear" onClick={toutEffacer}>✕ Tout effacer</button>}
+          {n > 0 && <button type="button" className="fm-clear" onClick={toutEffacer}>☰ Tout afficher</button>}
         </div>
       )}
     </div>

@@ -5,14 +5,15 @@ import { contexteEntree, signalerErreurAffichage, sortieEntree } from "./audioEn
 import { FREQS_SPECTRE } from "./masterAnalyse";
 import { nomMidi } from "./music";
 
-interface Noeuds { ctx: AudioContext; aM: AnalyserNode; aL: AnalyserNode; aR: AnalyserNode; bL: AnalyserNode; bR: AnalyserNode; wL: AnalyserNode; wR: AnalyserNode }
+interface Noeuds { ctx: AudioContext; sortie: GainNode; aM: AnalyserNode; aL: AnalyserNode; aR: AnalyserNode; bL: AnalyserNode; bR: AnalyserNode; wL: AnalyserNode; wR: AnalyserNode }
 let noeuds: Noeuds | null = null;
 
 /** Crée (une fois par entrée ouverte) les analyseurs du visualiseur. */
 function brancher(): Noeuds | null {
   const ctx = contexteEntree(), sortie = sortieEntree();
   if (!ctx || !sortie) { noeuds = null; return null; }
-  if (noeuds && noeuds.ctx === ctx) return noeuds;
+  // Même contexte mais nouvelle `sortie` (entrée refermée puis rouverte) : les anciens analyseurs sont débranchés, on les refait.
+  if (noeuds && noeuds.ctx === ctx && noeuds.sortie === sortie) return noeuds;
   try { return creerNoeuds(ctx, sortie); }
   catch { noeuds = null; signalerErreurAffichage(); return null; }
 }
@@ -35,7 +36,7 @@ function creerNoeuds(ctx: AudioContext, sortie: GainNode): Noeuds {
   const sp2 = ctx.createChannelSplitter(2); pb.connect(sp2);
   const bL = ctx.createAnalyser(), bR = ctx.createAnalyser(); bL.fftSize = bR.fftSize = 4096;
   sp2.connect(bL, 0); sp2.connect(bR, 1);
-  noeuds = { ctx, aM, aL, aR, bL, bR, wL, wR };
+  noeuds = { ctx, sortie, aM, aL, aR, bL, bR, wL, wR };
   return noeuds;
 }
 

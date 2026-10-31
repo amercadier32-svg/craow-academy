@@ -144,7 +144,7 @@ export default function Effets({ focus }: { focus?: string }) {
           labelCategorie={kind === "mod" ? "Source" : "Famille"}
           cat={mots.length ? null : cat} onCat={(c) => { setCat(c); setQ(""); }}
         />
-        <FiltreMenu groupes={groupesF} valeur={{ ...fl, type: [kind] }} resultat={`${mots.length ? list.length : cat ? list.length : duType.length} fiche${(mots.length || cat ? list.length : duType.length) > 1 ? "s" : ""}`}
+        <FiltreMenu cle="e2academy.filtres.Effets" groupes={groupesF} valeur={{ ...fl, type: [kind] }} resultat={`${mots.length ? list.length : cat ? list.length : duType.length} fiche${(mots.length || cat ? list.length : duType.length) > 1 ? "s" : ""}`}
           autres={cat && !mots.length ? [{ id: cat, nom: categories.find((c) => c.id === cat)?.nom ?? cat, couleur: categories.find((c) => c.id === cat)?.couleur, retirer: () => setCat(null) }] : []}
           onToutEffacer={() => setCat(null)}
           onChange={(v) => { if (v.type[0] && v.type[0] !== kind) changerType(v.type[0]); setFl({ style: v.style, dest: v.dest ?? [], favoris: v.favoris }); }} />

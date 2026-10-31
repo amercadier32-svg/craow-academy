@@ -95,7 +95,7 @@ export default function Gammes({ focus }: { focus?: string }) {
         <SurLaMachine />
       </Infos>
 
-      <FiltreMenu valeur={fl} onChange={setFl} resultat={`${nb} gamme${nb > 1 ? "s" : ""}`}
+      <FiltreMenu cle="e2academy.filtres.Gammes" valeur={fl} onChange={setFl} resultat={`${nb} gamme${nb > 1 ? "s" : ""}`}
         groupes={[
           { id: "style", titre: "Style", options: visibles.map((s) => ({ id: s.id, nom: s.nom, n: GAMMES.filter((g) => aStyle(g.n, s.id)).length })) },
           { id: "favoris", titre: "Favoris", options: [{ id: "oui", nom: "★ Favoris seulement", n: GAMMES.filter((g) => fav(g.n)).length }] },
