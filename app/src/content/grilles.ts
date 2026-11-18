@@ -3,9 +3,9 @@
 // Un motif de l'E2 n'a qu'une KEY et une SCALE (Guide p. 3) : toutes les notes sont écrites dans la gamme de la grille.
 // Ce sont des exemples de style : badge « Pratique ».
 // Mesures : même écriture que les recettes ("." silence, "x" coup, "0"-"9" rang dans la gamme, "O" octave, "~" tenue).
-import type { Source } from "../lib/data";
-import { pas, type Pas } from "../lib/seq";
-import type { StyleBase as Style } from "./recettes";
+import type { Source } from "../lib/donnees/data";
+import { pas, type Pas } from "../lib/audio/seq";
+import type { StyleBase as Style } from "./recettes/recettes";
 
 export interface PisteGrille { recette: string; mesures: Pas[][] }
 

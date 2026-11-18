@@ -1,8 +1,8 @@
 // Connexion MIDI avec l'E2 (Web MIDI, Chrome ou Edge).
 // Ce que l'E2 envoie et reçoit vient du tableau d'implémentation MIDI (Mode d'emploi p. 76).
-import { lireObjet, ecrireJson } from "./stockage";
+import { lireObjet, ecrireJson } from "./donnees/stockage";
 import { useSyncExternalStore } from "react";
-import type { Source } from "./data";
+import type { Source } from "./donnees/data";
 
 export const SRC_TABLEAU: Source = { doc: "OM", page: 76 };   // MIDI Implementation Chart
 export const SRC_CANAL: Source = { doc: "PG", page: 6 };      // GLOBAL MIDI CH. 01…16

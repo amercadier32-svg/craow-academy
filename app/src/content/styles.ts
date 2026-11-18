@@ -3,7 +3,7 @@
 // gammes conseillées, effets typiques, structure, différences avec les styles proches, et le profil du générateur 🎲.
 // Ordre, couleur et styles masqués : réglés par Alex dans « Gérer les styles » (lib/store.ts, stylesPrefs).
 import stylesJson from "@data/electribe2/styles.json";
-import { useStore, type StylesPrefs } from "../lib/store";
+import { useStore, type StylesPrefs } from "../lib/donnees/store";
 
 export type Style = "tribe" | "acid-tribe" | "mentale" | "hardtek" | "tekno" | "raggatek" | "dub-tekno";
 /** Les 3 styles d'origine : Construire un morceau, Grilles et Structure ne connaissent encore qu'eux (étapes suivantes). */

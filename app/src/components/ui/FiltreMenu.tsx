@@ -1,0 +1,141 @@
+// Menu ☰ de filtres, le même dans toute l'app :
+// une barre avec l'icône ☰ (trois traits) → un panneau où l'on coche ce qu'on veut afficher ;
+// les filtres actifs en petites étiquettes sous la barre (✕ pour en retirer un) et « Tout afficher ».
+import { useFermeture } from "./useFermeture";
+import "./filtres.css";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { ecrireJson, lireObjet } from "../../lib/donnees/stockage";
+
+export interface FmOption { id: string; nom: string; n?: number; couleur?: string; section?: string }
+export interface FmGroupe {
+  id: string;
+  titre: string;
+  options: FmOption[];
+  /** Un seul choix possible (boutons ronds) au lieu de cases à cocher. */
+  seul?: boolean;
+  /** Choix obligatoire (ex. Type d'effet) : toujours une valeur, étiquette sans croix, « Tout afficher » revient à `defaut`. */
+  fixe?: boolean;
+  defaut?: string;
+}
+export type FmValeur = Record<string, string[]>;
+
+export const fmActifs = (v: FmValeur, groupes: FmGroupe[] = []) => Object.entries(v).reduce((n, [id, a]) => n + (groupes.find((g) => g.id === id)?.fixe ? 0 : a.length), 0);
+export const fmVide = (groupes: FmGroupe[]): FmValeur => Object.fromEntries(groupes.map((g) => [g.id, g.fixe && g.defaut ? [g.defaut] : []]));
+
+interface Props {
+  groupes: FmGroupe[];
+  valeur: FmValeur;
+  onChange: (v: FmValeur) => void;
+  /** Résumé à droite de la barre, ex. « 48 recettes ». */
+  resultat?: string;
+  /** Contenu en plus en bas du panneau (ex. le lien vers la Corbeille). */
+  bas?: (fermer: () => void) => ReactNode;
+  /** Étiquettes en plus (ex. une catégorie choisie ailleurs), avec leur croix. */
+  autres?: { id: string; nom: string; couleur?: string; retirer: () => void }[];
+  onToutEffacer?: () => void;
+  /** Clé de localStorage : les choix sont gardés sur cet appareil et retrouvés à la prochaine visite. */
+  cle?: string;
+}
+
+export function FiltreMenu({ groupes, valeur, onChange, resultat, bas, autres = [], onToutEffacer, cle }: Props) {
+  const [ouvert, setOuvert] = useState(false);
+  const boite = useRef<HTMLDivElement>(null);
+  const n = fmActifs(valeur, groupes) + autres.length;
+
+  // Arrivée sur l'écran : on retrouve les choix gardés (sauf si l'écran arrive déjà filtré, ex. lien depuis une fiche).
+  useEffect(() => {
+    if (!cle || fmActifs(valeur, groupes) > 0) return;
+    const gardes = lireObjet<FmValeur>(cle, {});
+    const retrouves = Object.fromEntries(groupes.filter((g) => !g.fixe && Array.isArray(gardes[g.id]) && gardes[g.id].length).map((g) => [g.id, gardes[g.id].filter((x) => typeof x === "string")]));
+    if (Object.keys(retrouves).length) onChange({ ...valeur, ...retrouves });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const json = JSON.stringify(valeur);
+  useEffect(() => { if (cle) ecrireJson(cle, valeur); }, [cle, json]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useFermeture(ouvert, () => setOuvert(false), boite);
+
+  const basculer = (g: FmGroupe, id: string) => {
+    const cur = valeur[g.id] ?? [];
+    const next = g.fixe ? [id] : g.seul ? (cur.includes(id) ? [] : [id]) : cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id];
+    onChange({ ...valeur, [g.id]: next });
+  };
+  const retirer = (gid: string, id: string) => onChange({ ...valeur, [gid]: (valeur[gid] ?? []).filter((x) => x !== id) });
+  const toutEffacer = () => { onChange(fmVide(groupes)); onToutEffacer?.(); };
+
+  const etiquettes = groupes.flatMap((g) => (valeur[g.id] ?? []).map((id) => {
+    const o = g.options.find((x) => x.id === id);
+    return { key: `${g.id}:${id}`, groupe: g.titre, nom: o?.nom ?? id, couleur: o?.couleur, retirer: g.fixe ? undefined : () => retirer(g.id, id) };
+  }));
+
+  return (
+    <div className="fm" ref={boite}>
+      <div className="fm-barre">
+        <button type="button" className={`fm-burger ${ouvert ? "on" : ""}`} aria-expanded={ouvert} aria-haspopup="dialog" onClick={() => setOuvert((o) => !o)}
+          title="Filtres" aria-label={`Filtres${n ? ` (${n} actif${n > 1 ? "s" : ""})` : ""}`}>
+          <span className="fm-traits" aria-hidden><i /><i /><i /></span>
+          <span className="fm-label">Filtres</span>
+          {n > 0 && <span className="fm-n">{n}</span>}
+        </button>
+        {resultat && <span className="fm-res">{resultat}</span>}
+      </div>
+
+      {ouvert && (
+        <div className="fm-panneau" role="dialog" aria-label="Filtres">
+          <div className="fm-panneau-top">
+            <b>Ce que je veux afficher</b>
+            <button type="button" className="fm-fermer" onClick={() => setOuvert(false)} aria-label="Fermer les filtres">✕</button>
+          </div>
+          <div className="fm-groupes">
+            {groupes.map((g) => {
+              let section: string | undefined;
+              return (
+                <fieldset key={g.id} className="fm-groupe">
+                  <legend>{g.titre}</legend>
+                  <div className="fm-options">
+                    {g.options.map((o) => {
+                      const titreSection = o.section && o.section !== section ? (section = o.section) : undefined;
+                      const on = (valeur[g.id] ?? []).includes(o.id);
+                      return (
+                        <span key={o.id} className="fm-opt-wrap">
+                          {titreSection && <span className="fm-section" style={{ "--cc": o.couleur } as CSSProperties}>{titreSection}</span>}
+                          <label className={`fm-opt ${on ? "on" : ""} ${o.n === 0 ? "vide" : ""}`} style={{ "--cc": o.couleur } as CSSProperties}>
+                            <input type={g.seul || g.fixe ? "radio" : "checkbox"} name={g.id} checked={on} onChange={() => basculer(g, o.id)} onClick={() => { if (g.seul && !g.fixe && on) basculer(g, o.id); }} />
+                            <span className="fm-box" aria-hidden />
+                            <span className="fm-nom">{o.nom}</span>
+                            {o.n !== undefined && <small>{o.n}</small>}
+                          </label>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              );
+            })}
+          </div>
+          {bas && <div className="fm-bas">{bas(() => setOuvert(false))}</div>}
+          <div className="fm-actions">
+            <button type="button" className="e2-ui-btn" onClick={toutEffacer} disabled={n === 0}>☰ Tout afficher</button>
+            <button type="button" className="e2-ui-btn fm-voir" onClick={() => setOuvert(false)}>{resultat ? `Voir ${resultat}` : "Voir"}</button>
+          </div>
+        </div>
+      )}
+
+      {etiquettes.length + autres.length > 0 && (
+        <div className="fm-etiquettes" aria-label="Filtres actifs">
+          {autres.map((a) => (
+            <span key={`autre:${a.id}`} className="fm-tag" style={{ "--cc": a.couleur } as CSSProperties}>
+              {a.nom}<button type="button" onClick={a.retirer} aria-label={`Retirer le filtre ${a.nom}`}>✕</button>
+            </span>
+          ))}
+          {etiquettes.map((t) => (
+            <span key={t.key} className="fm-tag" style={{ "--cc": t.couleur } as CSSProperties}>
+              <small>{t.groupe} :</small> {t.nom}{t.retirer ? <button type="button" onClick={t.retirer} aria-label={`Retirer le filtre ${t.groupe} ${t.nom}`}>✕</button> : <span className="fm-tag-fixe" />}
+            </span>
+          ))}
+          {n > 0 && <button type="button" className="fm-clear" onClick={toutEffacer}>☰ Tout afficher</button>}
+        </div>
+      )}
+    </div>
+  );
+}
+

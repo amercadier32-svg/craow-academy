@@ -64,8 +64,8 @@ for (const f of ["parcours.ts", "chain.ts"]) {
     "pat.mfxtype": fx.mfx.types.map((t) => `${t.n} ${t.nom}`),
   };
   // Toutes les recettes : recettes.ts et les fichiers par catégorie (recettesRythme.ts…).
-  const src = readdirSync(join(root, "app/src/content")).filter((f) => /^recettes.*\.ts$/.test(f))
-    .map((f) => readFileSync(join(root, "app/src/content", f), "utf8")).join("\n");
+  const src = readdirSync(join(root, "app/src/content/recettes")).filter((f) => /^recettes.*\.ts$/.test(f))
+    .map((f) => readFileSync(join(root, "app/src/content/recettes", f), "utf8")).join("\n");
   for (const m of src.matchAll(/\br\("([^"]+)", "([^"]+)"\)/g)) {
     const [, id, val] = m;
     const p = byId.get(id);
@@ -84,7 +84,7 @@ for (const f of ["parcours.ts", "chain.ts"]) {
   // Au moins 5 recettes par élément pour les catégories terminées, ids uniques, élément connu.
   const ids = [...src.matchAll(/\bid: "([^"]+)", nom: "[^"]*", styles:/g)].map((m) => m[1]);
   for (const id of new Set(ids)) if (ids.filter((x) => x === id).length > 1) problems.push(`recettes → id en double : ${id}`);
-  const rec = readFileSync(join(root, "app/src/content/recettes.ts"), "utf8");
+  const rec = readFileSync(join(root, "app/src/content/recettes/recettes.ts"), "utf8");
   const elements = [...rec.matchAll(/\{ id: "([a-z-]+)", nom: "[^"]+" \}/g)].map((m) => m[1]);
   const premieres = Object.fromEntries([...rec.matchAll(/"([a-z-]+)": "([a-z-]+)"/g)].map((m) => [m[1], m[2]]));
   const elDe = (body) => body.match(/element: "([a-z-]+)"/)?.[1];
@@ -118,9 +118,9 @@ for (const f of ["parcours.ts", "chain.ts"]) {
       for (const st of (m[2].match(/"([^"]+)"/g) ?? []).map((x) => x.slice(1, -1))) parStyleEl[`${st}/${el}`] = (parStyleEl[`${st}/${el}`] ?? 0) + 1;
     }
     // Tous les éléments de toutes les catégories ; les vides voulues viennent de VIDES_STYLES (recettesStylesSuite.ts).
-    const cats = readFileSync(join(root, "app/src/content/recettes.ts"), "utf8").match(/export const CATEGORIES[\s\S]*?\n\];/)[0];
+    const cats = readFileSync(join(root, "app/src/content/recettes/recettes.ts"), "utf8").match(/export const CATEGORIES[\s\S]*?\n\];/)[0];
     const TOUS = [...cats.matchAll(/\{ id: "([^"]+)", nom: "[^"]+" \}/g)].map((m) => m[1]);
-    const suite = readFileSync(join(root, "app/src/content/recettesStylesSuite.ts"), "utf8");
+    const suite = readFileSync(join(root, "app/src/content/recettes/recettesStylesSuite.ts"), "utf8");
     const bloc = suite.slice(suite.indexOf("export const VIDES_STYLES"));
     const VIDES = {};
     for (const m of bloc.matchAll(/"?([a-z-]+)"?: \[([\s\S]*?)\n  \]/g)) VIDES[m[1]] = [...m[2].matchAll(/el: "([^"]+)"/g)].map((x) => x[1]);
@@ -167,8 +167,8 @@ for (const f of ["parcours.ts", "chain.ts"]) {
 
 // Grilles : chaque partie reprend une recette qui existe, 4 mesures de 16 pas, gamme existante.
 {
-  const rec = readdirSync(join(root, "app/src/content")).filter((f) => /^recettes.*\.ts$/.test(f))
-    .map((f) => readFileSync(join(root, "app/src/content", f), "utf8")).join("\n");
+  const rec = readdirSync(join(root, "app/src/content/recettes")).filter((f) => /^recettes.*\.ts$/.test(f))
+    .map((f) => readFileSync(join(root, "app/src/content/recettes", f), "utf8")).join("\n");
   const recIds = new Set([...rec.matchAll(/id: "([^"]+)", nom:/g)].map((m) => m[1]));
   const seq = JSON.parse(readFileSync(join(root, "data/electribe2/sequencer.json"), "utf8"));
   const scales = new Set(seq.gammes.liste.map((g) => g.n));

@@ -1,8 +1,8 @@
 // Module « Construire un morceau » : départ (style, BPM, KEY, SCALE), puis une couche par étape.
 // Les ambiances de style, les rôles des couches et les conseils d'emboîtement sont des conseils (badge « Pratique »).
 // Les gestes sur la machine renvoient aux pages du manuel.
-import type { Source } from "../lib/data";
-import type { ElementId } from "./recettes";
+import type { Source } from "../lib/donnees/data";
+import type { ElementId } from "./recettes/recettes";
 import { FICHES, type Style } from "./styles";
 
 const OM = (page: number): Source => ({ doc: "OM", page });

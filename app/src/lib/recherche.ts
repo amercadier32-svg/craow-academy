@@ -1,21 +1,26 @@
 // Recherche globale de l'app : glossaire, recettes, effets, gammes, leçons, fiches de la machine…
 // Utilisée par la barre de recherche de l'accueil et par la page Glossaire et recherche.
 import { LEXIQUE, type Mot } from "../content/lexique";
-import { RECETTES } from "../content/recettes";
+import { RECETTES } from "../content/recettes/recettes";
 import { FICHES, pageListe } from "../content/effets";
 import { NIVEAUX } from "../content/parcours";
-import { allControls, oscillators, parameters, procedures, type Source } from "./data";
+import { allControls, oscillators, parameters, procedures, type Source } from "./donnees/data";
 import { GAMMES, enDiese } from "./music";
 import { DEFIS } from "../content/defis";
 import { LECONS } from "../content/mastering";
 import { FICHES as STYLES } from "../content/styles";
-import { getState, listeAnalyses, listeGenerees, listeSessions } from "./store";
+import { getState, listeAnalyses, listeGenerees, listeSessions } from "./donnees/store";
 
 export type Type = "page" | "lecon" | "param" | "ctl" | "geste" | "fx" | "osc" | "gamme" | "recette" | "grille" | "defi" | "session" | "analyse";
 export const TYPES: Record<Type, string> = { page: "Pages de l'app", recette: "Recettes", fx: "Effets et modulations", gamme: "Gammes", lecon: "Leçons", defi: "Défis de Session", session: "Mes sessions", analyse: "Mes analyses", param: "Paramètres", ctl: "Boutons et potards", geste: "Gestes", grille: "Grilles", osc: "Oscillateurs" };
 
 /** Les pages et onglets de l'app : taper « studio », « masteriser », « groove », « midi »… mène au bon endroit. */
 const PAGES: { titre: string; texte: string; lien: string; mots: string }[] = [
+  { titre: "Behringer TD-3", texte: "Le guide de la TD-3 : machine, séquenceur, parcours, recettes acid.", lien: "#td3", mots: "td3 td-3 behringer acid basse 303" },
+  { titre: "TD-3 · La machine", texte: "Potards, touches, trajet du son et prises de la TD-3.", lien: "#td3-machine", mots: "td3 cutoff resonance envelope decay accent distortion drive tone waveform tune" },
+  { titre: "TD-3 · Le séquenceur", texte: "PITCH MODE, TIME MODE, accent, slide, tracks, synchro et accordage.", lien: "#td3-sequenceur", mots: "td3 pitch time mode tie rest slide accent pattern track sync clock midi accorder" },
+  { titre: "TD-3 · Parcours", texte: "5 niveaux pour apprendre la TD-3.", lien: "#td3-parcours", mots: "td3 parcours lecons apprendre" },
+  { titre: "TD-3 · Recettes acid", texte: "Des lignes acid sur 4 patterns.", lien: "#td3-recettes", mots: "td3 recettes acid ligne basse squelch" },
   { titre: "Studio", texte: "Enregistrer, visualiser, analyser et masteriser ton son.", lien: "#studio", mots: "studio son audio" },
   { titre: "Studio · Enregistrer", texte: "Enregistrer l'E2 par la Scarlett, et Mes enregistrements.", lien: "#studio/enregistrer", mots: "enregistrer enregistrement enregistrements prise rec scarlett" },
   { titre: "Studio · Visualiser", texte: "Spectre en courbe, onde, oscilloscope, stéréo en direct, mode vidéo (OBS, fond vert).", lien: "#studio/visualiser", mots: "visualiser visualiseur spectre oscilloscope video obs fond vert transparent" },

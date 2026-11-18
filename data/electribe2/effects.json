@@ -41,155 +41,193 @@
     "types": [
       {
         "n": 1,
-        "nom": "Punch"
+        "nom": "Punch",
+        "verified": false
       },
       {
         "n": 2,
-        "nom": "Overdrive"
+        "nom": "Overdrive",
+        "verified": false
       },
       {
         "n": 3,
-        "nom": "Distortion"
+        "nom": "Distortion",
+        "verified": false
       },
       {
         "n": 4,
-        "nom": "Decimator"
+        "nom": "Decimator",
+        "verified": false
       },
       {
         "n": 5,
-        "nom": "Bit Crusher"
+        "nom": "Bit Crusher",
+        "verified": false
       },
       {
         "n": 6,
-        "nom": "Ring Modulator"
+        "nom": "Ring Modulator",
+        "verified": false
       },
       {
         "n": 7,
-        "nom": "Sustainer"
+        "nom": "Sustainer",
+        "verified": false
       },
       {
         "n": 8,
-        "nom": "Limiter"
+        "nom": "Limiter",
+        "verified": false
       },
       {
         "n": 9,
-        "nom": "Low EQ"
+        "nom": "Low EQ",
+        "verified": false
       },
       {
         "n": 10,
-        "nom": "Mid EQ"
+        "nom": "Mid EQ",
+        "verified": false
       },
       {
         "n": 11,
-        "nom": "High EQ"
+        "nom": "High EQ",
+        "verified": false
       },
       {
         "n": 12,
-        "nom": "Radio EQ"
+        "nom": "Radio EQ",
+        "verified": false
       },
       {
         "n": 13,
-        "nom": "Exciter"
+        "nom": "Exciter",
+        "verified": false
       },
       {
         "n": 14,
-        "nom": "Low Pass Filter"
+        "nom": "Low Pass Filter",
+        "verified": false
       },
       {
         "n": 15,
-        "nom": "High Pass Filter"
+        "nom": "High Pass Filter",
+        "verified": false
       },
       {
         "n": 16,
-        "nom": "Band Plus Filter"
+        "nom": "Band Plus Filter",
+        "verified": false
       },
       {
         "n": 17,
-        "nom": "Talk Filter"
+        "nom": "Talk Filter",
+        "verified": false
       },
       {
         "n": 18,
-        "nom": "Delay 1/4"
+        "nom": "Delay 1/4",
+        "verified": false
       },
       {
         "n": 19,
-        "nom": "Delay 3/16"
+        "nom": "Delay 3/16",
+        "verified": false
       },
       {
         "n": 20,
-        "nom": "Delay 1/8"
+        "nom": "Delay 1/8",
+        "verified": false
       },
       {
         "n": 21,
-        "nom": "Delay 1/16"
+        "nom": "Delay 1/16",
+        "verified": false
       },
       {
         "n": 22,
-        "nom": "Roller 1/32"
+        "nom": "Roller 1/32",
+        "verified": false
       },
       {
         "n": 23,
-        "nom": "One Delay"
+        "nom": "One Delay",
+        "verified": false
       },
       {
         "n": 24,
-        "nom": "Short Delay"
+        "nom": "Short Delay",
+        "verified": false
       },
       {
         "n": 25,
-        "nom": "Ring Delay 1"
+        "nom": "Ring Delay 1",
+        "verified": false
       },
       {
         "n": 26,
-        "nom": "Ring Delay 2"
+        "nom": "Ring Delay 2",
+        "verified": false
       },
       {
         "n": 27,
-        "nom": "Chorus"
+        "nom": "Chorus",
+        "verified": false
       },
       {
         "n": 28,
-        "nom": "Flanger LFO"
+        "nom": "Flanger LFO",
+        "verified": false
       },
       {
         "n": 29,
-        "nom": "Flanger +"
+        "nom": "Flanger +",
+        "verified": false
       },
       {
         "n": 30,
-        "nom": "Flanger -"
+        "nom": "Flanger -",
+        "verified": false
       },
       {
         "n": 31,
-        "nom": "Phaser LFO 1"
+        "nom": "Phaser LFO 1",
+        "verified": false
       },
       {
         "n": 32,
-        "nom": "Phaser LFO 2"
+        "nom": "Phaser LFO 2",
+        "verified": false
       },
       {
         "n": 33,
-        "nom": "Phaser Manual"
+        "nom": "Phaser Manual",
+        "verified": false
       },
       {
         "n": 34,
-        "nom": "Tremolo"
+        "nom": "Tremolo",
+        "verified": false
       },
       {
         "n": 35,
-        "nom": "Off Beater"
+        "nom": "Off Beater",
+        "verified": false
       },
       {
         "n": 36,
-        "nom": "Pumper"
+        "nom": "Pumper",
+        "verified": false
       },
       {
         "n": 37,
-        "nom": "Repeater"
+        "nom": "Repeater",
+        "verified": false
       },
       {
         "n": 38,
-        "nom": "Slicer"
+        "nom": "Slicer",
+        "verified": false
       }
     ]
   },
@@ -208,166 +246,198 @@
       {
         "n": 1,
         "nom": "Mod Delay",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 2,
         "nom": "Tape Delay",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 3,
         "nom": "High Pass Delay",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 4,
         "nom": "Hall Reverb",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 5,
         "nom": "Room Reverb",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 6,
         "nom": "Wet Reverb",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 7,
         "nom": "Looper",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 8,
         "nom": "Pitch Looper",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 9,
         "nom": "Step Shifter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 10,
         "nom": "Slicer",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 11,
         "nom": "Jag Filter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 12,
         "nom": "Grain Shifter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 13,
         "nom": "Vinyl Break",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 14,
         "nom": "Seq Reverse",
         "motionSeq": false,
-        "pilotesLeSequenceur": true
+        "pilotesLeSequenceur": true,
+        "verified": false
       },
       {
         "n": 15,
         "nom": "Seq Doubler",
         "motionSeq": false,
-        "pilotesLeSequenceur": true
+        "pilotesLeSequenceur": true,
+        "verified": false
       },
       {
         "n": 16,
         "nom": "Odd Stepper",
         "motionSeq": false,
-        "pilotesLeSequenceur": true
+        "pilotesLeSequenceur": true,
+        "verified": false
       },
       {
         "n": 17,
         "nom": "Even Stepper",
         "motionSeq": false,
-        "pilotesLeSequenceur": true
+        "pilotesLeSequenceur": true,
+        "verified": false
       },
       {
         "n": 18,
         "nom": "Low Pass Filter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 19,
         "nom": "High Pass Filter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 20,
         "nom": "Band Plus Filter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 21,
         "nom": "Touch Wah",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 22,
         "nom": "Tube EQ",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 23,
         "nom": "Decimator",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 24,
         "nom": "Distortion",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 25,
         "nom": "Compressor",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 26,
         "nom": "Limiter",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 27,
         "nom": "Chorus",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 28,
         "nom": "XY Flanger",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 29,
         "nom": "LFO Flanger",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 30,
         "nom": "XY Phaser",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 31,
         "nom": "LFO Phaser",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       },
       {
         "n": 32,
         "nom": "Auto Pan",
-        "motionSeq": true
+        "motionSeq": true,
+        "verified": false
       }
     ],
     "notes": [

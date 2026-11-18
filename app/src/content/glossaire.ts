@@ -1,7 +1,7 @@
 // Ancien glossaire, remplacé par content/lexique.ts (gardé pour mémoire, plus utilisé).
 // Glossaire : les mots de la machine (badge « Manuel », avec la page) et les mots de musique / de style
 // expliqués simplement (badge « Pratique »), chacun relié à la grille du séquenceur quand c'est possible.
-import type { Source } from "../lib/data";
+import type { Source } from "../lib/donnees/data";
 
 export interface Terme { terme: string; aussi?: string[]; def: string; kind: "manuel" | "pratique"; source?: Source; lien?: string }
 const OM = (page: number): Source => ({ doc: "OM", page });

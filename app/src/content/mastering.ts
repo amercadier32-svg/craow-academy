@@ -1,7 +1,7 @@
 // Textes du module Mastering : les blocs de la chaîne, les points de départ par style et les mini-leçons.
 // Rien ici ne vient du manuel de l'Electribe : c'est de la pratique de studio (badge « Pratique »).
-import { completer, type Reglages } from "../lib/masterDsp";
-import { depuisSimples, type ValeursSimples } from "../lib/masterSimple";
+import { completer, type Reglages } from "../lib/mastering/masterDsp";
+import { depuisSimples, type ValeursSimples } from "../lib/mastering/masterSimple";
 
 export type BlocId = "eq" | "comp" | "sat" | "larg" | "lim";
 

@@ -6,7 +6,7 @@
 // Fil rouge : ton motif de travail à 165 BPM, KEY = D, SCALE = Aeolian, enrichi de module en module.
 // Les ids des anciennes leçons (l1.motif, l3.filter…) sont gardés quand le contenu est le même,
 // pour que les leçons déjà cochées le restent.
-import type { Source } from "../lib/data";
+import type { Source } from "../lib/donnees/data";
 
 const OM = (page: number): Source => ({ doc: "OM", page });
 const PG = (page: number): Source => ({ doc: "PG", page });

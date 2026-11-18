@@ -1,8 +1,8 @@
 // Cartes de quiz générées automatiquement à partir des données extraites du manuel (data/).
 // Aucune question n'est écrite à la main : chaque réponse vient d'un fichier data/ avec sa page,
 // ou du glossaire (content/lexique.ts : thème « Glossaire », lancé depuis les termes cochés).
-import { lireObjet, ecrireJson } from "./stockage";
-import { allControls, oscillators, parameters, procedures, type Source } from "./data";
+import { lireObjet, ecrireJson } from "./donnees/stockage";
+import { allControls, oscillators, parameters, procedures, type Source } from "./donnees/data";
 import { GAMMES, enDiese } from "./music";
 import { CATS_LEX, LEXIQUE } from "../content/lexique";
 

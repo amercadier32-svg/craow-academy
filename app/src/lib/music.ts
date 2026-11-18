@@ -1,5 +1,5 @@
 // Outils de musique : gammes du Guide (p. 15), transposition, et petit synthé Web Audio.
-import { contexte, declarerLecteur, liberer, prendreLaMain, sortie } from "./moteurAudio";
+import { contexte, declarerLecteur, liberer, prendreLaMain, sortie } from "./audio/moteurAudio";
 import sequencerJson from "@data/electribe2/sequencer.json";
 
 export interface Gamme { n: number; nom: string; notesEnDo: string[] }

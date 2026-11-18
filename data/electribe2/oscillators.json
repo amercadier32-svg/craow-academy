@@ -169,2455 +169,2864 @@
       "n": 1,
       "nom": "SubBeef",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 2,
       "nom": "Lazy",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 3,
       "nom": "Echoes",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 4,
       "nom": "Lay",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 5,
       "nom": "Hardstyle",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 6,
       "nom": "Hardcore",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 7,
       "nom": "Southpaw",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 8,
       "nom": "8BitGrime",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 9,
       "nom": "Noiz",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 10,
       "nom": "HiKnock",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 11,
       "nom": "LoKnock",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 12,
       "nom": "Tronica",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 13,
       "nom": "HiClicky",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 14,
       "nom": "LoClicky",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 15,
       "nom": "Subsonic",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": true
     },
     {
       "n": 16,
       "nom": "Threed",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 17,
       "nom": "Lololow",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 18,
       "nom": "Risky",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 19,
       "nom": "ShortBoom",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 20,
       "nom": "AttackEight",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 21,
       "nom": "PureEight",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 22,
       "nom": "UltraEight",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 23,
       "nom": "SnipEight",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 24,
       "nom": "ShortNine",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 25,
       "nom": "PureNine",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 26,
       "nom": "BoostNine",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 27,
       "nom": "Harder",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 28,
       "nom": "BitBreak",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 29,
       "nom": "Finger",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 30,
       "nom": "Filthy",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 31,
       "nom": "Visual",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 32,
       "nom": "Breaker",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 33,
       "nom": "Urban",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 34,
       "nom": "Roomy",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 35,
       "nom": "Studio",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 36,
       "nom": "Twinkling",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 37,
       "nom": "Hippy",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 38,
       "nom": "Ringy",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 39,
       "nom": "Womp",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 40,
       "nom": "Hip",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 41,
       "nom": "Jungle",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 42,
       "nom": "EastCoast",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 43,
       "nom": "Jazz",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 44,
       "nom": "Rock",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 45,
       "nom": "Warm",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 46,
       "nom": "Breaks",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 47,
       "nom": "80'sR&B1",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 48,
       "nom": "80'sR&B2",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 49,
       "nom": "80'sR&B3",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 50,
       "nom": "DDD1",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 51,
       "nom": "DoncaMatic",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 52,
       "nom": "BeatVox1",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 53,
       "nom": "BeatVox2",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 54,
       "nom": "BeatVox3",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 55,
       "nom": "Reverse1",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 56,
       "nom": "Reverse2",
       "categorie": "Kick",
-      "nomCategorieFr": "Grosse caisse"
+      "nomCategorieFr": "Grosse caisse",
+      "verified": false
     },
     {
       "n": 57,
       "nom": "Aftertaste",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 58,
       "nom": "Sharp",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 59,
       "nom": "Toofer",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 60,
       "nom": "Clpsnr",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 61,
       "nom": "Bosh",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 62,
       "nom": "Wide",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 63,
       "nom": "BreaksLofi",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 64,
       "nom": "Beach",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 65,
       "nom": "Hefty",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 66,
       "nom": "Goodie",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 67,
       "nom": "Steady",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 68,
       "nom": "Tech",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 69,
       "nom": "Lay",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 70,
       "nom": "LoNine",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 71,
       "nom": "HiNine",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 72,
       "nom": "CompNine",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 73,
       "nom": "PureEight",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 74,
       "nom": "BodyEight",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 75,
       "nom": "TrapEight",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 76,
       "nom": "Shortate",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 77,
       "nom": "LeanSnare",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 78,
       "nom": "Seventy",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 79,
       "nom": "DDD1",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 80,
       "nom": "Nuxx",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 81,
       "nom": "Oldie",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 82,
       "nom": "Bigger",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 83,
       "nom": "80'sR&B1",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 84,
       "nom": "80'sR&B2",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 85,
       "nom": "Jazz1",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 86,
       "nom": "Jazz2",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 87,
       "nom": "Snappy",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 88,
       "nom": "Ambee",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 89,
       "nom": "Verdy",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 90,
       "nom": "Tubeverb",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 91,
       "nom": "Open1",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 92,
       "nom": "Open2",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 93,
       "nom": "Oldskool",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 94,
       "nom": "Hoppy",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 95,
       "nom": "Ringy",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 96,
       "nom": "OldBreaks",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 97,
       "nom": "Piccolo",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 98,
       "nom": "Jungla",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 99,
       "nom": "EastCoast",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 100,
       "nom": "D'n'B",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 101,
       "nom": "Ambig",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 102,
       "nom": "Juggler",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 103,
       "nom": "DoncaMatic",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 104,
       "nom": "Whip",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 105,
       "nom": "Arcade",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 106,
       "nom": "RimVox",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 107,
       "nom": "Parched",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 108,
       "nom": "Rimmy",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 109,
       "nom": "AmbiRim",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 110,
       "nom": "SnareVox",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 111,
       "nom": "Waffle",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 112,
       "nom": "Blast",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 113,
       "nom": "Reverse1",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 114,
       "nom": "Reverse2",
       "categorie": "Snare",
-      "nomCategorieFr": "Caisse claire"
+      "nomCategorieFr": "Caisse claire",
+      "verified": false
     },
     {
       "n": 115,
       "nom": "PureEight",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 116,
       "nom": "AmbEight",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 117,
       "nom": "DirtySouth",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 118,
       "nom": "PureNine",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 119,
       "nom": "Mixed",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 120,
       "nom": "Trap",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 121,
       "nom": "Small",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 122,
       "nom": "Clapper",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 123,
       "nom": "Doubler",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 124,
       "nom": "EastCoast",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 125,
       "nom": "Liteclap",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 126,
       "nom": "DDD1",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 127,
       "nom": "Crispy",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 128,
       "nom": "B.Boy",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 129,
       "nom": "Crumbles",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 130,
       "nom": "FingerSnap",
       "categorie": "Clap",
-      "nomCategorieFr": "Clap"
+      "nomCategorieFr": "Clap",
+      "verified": false
     },
     {
       "n": 131,
       "nom": "NineClose1",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 132,
       "nom": "NineOpen1",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 133,
       "nom": "NineClose2",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 134,
       "nom": "NineOpen2",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 135,
       "nom": "EightClose1",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 136,
       "nom": "EightOpen1",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 137,
       "nom": "EightOpen2",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 138,
       "nom": "CompClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 139,
       "nom": "CompOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 140,
       "nom": "EastClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 141,
       "nom": "EastOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 142,
       "nom": "DDD1Close",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 143,
       "nom": "DDD1Open",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 144,
       "nom": "WarmClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 145,
       "nom": "WarmOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 146,
       "nom": "ZeeClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 147,
       "nom": "ZeeOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 148,
       "nom": "RoomyClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 149,
       "nom": "RoomyOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 150,
       "nom": "RockClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 151,
       "nom": "RockOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 152,
       "nom": "JazzClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 153,
       "nom": "JazzOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 154,
       "nom": "HoppyClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 155,
       "nom": "HoppyOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 156,
       "nom": "PhaseClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 157,
       "nom": "PhaseOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 158,
       "nom": "NuHopClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 159,
       "nom": "NuHopOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 160,
       "nom": "RightClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 161,
       "nom": "RightOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 162,
       "nom": "NoizClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 163,
       "nom": "NoizOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 164,
       "nom": "GranClose",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 165,
       "nom": "GranOpen",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 166,
       "nom": "Ambi",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 167,
       "nom": "Crackle",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 168,
       "nom": "Hippy",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 169,
       "nom": "Pump",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 170,
       "nom": "Voice1",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 171,
       "nom": "Voice2",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 172,
       "nom": "Reverse",
       "categorie": "HiHat",
-      "nomCategorieFr": "Charley"
+      "nomCategorieFr": "Charley",
+      "verified": false
     },
     {
       "n": 173,
       "nom": "NineCym",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 174,
       "nom": "HiCymbal",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 175,
       "nom": "DoncaMatic",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 176,
       "nom": "EastCoast",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 177,
       "nom": "Rock",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 178,
       "nom": "Synth",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 179,
       "nom": "WhiteNoiz",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 180,
       "nom": "RevCrash",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 181,
       "nom": "NineRide",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 182,
       "nom": "JazzRide1",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 183,
       "nom": "JazzRide2",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 184,
       "nom": "RockRide",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 185,
       "nom": "ZeeRide",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 186,
       "nom": "RevRide",
       "categorie": "Cymbal",
-      "nomCategorieFr": "Cymbale"
+      "nomCategorieFr": "Cymbale",
+      "verified": false
     },
     {
       "n": 187,
       "nom": "Real Hi",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 188,
       "nom": "Real MidHi",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 189,
       "nom": "Real MidLo",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 190,
       "nom": "Real Lo",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 191,
       "nom": "Driven",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 192,
       "nom": "Zee Hi",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 193,
       "nom": "Zee Lo",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 194,
       "nom": "OldSkool",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 195,
       "nom": "Crunchy",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 196,
       "nom": "E.Tom",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 197,
       "nom": "Synth Hi1",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 198,
       "nom": "Synth Mid1",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 199,
       "nom": "Synth Lo1",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 200,
       "nom": "Synth Hi2",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 201,
       "nom": "Synth Lo2",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 202,
       "nom": "TomEight",
       "categorie": "Tom",
-      "nomCategorieFr": "Tom"
+      "nomCategorieFr": "Tom",
+      "verified": false
     },
     {
       "n": 203,
       "nom": "Conga1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 204,
       "nom": "Conga2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 205,
       "nom": "Conga3",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 206,
       "nom": "Conga4",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 207,
       "nom": "Conga5",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 208,
       "nom": "Bongo1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 209,
       "nom": "Bongo2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 210,
       "nom": "Bongo3",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 211,
       "nom": "Bongo4",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 212,
       "nom": "Bongo5",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 213,
       "nom": "Bongo6",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 214,
       "nom": "Djembe1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 215,
       "nom": "Djembe2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 216,
       "nom": "Djembe3",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 217,
       "nom": "Djembe4",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 218,
       "nom": "Darbuka1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 219,
       "nom": "Darbuka2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 220,
       "nom": "Darbuka3",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 221,
       "nom": "Darbuka4",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 222,
       "nom": "Timbales Hi",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 223,
       "nom": "Timbales Lo",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 224,
       "nom": "CowBell1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 225,
       "nom": "CowBell2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 226,
       "nom": "CowBell3",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 227,
       "nom": "Tambourine1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 228,
       "nom": "Tambourine2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 229,
       "nom": "Clave",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 230,
       "nom": "Guiro",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 231,
       "nom": "Cabasa",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 232,
       "nom": "Shaker",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 233,
       "nom": "WaveDrum1",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 234,
       "nom": "WaveDrum2",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 235,
       "nom": "WaveDrum3",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 236,
       "nom": "WaveDrum4",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 237,
       "nom": "WaveDrum5",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 238,
       "nom": "WaveDrum6",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 239,
       "nom": "WaveDrum7",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 240,
       "nom": "WaveDrum8",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 241,
       "nom": "ShakerHit",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 242,
       "nom": "RimPerc",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 243,
       "nom": "Wavestation",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 244,
       "nom": "RimNine",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 245,
       "nom": "RimEight",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 246,
       "nom": "SynthShake",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 247,
       "nom": "CowbellEight",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 248,
       "nom": "DoncaCongaS",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 249,
       "nom": "DoncaCongaL",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 250,
       "nom": "DoncaMaracas",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 251,
       "nom": "DoncaClaves",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 252,
       "nom": "DoncaW.block",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 253,
       "nom": "Synthclave",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 254,
       "nom": "ClickRoll",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 255,
       "nom": "GlitchDmg",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 256,
       "nom": "MouthPop",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 257,
       "nom": "Droplet",
       "categorie": "Percussion",
-      "nomCategorieFr": "Percussion"
+      "nomCategorieFr": "Percussion",
+      "verified": false
     },
     {
       "n": 258,
       "nom": "Rave",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 259,
       "nom": "Whoo",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 260,
       "nom": "Ohooo",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 261,
       "nom": "ComOn",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 262,
       "nom": "Nahh",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 263,
       "nom": "Ahaa..",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 264,
       "nom": "Haa",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 265,
       "nom": "Baaa",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 266,
       "nom": "Grun",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 267,
       "nom": "Ahaaw",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 268,
       "nom": "Paa",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 269,
       "nom": "Hey",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 270,
       "nom": "Doh",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 271,
       "nom": "GlitchEey",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 272,
       "nom": "BotVox1",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 273,
       "nom": "BotVox2",
       "categorie": "Voice",
-      "nomCategorieFr": "Voix"
+      "nomCategorieFr": "Voix",
+      "verified": false
     },
     {
       "n": 274,
       "nom": "NoizyVox",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 275,
       "nom": "Noiser",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 276,
       "nom": "Botox",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 277,
       "nom": "ShockSonar",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 278,
       "nom": "Quark",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 279,
       "nom": "ebPerc",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 280,
       "nom": "Needle",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 281,
       "nom": "SqueakyBum",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 282,
       "nom": "SynSiren",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 283,
       "nom": "Bubble",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 284,
       "nom": "Burp",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 285,
       "nom": "Lux",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 286,
       "nom": "Squirt",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 287,
       "nom": "Degraded",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 288,
       "nom": "Flyby",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 289,
       "nom": "SonicDrop",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 290,
       "nom": "LoZap",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 291,
       "nom": "SubBang",
       "categorie": "Synth FX",
-      "nomCategorieFr": "Effets synthé"
+      "nomCategorieFr": "Effets synthé",
+      "verified": false
     },
     {
       "n": 292,
       "nom": "Stabium",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 293,
       "nom": "Futurize",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 294,
       "nom": "LilChord",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 295,
       "nom": "Ploinky",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 296,
       "nom": "Strippa",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 297,
       "nom": "BigChords",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 298,
       "nom": "StarBurst",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 299,
       "nom": "WishWash",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 300,
       "nom": "BangPop",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 301,
       "nom": "RegulatePop",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 302,
       "nom": "TigerPad",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 303,
       "nom": "LofiSynth",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 304,
       "nom": "BlastBass",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 305,
       "nom": "BenderBass",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 306,
       "nom": "RockHit1",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 307,
       "nom": "RockHit2",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 308,
       "nom": "FormantBass",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 309,
       "nom": "SynGrowl",
       "categorie": "Synth Hit",
-      "nomCategorieFr": "Hits synthé"
+      "nomCategorieFr": "Hits synthé",
+      "verified": false
     },
     {
       "n": 310,
       "nom": "BrassHit1",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 311,
       "nom": "BrassHit2",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 312,
       "nom": "StringsHit1",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 313,
       "nom": "StringsHit2",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 314,
       "nom": "BadOrch",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 315,
       "nom": "CarmOrch",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 316,
       "nom": "Sho2DOrch",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 317,
       "nom": "V2Orch",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 318,
       "nom": "Suspended",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 319,
       "nom": "Jazz",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 320,
       "nom": "Jazzy",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 321,
       "nom": "Hop",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 322,
       "nom": "OldBrass",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 323,
       "nom": "Record",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 324,
       "nom": "Rave",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 325,
       "nom": "Oldie",
       "categorie": "Inst.Hit",
-      "nomCategorieFr": "Hits instrument"
+      "nomCategorieFr": "Hits instrument",
+      "verified": false
     },
     {
       "n": 326,
       "nom": "SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 327,
       "nom": "BOOST-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 328,
       "nom": "PULSE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 329,
       "nom": "TRIANGLE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 330,
       "nom": "SINE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 331,
       "nom": "DUAL-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 332,
       "nom": "DUAL-SQU",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 333,
       "nom": "DUAL-TRI",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 334,
       "nom": "DUAL-SINE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 335,
       "nom": "OCT-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 336,
       "nom": "OCT-SQU",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 337,
       "nom": "OCT-TRI",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 338,
       "nom": "OCT-SINE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 339,
       "nom": "UNI-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 340,
       "nom": "UNI-SQU",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 341,
       "nom": "UNI-TRI",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 342,
       "nom": "UNI-SINE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 343,
       "nom": "SYNC-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 344,
       "nom": "SYNC-SQU",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 345,
       "nom": "SYNC-TRI",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 346,
       "nom": "SYNC-SINE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 347,
       "nom": "CHIP-TRI 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 348,
       "nom": "CHIP-TRI 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 349,
       "nom": "CHIP-PULSE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 350,
       "nom": "CHIP-NOISE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 351,
       "nom": "RING-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 352,
       "nom": "RING-SQU",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 353,
       "nom": "RING-TRI",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 354,
       "nom": "RING-SINE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 355,
       "nom": "X-SAW 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 356,
       "nom": "X-SAW 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 357,
       "nom": "X-SQUARE 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 358,
       "nom": "X-SQUARE 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 359,
       "nom": "X-TRI 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 360,
       "nom": "X-TRI 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 361,
       "nom": "X-SINE 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 362,
       "nom": "X-SINE 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 363,
       "nom": "VPM-SAW",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 364,
       "nom": "VPM-SQUARE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 365,
       "nom": "VPM-TRI",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 366,
       "nom": "VPM-SINE 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 367,
       "nom": "VPM-SINE 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 368,
       "nom": "VPM-SINE 3",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 369,
       "nom": "VPM-SINE 4",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 370,
       "nom": "SYN-SINE 1",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 371,
       "nom": "SYN-SINE 2",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 372,
       "nom": "SYN-SINE 3",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 373,
       "nom": "SYN-SINE 4",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 374,
       "nom": "SYN-SINE 5",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 375,
       "nom": "SYN-SINE 6",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 376,
       "nom": "SYN-SINE 7",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 377,
       "nom": "HPF NOISE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 378,
       "nom": "LPF NOISE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 379,
       "nom": "LOFI NOISE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 380,
       "nom": "RES NOISE",
       "categorie": "Synth",
-      "nomCategorieFr": "Synthé (formes d'onde)"
+      "nomCategorieFr": "Synthé (formes d'onde)",
+      "verified": false
     },
     {
       "n": 381,
       "nom": "M1 Piano",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 382,
       "nom": "E.P.Roads",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 383,
       "nom": "E.P.Wurly",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 384,
       "nom": "Clav",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 385,
       "nom": "M1 Organ",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 386,
       "nom": "Brass Ens.",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 387,
       "nom": "Tenor Sax",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 388,
       "nom": "Alto Sax",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 389,
       "nom": "Strings Ens.",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 390,
       "nom": "Strings Pizz",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 391,
       "nom": "Vox Pop Ah",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 392,
       "nom": "Vox Pad",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 393,
       "nom": "Vox Helium",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 394,
       "nom": "A.Bass",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 395,
       "nom": "E.Bass Finger",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 396,
       "nom": "E.Bass Pick",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 397,
       "nom": "E.Bass Slap",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 398,
       "nom": "E.Bass Dist.",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 399,
       "nom": "A.Guitar",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 400,
       "nom": "E.Guitar1",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 401,
       "nom": "E.Guitar2",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 402,
       "nom": "Kalimba",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 403,
       "nom": "Metal Bell",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 404,
       "nom": "GamelanWave",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 405,
       "nom": "Bell1",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 406,
       "nom": "Bell2",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 407,
       "nom": "Bell3",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 408,
       "nom": "Bell4",
       "categorie": "Instrument",
-      "nomCategorieFr": "Instrument"
+      "nomCategorieFr": "Instrument",
+      "verified": false
     },
     {
       "n": 409,
       "nom": "Audio In",
       "categorie": "Audio In",
-      "nomCategorieFr": "Entrée audio"
+      "nomCategorieFr": "Entrée audio",
+      "verified": false
     }
   ]
 }

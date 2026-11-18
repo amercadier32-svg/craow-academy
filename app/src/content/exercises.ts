@@ -2,7 +2,7 @@
 // Le contenu est une proposition pédagogique (badge « Pratique ») ; chaque geste
 // à faire sur la machine renvoie à la page du manuel qui le décrit.
 // Ce que tu entends est noté dans « Mes observations » (sauvegarde locale, relue par le Carnet).
-import type { Source } from "../lib/data";
+import type { Source } from "../lib/donnees/data";
 
 /** Valeur de départ proposée. Sans plage dans le manuel, elle est marquée « à vérifier sur l'écran ». */
 export interface StartValue { param: string; nom: string; valeur: string; aVerifier: boolean }

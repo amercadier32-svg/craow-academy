@@ -2,8 +2,8 @@
 // Liste exacte des 35 gammes et leurs notes en Do : Guide des paramètres p. 15 (data/electribe2/sequencer.json).
 // Le sens des noms, le caractère et les favoris par style sont des explications de solfège
 // et des conseils : badge « Pratique », ils ne viennent pas du manuel.
-import type { Source } from "../lib/data";
-import { pas, type Pas, type Son } from "../lib/seq";
+import type { Source } from "../lib/donnees/data";
+import { pas, type Pas, type Son } from "../lib/audio/seq";
 
 export const PG = (page: number): Source => ({ doc: "PG", page });
 export const OM = (page: number): Source => ({ doc: "OM", page });
@@ -74,7 +74,7 @@ export const STYLES = {
 /** Motifs d'exemple sur 4 mesures (64 pas) : rang de la note dans la gamme (0 = note de départ, 1 = la suivante…),
  *  "O" = note de départ une octave plus haut, "~" = la note continue, "." = silence (voir pas() dans lib/seq.ts).
  *  Mesures 1 à 3 : le motif avec de petites variations ; mesure 4 : la relance. */
-export type { Pas } from "../lib/seq";
+export type { Pas } from "../lib/audio/seq";
 export const MOTIFS: { id: string; nom: string; mesures: Pas[][]; son: Son; octave: number }[] = [
   { id: "basse", nom: "Basse roulante", son: "synth", octave: 0, mesures: [pas("0.00.01.0.02.03."), pas("0.00.01.0.02.03."), pas("0.00.01.0.02.04."), pas("0.00.01.04.3.21.")] },
   { id: "lead", nom: "Lead acide", son: "synth", octave: 1, mesures: [pas("00O0203000O04321"), pas("00O0203000O04321"), pas("00O0203000O05432"), pas("00O02030O0O0O~~~")] },

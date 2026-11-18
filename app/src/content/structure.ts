@@ -1,7 +1,7 @@
 // Structure de morceau : intro / montée / break / drop / outro.
 // Les longueurs et les parties qui jouent sont des conseils de style (badge « Pratique »).
 // Les gestes sur la machine (Part Mute, Chain, Pattern Set, Write) viennent du manuel, avec leurs pages.
-import type { Fonction, StyleBase as Style } from "./recettes";
+import type { Fonction, StyleBase as Style } from "./recettes/recettes";
 
 export interface SectionModele {
   nom: string;

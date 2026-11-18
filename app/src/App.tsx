@@ -1,41 +1,46 @@
 import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
-import { toutArreter } from "./lib/moteurAudio";
-import Accueil from "./modules/Accueil";
-import { MenuPlus } from "./components/MenuPlus";
-import { SessionVeille } from "./components/SessionVeille";
-import { RappelExport } from "./components/RappelExport";
-import { HoteConfirmer } from "./components/Confirmer";
-import { StylesCss } from "./components/Styles";
-import { PixelArt } from "./components/PixelArt";
-import { MenuMachines, Repere } from "./components/MenuMachines";
+import { useEcranAllume } from "./lib/ecranAllume";
+import { toutArreter } from "./lib/audio/moteurAudio";
+import Accueil from "./modules/accueil/Accueil";
+import { MenuPlus } from "./components/app/MenuPlus";
+import { SessionVeille } from "./components/app/SessionVeille";
+import { RappelExport } from "./components/app/RappelExport";
+import { HoteConfirmer } from "./components/ui/Confirmer";
+import { StylesCss } from "./components/recettes/Styles";
+import { PixelArt } from "./components/ui/PixelArt";
+import { MenuMachines, Repere } from "./components/app/MenuMachines";
 import { positionDe } from "./machines";
 import { etatHisto, peutAvancer, peutRevenir, retrouverPosition, suivrePosition } from "./lib/retour";
 
 // Chaque module se charge seulement quand tu l'ouvres (l'accueil est prêt tout de suite).
-const MachineMap = lazy(() => import("./modules/MachineMap"));
-const SoundChain = lazy(() => import("./modules/SoundChain"));
-const Parcours = lazy(() => import("./modules/Parcours"));
-const Gammes = lazy(() => import("./modules/Gammes"));
-const Recettes = lazy(() => import("./modules/Recettes"));
-const Quiz = lazy(() => import("./modules/Quiz"));
-const Glossaire = lazy(() => import("./modules/Glossaire"));
-const Carnet = lazy(() => import("./modules/Carnet"));
-const Effets = lazy(() => import("./modules/Effets"));
-const Midi = lazy(() => import("./modules/Midi"));
-const Jeu = lazy(() => import("./modules/Jeu"));
-const Setup = lazy(() => import("./modules/Setup"));
-const Studio = lazy(() => import("./modules/Studio"));
-const Morceau = lazy(() => import("./modules/Morceau"));
-const PageApprendre = lazy(() => import("./modules/Pages").then((m) => ({ default: m.PageApprendre })));
-const PageMachine = lazy(() => import("./modules/Pages").then((m) => ({ default: m.PageMachine })));
-const Favoris = lazy(() => import("./modules/Favoris"));
-const Styles = lazy(() => import("./modules/Styles"));
-const Session = lazy(() => import("./modules/Session"));
-const ReglagesAudio = lazy(() => import("./modules/ReglagesAudio"));
-const MesDonnees = lazy(() => import("./modules/MesDonnees"));
-const Raccourcis = lazy(() => import("./modules/Raccourcis"));
+const MachineMap = lazy(() => import("./modules/machine/MachineMap"));
+const SoundChain = lazy(() => import("./modules/machine/SoundChain"));
+const Parcours = lazy(() => import("./modules/apprendre/Parcours"));
+const Gammes = lazy(() => import("./modules/apprendre/Gammes"));
+const Recettes = lazy(() => import("./modules/creer/Recettes"));
+const Quiz = lazy(() => import("./modules/apprendre/Quiz"));
+const Glossaire = lazy(() => import("./modules/apprendre/Glossaire"));
+const Carnet = lazy(() => import("./modules/perso/Carnet"));
+const Effets = lazy(() => import("./modules/apprendre/Effets"));
+const Midi = lazy(() => import("./modules/machine/Midi"));
+const Jeu = lazy(() => import("./modules/machine/Jeu"));
+const Setup = lazy(() => import("./modules/machine/Setup"));
+const Studio = lazy(() => import("./modules/studio/Studio"));
+const Morceau = lazy(() => import("./modules/creer/Morceau"));
+const PageApprendre = lazy(() => import("./modules/accueil/Pages").then((m) => ({ default: m.PageApprendre })));
+const PageMachine = lazy(() => import("./modules/accueil/Pages").then((m) => ({ default: m.PageMachine })));
+const Favoris = lazy(() => import("./modules/perso/Favoris"));
+const Styles = lazy(() => import("./modules/creer/Styles"));
+const Session = lazy(() => import("./modules/creer/Session"));
+const ReglagesAudio = lazy(() => import("./modules/studio/ReglagesAudio"));
+const MesDonnees = lazy(() => import("./modules/perso/MesDonnees"));
+const Td3Machine = lazy(() => import("./modules/td3/Td3Carte").then((m) => ({ default: m.Td3Carte })));
+const Td3Sequenceur = lazy(() => import("./modules/td3/Td3").then((m) => ({ default: m.Td3Sequenceur })));
+const Td3Parcours = lazy(() => import("./modules/td3/Td3").then((m) => ({ default: m.Td3Parcours })));
+const Td3Recettes = lazy(() => import("./modules/td3/Td3").then((m) => ({ default: m.Td3Recettes })));
+const Raccourcis = lazy(() => import("./modules/perso/Raccourcis"));
 // Le bandeau « prise à récupérer » (après un plantage pendant un enregistrement) se charge juste après l'accueil.
-const RecupPrises = lazy(() => import("./components/RecupPrises"));
+const RecupPrises = lazy(() => import("./components/audio/RecupPrises"));
 
 // Tous les écrans de l'app (#id dans l'adresse). `menu` = l'entrée du menu principal qui s'allume
 // (« machines » = le menu déroulant ; la machine et le groupe sont dans src/machines/index.ts).
@@ -53,6 +58,10 @@ const MODULES = [
   { id: "setup", nom: "Mon setup : 2 E2, TD-3 et FL Studio", menu: "machines" },
   { id: "electribe2", nom: "Korg Electribe 2", menu: "machines" },
   { id: "td3", nom: "Behringer TD-3", menu: "machines" },
+  { id: "td3-machine", nom: "TD-3 · La machine", menu: "machines" },
+  { id: "td3-sequenceur", nom: "TD-3 · Le séquenceur", menu: "machines" },
+  { id: "td3-parcours", nom: "TD-3 · Parcours", menu: "machines" },
+  { id: "td3-recettes", nom: "TD-3 · Recettes acid", menu: "machines" },
   { id: "carnet", nom: "Carnet", menu: "carnet" },
   { id: "studio", nom: "Studio", menu: "studio" },
   { id: "apprendre", nom: "Apprendre", menu: "accueil" },
@@ -126,6 +135,8 @@ export default function App() {
     return () => { window.removeEventListener("hashchange", on); window.removeEventListener("popstate", majNav); window.removeEventListener("click", clic, true); window.removeEventListener("keydown", touche); };
   }, []);
   const current = MODULES.find((m) => m.id === mod)!;
+  // Téléphone : l'écran reste allumé pendant une recette ouverte, une Session ou le Studio.
+  useEcranAllume(((mod === "recettes" || mod === "td3-recettes") && Boolean(arg)) || mod === "session" || mod === "studio");
   const pos = positionDe(mod);
   const actif = pos?.module ?? (pos ? { nom: pos.machine.court, icone: pos.machine.icone } : null)
     ?? [...MENU_AVANT, ...MENU_APRES].find((m) => m.id === current.menu)
@@ -142,7 +153,6 @@ export default function App() {
     <div className={`app mod-${mod} ${pos ? "avec-repere" : ""}`}>
       <StylesCss />
       <header className="top">
-        <span className="version-app" title="Version de l'app (numéro · commit · date du build)">{__VERSION__}</span>
         <div className="top-ligne">
         <div className="top-fleches" role="group" aria-label="Navigation">
           <button type="button" className="fleche-nav" disabled={!nav.arriere} onClick={() => history.back()} aria-label="Page précédente" title="Revenir à la page précédente, exactement où tu étais (Alt + ←)">←</button>
@@ -170,7 +180,7 @@ export default function App() {
         <Repere ecran={mod} nomSousPage={(id) => (id === "styles" ? (arg === "gerer" ? "Gérer les styles" : "Les styles") : undefined)} />
       </header>
       <PlusTard><Suspense fallback={null}><RecupPrises /></Suspense></PlusTard>
-      <RappelExport />
+      <RappelExport ecran={mod} />
       <HoteConfirmer />
       <main>
         <ErreurModule key={mod}>
@@ -222,12 +232,15 @@ export default function App() {
         ) : mod === "favoris" ? (
           <Favoris />
         ) : mod === "td3" ? (
-          <div className="soon-page td3-page">
-            <PixelArt name="td3" size={96} />
-            <h2 className="page-title">Behringer TD-3</h2>
-            <p className="muted">Guide en préparation. Il aura les mêmes menus que l'Electribe 2.</p>
-            <a className="px-btn" href="#carte"><PixelArt name="machine" size={20} /> Aller au guide de l'Electribe 2</a>
-          </div>
+          <PageMachine id="td3" />
+        ) : mod === "td3-machine" ? (
+          <Td3Machine key={arg ?? ""} focus={arg} />
+        ) : mod === "td3-sequenceur" ? (
+          <Td3Sequenceur />
+        ) : mod === "td3-parcours" ? (
+          <Td3Parcours />
+        ) : mod === "td3-recettes" ? (
+          <Td3Recettes key={arg ?? ""} focus={arg} />
         ) : (
           <div className="soon-page">
             <h2>{current.nom}</h2>
@@ -237,8 +250,28 @@ export default function App() {
         </Suspense>
         </ErreurModule>
       </main>
+      <BarreBas ecran={mod} />
       <SessionVeille surSession={mod === "session" && arg === "en-cours"} />
     </div>
+  );
+}
+
+/** Téléphone : 4 gros boutons fixés en bas (Recettes, Session, Studio, Recherche). */
+const BAS = [
+  { id: "recettes", nom: "Recettes", icone: "recettes" },
+  { id: "session", nom: "Session", icone: "session" },
+  { id: "studio", nom: "Studio", icone: "mastering" },
+  { id: "glossaire", nom: "Recherche", icone: "glossaire" },
+] as const;
+function BarreBas({ ecran }: { ecran: string }) {
+  return (
+    <nav className="barre-bas" aria-label="Accès rapide">
+      {BAS.map((b) => (
+        <a key={b.id} href={`#${b.id}`} className={ecran === b.id ? "on" : ""} aria-current={ecran === b.id ? "page" : undefined}>
+          <PixelArt name={b.icone} size={22} /><span>{b.nom}</span>
+        </a>
+      ))}
+    </nav>
   );
 }
 

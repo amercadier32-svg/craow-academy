@@ -1,5 +1,5 @@
 // Point d'entrée du script de contrôle (scripts/controle.mjs) : expose les données de l'app telles que l'app les calcule.
-export { RECETTES, CATEGORIES } from "../src/content/recettes";
+export { RECETTES, CATEGORIES } from "../src/content/recettes/recettes";
 export { FICHES, ficheById } from "../src/content/effets";
 export { LEXIQUE } from "../src/content/lexique";
 export { GRILLES } from "../src/content/grilles";
@@ -11,8 +11,13 @@ export { BLOCS } from "../src/content/chain";
 export { POINTS_DEPART, LECONS, BLOCS_M } from "../src/content/mastering";
 export { RACCOURCIS } from "../src/content/raccourcis";
 export { GENERATEURS, genererVariante } from "../src/lib/generateur";
-export { DOCS, allControls, parameters, oscillators, effects, procedures } from "../src/lib/data";
+export { DOCS, allControls, parameters, oscillators, effects, procedures } from "../src/lib/donnees/data";
 export { GAMMES, nomMidi, nomPc, notesIn, ALL_KEYS } from "../src/lib/music";
 export { STYLES_LISTE } from "./controle-styles";
-export { blocsComplets, BLOCS as BLOCS_FENETRE } from "../src/content/recetteComplete";
-export { FORMAT, CLE_FORMAT, MIGRATIONS, preparerDonnees, etatFormat } from "../src/lib/donnees";
+export { blocsComplets, BLOCS as BLOCS_FENETRE } from "../src/content/recettes/recetteComplete";
+export { FORMAT, CLE_FORMAT, MIGRATIONS, preparerDonnees, etatFormat } from "../src/lib/donnees/donnees";
+export { RECETTES_TD3, lirePattern as lirePatternTd3 } from "../src/content/td3/recettes";
+export { NIVEAUX_TD3 } from "../src/content/td3/parcours";
+import manuelTd3 from "../../data/td3/manuel.json";
+export const CONTROLES_TD3 = manuelTd3.controles;
+export const PROCEDURES_TD3 = manuelTd3.procedures;

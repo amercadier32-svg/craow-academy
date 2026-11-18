@@ -38,11 +38,10 @@ export const MACHINES: Machine[] = [
         { id: "session", nom: "Session", icone: "session" },
         { id: "jeu", nom: "Groove", icone: "groove" },
       ] },
-      { num: 3, titre: "Théorie", couleur: "#ffd84d", modules: [
-        { id: "gammes", nom: "Gammes", icone: "gammes" },
-      ] },
-      { num: 4, titre: "Sons et effets", couleur: "#e255c8", modules: [
+      // Gammes et Effets réunis (17/11/2026) : deux groupes d'un seul module demandaient un toucher de plus.
+      { num: 3, titre: "Sons, effets et gammes", couleur: "#e255c8", modules: [
         { id: "effets", nom: "Effets", icone: "effets" },
+        { id: "gammes", nom: "Gammes", icone: "gammes" },
       ] },
     ],
     // Groove, MIDI et Setup étaient dans le Labo ; depuis octobre 2026 ils sont rangés directement dans les groupes.
@@ -52,12 +51,20 @@ export const MACHINES: Machine[] = [
     id: "td3",
     nom: "Behringer TD-3",
     court: "TD-3",
-    detail: "Guide en préparation",
+    detail: "Basse acid",
     icone: "td3",
-    bientot: true,
     // Plus tard, le groupe « 2 · Créer » de la TD-3 aura sa Session : { id: "td3-session", nom: "Session", icone: "session" }
     // (ses propres défis et sessions, voir src/lib/sessionMachines.ts).
-    groupes: [],
+    groupes: [
+      { num: 1, titre: "Comprendre et programmer", couleur: "#c9ccd3", modules: [
+        { id: "td3-machine", nom: "Machine", icone: "td3" },
+        { id: "td3-sequenceur", nom: "Séquenceur", icone: "grille" },
+        { id: "td3-parcours", nom: "Parcours", icone: "parcours" },
+      ] },
+      { num: 2, titre: "Créer", couleur: "#ff3b3b", modules: [
+        { id: "td3-recettes", nom: "Recettes acid", icone: "recettes" },
+      ] },
+    ],
   },
 ];
 

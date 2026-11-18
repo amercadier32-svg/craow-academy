@@ -1,7 +1,7 @@
 // Chaîne du son : le trajet du son dans une partie, puis dans le motif.
 // Chaque bloc et chaque flèche « Manuel » renvoie à une page. Là où le manuel ne dit pas
 // l'ordre, la flèche est en pointillés (« Interprétation ») et un exercice d'écoute permet de vérifier.
-import type { Source } from "../lib/data";
+import type { Source } from "../lib/donnees/data";
 
 const OM = (page: number): Source => ({ doc: "OM", page });
 const PG = (page: number): Source => ({ doc: "PG", page });

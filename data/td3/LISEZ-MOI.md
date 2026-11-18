@@ -1,7 +1,6 @@
-# Données de la Behringer TD-3 (à venir)
+# Données de la Behringer TD-3
 
-Ce dossier recevra les données extraites du manuel de la TD-3, avec la même forme que `data/electribe2/` :
-un fichier JSON par sujet (panneau, paramètres, séquenceur, procédures…), chaque valeur avec sa page du manuel.
-
-Pour brancher le guide TD-3 dans l'app : compléter l'entrée `td3` dans `app/src/machines/index.ts`
-(retirer `bientot`, ajouter ses groupes de modules), puis importer ces fichiers avec `@data/td3/…`.
+`manuel.json` : extrait du guide de démarrage officiel Behringer TD-3 (version 5.0), le 18/11/2026.
+Contrôles numérotés comme dans le guide (« Step 2: Controls »), prises arrière, structure du séquenceur, trajet du son,
+13 gestes pas à pas, et la liste de ce que le guide ne dit pas (à vérifier sur la machine).
+L'app l'importe avec `@data/td3/manuel.json` (modules/td3/Td3.tsx et scripts/controle-entree.ts).

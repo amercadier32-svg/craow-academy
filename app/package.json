@@ -1,7 +1,7 @@
 {
   "name": "e2-academy",
   "private": true,
-  "version": "0.2.0",
+  "version": "1.3.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,8 @@
     "build:en-ligne": "tsc --noEmit && vite build --mode en-ligne && node scripts/assembler.mjs en-ligne",
     "check": "node scripts/check-params.mjs",
     "controle": "node scripts/controle.mjs",
-    "rapport": "node scripts/rapport-params.mjs"
+    "rapport": "node scripts/rapport-params.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "@breezystack/lamejs": "1.2.7",
@@ -21,6 +22,7 @@
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react": "4.7.0",
     "typescript": "5.9.3",
-    "vite": "6.4.1"
+    "vite": "6.4.1",
+    "vitest": "^3.2.4"
   }
 }

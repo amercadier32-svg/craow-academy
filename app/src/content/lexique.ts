@@ -3,9 +3,9 @@
 // liens vers les recettes, fiches d'effets, leçons et étapes de « Construire un morceau ».
 // Badge « Manuel » quand la définition vient du manuel (avec la page), « Pratique » sinon.
 import { slug } from "../lib/texte";
-import type { Source } from "../lib/data";
-import type { Son } from "../lib/seq";
-import type { ElementId } from "./recettes";
+import type { Source } from "../lib/donnees/data";
+import type { Son } from "../lib/audio/seq";
+import type { ElementId } from "./recettes/recettes";
 
 const OM = (page: number): Source => ({ doc: "OM", page });
 const PG = (page: number): Source => ({ doc: "PG", page });
@@ -249,8 +249,8 @@ export const LEXIQUE: Mot[] = [
 
   // =============== 9. CULTURE ET STYLES ===============
   M("culture", "Tekno", "Une techno rapide et brute née dans les fêtes libres en Europe dans les années 1990, souvent jouée en live sur machines.", { en: "tekno", aussi: ["teknival"], liens: ["#morceau|Construire un morceau"] }),
-  M("culture", "Tribe", "Un style de tekno centré sur les percussions : toms, congas et rythmes qui tournent comme des tambours.", { en: "tribe", aussi: ["tribal"], liens: ["#morceau/exemples|Exemple tribe"] }),
-  M("culture", "Mentale", "Un style de tekno hypnotique et sombre : motifs répétés, sons acides, tension qui monte lentement.", { en: "mental", aussi: ["mental", "tekno mentale"], liens: ["#morceau/exemples|Exemple mentale"] }),
+  M("culture", "Tribe", "Un style de tekno centré sur les percussions : toms, congas et rythmes qui tournent comme des tambours.", { en: "tribe", aussi: ["tribal"], liens: ["#morceau|Construire un morceau"] }),
+  M("culture", "Mentale", "Un style de tekno hypnotique et sombre : motifs répétés, sons acides, tension qui monte lentement.", { en: "mental", aussi: ["mental", "tekno mentale"], liens: ["#morceau|Construire un morceau"] }),
   M("culture", "Hardtek", "Une tekno plus dure et plus rapide (souvent 180 à 200 BPM), au kick très saturé et aux basses roulantes agressives.", { en: "hardtek", aussi: ["hard tek"], liens: ["#styles/hardtek|Fiche du style"] }),
   M("culture", "Acid tribe", "La base tribe (kick rond, percussions qui galopent) avec une ligne acide façon 303 au premier plan.", { en: "acid tribe", el: ["acid"], liens: ["#styles/acid-tribe|Fiche du style"] }),
   M("culture", "Raggatek", "De la tekno mélangée à des éléments ragga et dancehall : voix, skank à contretemps, basse qui chante.", { en: "raggatek", aussi: ["ragga tek", "ragga"], liens: ["#styles/raggatek|Fiche du style"] }),

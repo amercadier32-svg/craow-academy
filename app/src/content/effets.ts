@@ -7,10 +7,10 @@
 // les plages de valeurs. Ici, ces textes sont des explications « Interprétation » (ce que fait d'habitude ce type d'effet)
 // à confirmer à l'oreille : chaque fiche a un exercice d'écoute et des cases à remplir.
 // Les usages en tribe / tekno / mentale sont des propositions (badge « Pratique »).
-import type { Source } from "../lib/data";
-import type { Style } from "./recettes";
+import type { Source } from "../lib/donnees/data";
+import type { Style } from "./recettes/recettes";
 import effectsJson from "@data/electribe2/effects.json";
-import { parseMod, type ModInfo } from "../lib/fxaudio";
+import { parseMod, type ModInfo } from "../lib/audio/fxaudio";
 
 const PG = (page: number): Source => ({ doc: "PG", page });
 const OM = (page: number): Source => ({ doc: "OM", page });

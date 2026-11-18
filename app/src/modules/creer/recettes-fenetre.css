@@ -1,0 +1,58 @@
+/* Recettes : liste pleine largeur (la recette s'ouvre dans une fenêtre), tous les réglages, pads */
+.map.sans-detail { display: block; }
+.rc-approx-petit { text-align: center; margin: 0 auto 10px; }
+/* À régler sur l'E2 : les réglages de la recette en gros, en haut de la fenêtre */
+.rc-aregler { border: 1px solid var(--accent); border-radius: var(--r); padding: 12px 14px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.rc-aregler h3 { margin-top: 0; }
+.rc-aregler-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 8px 0; }
+.rc-aregler-item { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: var(--r-sm); background: var(--panel-2); border: 1px solid var(--line); }
+.rc-aregler-item small { color: var(--muted, #9aa3b2); font-size: 0.8rem; }
+.rc-aregler-item b { font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) { .rc-aregler-liste { grid-template-columns: 1fr 1fr; } }
+.map.recettes:not(.effets) .seqp-honest, .fen-recette .seqp-honest { display: none; }
+.rc-legende { margin: -2px 0 8px; }
+.rc-leg-regle { color: #ffd84d; font-weight: 600; }
+.rc-leg-defaut { color: #8a91a0; }
+.rc-complet .rc-set.regle kbd { color: #ffd84d; border-color: #ffd84d88; background: #ffd84d14; }
+.rc-complet .rc-set.defaut .rc-name, .rc-complet .rc-set.defaut kbd { color: #8a91a0; }
+.rc-complet .rc-set.defaut kbd { background: transparent; border-color: var(--panel-3); }
+.rc-defaut-txt { color: #8a91a0; font-size: 0.8rem; font-style: italic; }
+.rc-val { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.rc-note { color: var(--muted); }
+.rc-mod-pourquoi { margin: 6px 0 0; }
+.rc-bloc-modulation { border-left-color: #e255c8; }
+.rc-padsreg h4 { margin: 12px 0 6px; font-size: 0.9rem; color: #9cc4ff; }
+.rc-padgrille { display: grid; gap: 4px; margin: 6px 0 8px; }
+.rc-padligne { display: grid; grid-template-columns: 54px 1fr; gap: 6px; align-items: center; }
+.rc-padstep { font-family: var(--px); font-size: 1.05rem; color: var(--muted); }
+.rc-padcases { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; }
+.rc-padcases i {
+  font-style: normal; text-align: center; font-size: 0.7rem; line-height: 22px; height: 22px; color: #6b7384;
+  background: var(--champ); border: 1px solid #2a2e38;
+}
+.rc-padcases i:nth-child(4n + 1) { border-left-color: #4a5060; }
+.rc-padcases i.on { background: #ff6a3d; border-color: #ffb08f; color: #1a0b05; font-weight: 700; }
+.rc-padcases i.tie { background: #ff6a3d55; border-color: #ff6a3d; color: #ffd8c8; }
+@media (max-width: 560px) { .rc-padcases i { font-size: 0.6rem; } .rc-padligne { grid-template-columns: 44px 1fr; } }
+/* Recettes « pads seulement » (nov. 2026) : la note écrite sur chaque pad allumé */
+.rc-padnums .rc-padcases i { background: none; border-color: transparent; height: 16px; line-height: 16px; font-size: 0.65rem; }
+.rc-padnotes .rc-padcases i.on { font-size: 0.68rem; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; }
+@media (max-width: 560px) { .rc-padnotes .rc-padcases i.on { font-size: 0.52rem; letter-spacing: -0.04em; } .rc-padnotes .rc-padcases { gap: 2px; } .rc-padstep { white-space: nowrap; font-size: 0.8rem; } }
+
+/* Simplification (octobre 2026) : bouton 🎲 par sous-catégorie, recette vierge, compteur et case « Testée sur ma machine » */
+.acc-ligne { display: flex; align-items: stretch; }
+.acc-ligne .acc-tete { flex: 1; min-width: 0; }
+.acc-de { flex: none; min-width: 52px; font-size: 1.35rem; background: #23262f; border: 0; border-left: 1px solid var(--line); color: var(--text); cursor: pointer; }
+.acc-de:hover { background: var(--cc, #474c5a); }
+.rc-haut { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 0 8px; }
+.rc-compteur { margin: 0; font-size: 1.05rem; }
+.rc-compteur b { color: #4fd18b; }
+.gen-fenetre { margin-bottom: 12px; padding: 10px 12px; border: 1px solid var(--line); background: var(--panel); border-radius: var(--r-sm); }
+.gen-fenetre .gen-actions { margin-top: 6px; }
+.rc-vierge-reg input[type="text"] { padding: 6px 8px; background: var(--champ); color: var(--text); border: 1px solid var(--line); font: inherit; min-width: 0; flex: 1; border-radius: var(--r-sm); }
+.rc-testee { border-left: 3px solid #8a8f9c; }
+.rc-testee.on { border-left-color: #4fd18b; }
+.rc-testee-case { display: flex; align-items: center; gap: 10px; font-size: 1.15rem; cursor: pointer; }
+.rc-testee-case input { width: 24px; height: 24px; accent-color: #4fd18b; }
+.rc-testee-note { display: grid; gap: 4px; }
+.rc-testee-note textarea { width: 100%; padding: 6px 8px; background: var(--champ); color: var(--text); border: 1px solid var(--line); font: inherit; border-radius: var(--r-sm); }

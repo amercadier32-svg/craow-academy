@@ -165,6 +165,8 @@ const cibles = {
   morceau: (a) => ["grille", "structure", "assistant"].includes(a) || D.EXEMPLES.some((e) => e.id === a),
   styles: (a) => a === "gerer" || D.STYLES_LISTE.includes(a),
   session: (a) => ["historique", "en-cours"].includes(a) || D.DEFIS.some((d) => d.id === a || `defi-${d.id}` === a) || a.startsWith("defi-"),
+  "td3-recettes": (a) => D.RECETTES_TD3.some((r) => r.id === a),
+  "td3-machine": (a) => D.CONTROLES_TD3.some((c) => c.id === a),
   quiz: (a) => ["lexique"].includes(a) || true,
   // Studio : #studio/<onglet>[/…] (les anciennes adresses #mastering, #reference, #visualiseur, #enregistrements, #labo sont redirigées dans App.tsx)
   studio: (a) => ["enregistrer", "visualiser", "analyser", "masteriser"].includes(a),
@@ -208,6 +210,30 @@ for (const f of src) {
 const externes = new Set();
 for (const f of src) for (const m of readFileSync(f, "utf8").matchAll(/https?:\/\/[^\s"'`)<>]+/g)) externes.add(m[0]);
 console.log(`   ${nLiens} liens internes vérifiés.${externes.size ? ` Liens vers internet (non testés ici) : ${[...externes].join(", ")}` : " Aucun lien vers internet."}`);
+
+// ---------- 4 bis. TD-3 ----------
+titre("4 bis. TD-3 (recettes, parcours, gestes)");
+{
+  const ctrlIds = new Set(D.CONTROLES_TD3.map((c) => c.id));
+  const procIds = new Set(D.PROCEDURES_TD3.map((p) => p.id));
+  let nPas = 0;
+  for (const r of D.RECETTES_TD3) {
+    if (r.patterns.length !== 4) pb("td3", `recette ${r.id} : ${r.patterns.length} patterns au lieu de 4 (4 mesures)`);
+    r.patterns.forEach((txt, k) => {
+      let pas;
+      try { pas = D.lirePatternTd3(txt); } catch (e) { pb("td3", `recette ${r.id}, pattern ${k + 1} : ${e.message}`); return; }
+      nPas += pas.length;
+      if (pas.length !== 16) pb("td3", `recette ${r.id}, pattern ${k + 1} : ${pas.length} pas au lieu de 16`);
+      pas.forEach((p, i) => { if (p.t === "tie" && (i === 0 || pas[i - 1].t === "rest")) pb("td3", `recette ${r.id}, pattern ${k + 1}, pas ${i + 1} : TIE sans note avant`); });
+    });
+    for (const [k, v] of Object.entries(r.reglages)) if (typeof v === "number" && (v < 0 || v > 10)) pb("td3", `recette ${r.id} : ${k} = ${v} (0 à 10)`);
+  }
+  for (const n of D.NIVEAUX_TD3) for (const l of n.lecons) {
+    for (const p of l.procedures ?? []) if (!procIds.has(p)) pb("td3", `leçon ${l.id} : geste « ${p} » absent de data/td3/manuel.json`);
+    for (const c of l.controles ?? []) if (!ctrlIds.has(c)) pb("td3", `leçon ${l.id} : contrôle « ${c} » absent de data/td3/manuel.json`);
+  }
+  console.log(`   ${D.RECETTES_TD3.length} recettes (${nPas} pas), ${D.NIVEAUX_TD3.reduce((a, n) => a + n.lecons.length, 0)} leçons, ${procIds.size} gestes et ${ctrlIds.size} contrôles vérifiés.`);
+}
 
 // ---------- 5. Fichier E2-Academy.html ----------
 titre("5. Fichier E2-Academy.html");

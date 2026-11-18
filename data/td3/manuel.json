@@ -1,0 +1,552 @@
+{
+  "source": {
+    "titre": "Behringer TD-3 · Quick Start Guide (Version 5.0)",
+    "court": "Guide TD-3",
+    "note": "Extrait le 18/11/2026 du guide officiel (texte du PDF, sans numéros de page). Chaque valeur cite la section du guide et le numéro du contrôle. Ce que le guide ne dit pas est marqué « à vérifier sur la machine »."
+  },
+  "controles": [
+    {
+      "n": 1,
+      "id": "tune",
+      "nom": "TUNE",
+      "zone": "son",
+      "role": "Accorde l'oscillateur (VCO).",
+      "plage": "Environ une octave de chaque côté du centre.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 2,
+      "id": "cutoff",
+      "nom": "CUTOFF",
+      "zone": "son",
+      "role": "Fréquence de coupure du filtre passe-bas (VCF) : au-dessus, les fréquences sont atténuées.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 3,
+      "id": "resonance",
+      "nom": "RESONANCE",
+      "zone": "son",
+      "role": "Accentue les fréquences autour de la coupure : c'est le « chant » de l'acid.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 4,
+      "id": "envelope",
+      "nom": "ENVELOPE",
+      "zone": "son",
+      "role": "Combien l'enveloppe ouvre le filtre à chaque note.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 5,
+      "id": "decay",
+      "nom": "DECAY",
+      "zone": "son",
+      "role": "Temps que met l'enveloppe pour redescendre au minimum.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 6,
+      "id": "accent",
+      "nom": "ACCENT",
+      "zone": "son",
+      "role": "Force de l'accent, seulement sur les notes programmées avec ACCENT.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 7,
+      "id": "filterin",
+      "nom": "FILTER IN",
+      "zone": "prises",
+      "role": "Entrée jack 3,5 mm : un son extérieur passe dans le filtre à la place de l'oscillateur.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 8,
+      "id": "syncin",
+      "nom": "SYNC IN",
+      "zone": "prises",
+      "role": "Entrée jack 3,5 mm : horloge extérieure et départ/arrêt.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 9,
+      "id": "cvout",
+      "nom": "CV OUT",
+      "zone": "prises",
+      "role": "Sortie jack 3,5 mm : tension de hauteur, 1 V par octave.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 10,
+      "id": "gateout",
+      "nom": "GATE OUT",
+      "zone": "prises",
+      "role": "Sortie jack 3,5 mm de gate (le signal « une note joue »).",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 10,
+      "id": "phones",
+      "nom": "PHONES",
+      "zone": "prises",
+      "role": "Prise casque jack 3,5 mm (stéréo, TRS). Baisse VOLUME avant de brancher le casque.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 12,
+      "id": "drive",
+      "nom": "DRIVE",
+      "zone": "dist",
+      "role": "Quantité de distorsion (seulement si DISTORTION est sur ON).",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 13,
+      "id": "tone",
+      "nom": "TONE",
+      "zone": "dist",
+      "role": "Couleur (tonalité) de la distorsion.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 14,
+      "id": "level",
+      "nom": "LEVEL",
+      "zone": "dist",
+      "role": "Volume de sortie de la distorsion.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 15,
+      "id": "tempo",
+      "nom": "TEMPO",
+      "zone": "jeu",
+      "role": "Vitesse des patterns et des tracks, du lent au rapide.",
+      "plage": "Pas de plage en BPM dans le guide, et pas d'écran : à vérifier sur la machine.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 16,
+      "id": "waveform",
+      "nom": "WAVEFORM",
+      "zone": "son",
+      "role": "Forme d'onde de l'oscillateur : dent de scie inversée ou impulsion (pulse).",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 17,
+      "id": "track",
+      "nom": "TRACK / PATTERN GROUP",
+      "zone": "jeu",
+      "role": "Choisit la track (1 à 7) ou le groupe de patterns (I à IV). Groupe I = tracks 1-2, II = 3-4, III = 5-6, IV = 7.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 18,
+      "id": "mode",
+      "nom": "MODE",
+      "zone": "jeu",
+      "role": "Choisit le mode : TRACK WRITE, TRACK PLAY, PATTERN PLAY, PATTERN WRITE.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 19,
+      "id": "powerled",
+      "nom": "POWER LED",
+      "zone": "jeu",
+      "role": "S'allume quand la machine est sous tension. Orange = normal ; rouge ou vert = mode Poly Chain.",
+      "section": "Step 2: Controls · Poly Chain"
+    },
+    {
+      "n": 20,
+      "id": "distortion",
+      "nom": "DISTORTION ON/OFF",
+      "zone": "dist",
+      "role": "OFF : la distorsion est contournée. Elle se trouve avant le VOLUME.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 21,
+      "id": "volume",
+      "nom": "VOLUME",
+      "zone": "jeu",
+      "role": "Volume de la sortie OUTPUT et du casque.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 22,
+      "id": "clear",
+      "nom": "CLEAR (D.C. / BAR RESET)",
+      "zone": "clavier",
+      "role": "Efface un pattern, ramène une track au début, marque le dernier pattern d'une track.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 23,
+      "id": "pitch",
+      "nom": "PITCH MODE",
+      "zone": "clavier",
+      "role": "Mode hauteur (LED allumée) : on entre les notes. Maintenu + une touche : transpose.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 24,
+      "id": "clavier",
+      "nom": "Clavier 13 notes",
+      "zone": "clavier",
+      "role": "Entre les notes (C à C). Les 8 touches du bas servent aussi à choisir les patterns 1 à 8 et les tracks.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 26,
+      "id": "time",
+      "nom": "TIME MODE",
+      "zone": "clavier",
+      "role": "Mode rythme (LED 25 allumée) : chaque pas devient NOTE, TIE ou REST. Aucun son pendant ce mode.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 27,
+      "id": "back",
+      "nom": "BACK",
+      "zone": "clavier",
+      "role": "Revient à la note précédente pour la corriger. Avec WRITE/NEXT : réglage SYNC et CLOCK.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 28,
+      "id": "start",
+      "nom": "START / STOP",
+      "zone": "clavier",
+      "role": "Lance ou arrête (LED allumée pendant la lecture).",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 29,
+      "id": "function",
+      "nom": "FUNCTION",
+      "zone": "clavier",
+      "role": "Touche à tout faire ; ramène au mode normal (LED NORMAL MODE 30) depuis PITCH ou TIME.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 31,
+      "id": "down",
+      "nom": "DOWN / NOTE / STEP",
+      "zone": "clavier",
+      "role": "PITCH MODE : octave en dessous. TIME MODE : NOTE. Avec FUNCTION : nombre de pas.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 32,
+      "id": "up",
+      "nom": "UP / TIE / TRIPLET",
+      "zone": "clavier",
+      "role": "PITCH MODE : octave au-dessus. TIME MODE : TIE (note tenue). Règle aussi le mode triolet.",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 33,
+      "id": "acc",
+      "nom": "ACCENT / PATTERN A",
+      "zone": "clavier",
+      "role": "PITCH MODE : accent sur la note. Sinon : choisit les patterns A (1A à 8A).",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 34,
+      "id": "slide",
+      "nom": "SLIDE / PATTERN B",
+      "zone": "clavier",
+      "role": "PITCH MODE : slide (glissé) vers la note suivante. Sinon : choisit les patterns B (1B à 8B).",
+      "section": "Step 2: Controls"
+    },
+    {
+      "n": 35,
+      "id": "write",
+      "nom": "WRITE/NEXT / TAP (D.S.)",
+      "zone": "clavier",
+      "role": "Passe à la note suivante, écrit un pattern dans une track, entre le rythme en tapant.",
+      "section": "Step 2: Controls"
+    }
+  ],
+  "arriere": [
+    {
+      "nom": "OUTPUT",
+      "role": "Sortie ligne jack 6,35 mm (mono)."
+    },
+    {
+      "nom": "MIDI OUT/THRU",
+      "role": "Prise DIN 5 broches."
+    },
+    {
+      "nom": "MIDI IN",
+      "role": "Prise DIN 5 broches. Canal d'entrée MIDI 1 (tableau MIDI du guide)."
+    },
+    {
+      "nom": "USB",
+      "role": "USB type B : la TD-3 apparaît comme appareil MIDI USB, sans pilote."
+    },
+    {
+      "nom": "POWER",
+      "role": "Interrupteur. Tout brancher avant d'allumer ; allumer la TD-3 avant les enceintes, l'éteindre en dernier."
+    },
+    {
+      "nom": "DC INPUT",
+      "role": "Adaptateur 9 V fourni."
+    }
+  ],
+  "sequenceur": {
+    "groupes": 4,
+    "patternsParGroupe": "8 patterns A (1A à 8A) et 8 patterns B (1B à 8B)",
+    "pasMax": 16,
+    "pasDefaut": "Un pas = une double croche. Sans réglage, un pattern a 16 pas.",
+    "tracks": 7,
+    "section": "TD-3 Operation"
+  },
+  "chaine": [
+    {
+      "id": "vco",
+      "nom": "VCO",
+      "texte": "L'oscillateur unique : WAVEFORM (dent de scie inversée ou pulse) et TUNE.",
+      "controles": [
+        "waveform",
+        "tune"
+      ]
+    },
+    {
+      "id": "vcf",
+      "nom": "VCF",
+      "texte": "Le filtre passe-bas : CUTOFF et RESONANCE. L'enveloppe (ENVELOPE, DECAY) fait bouger la coupure à chaque note.",
+      "controles": [
+        "cutoff",
+        "resonance",
+        "envelope",
+        "decay"
+      ]
+    },
+    {
+      "id": "accent",
+      "nom": "ACCENT",
+      "texte": "Agit seulement sur les notes accentuées.",
+      "controles": [
+        "accent"
+      ]
+    },
+    {
+      "id": "vca",
+      "nom": "VCA",
+      "texte": "L'amplificateur qui ouvre et ferme le son de chaque note.",
+      "controles": []
+    },
+    {
+      "id": "dist",
+      "nom": "DISTORTION",
+      "texte": "Si DISTORTION est sur ON : DRIVE, TONE, LEVEL.",
+      "controles": [
+        "distortion",
+        "drive",
+        "tone",
+        "level"
+      ]
+    },
+    {
+      "id": "out",
+      "nom": "VOLUME",
+      "texte": "Vers OUTPUT et le casque.",
+      "controles": [
+        "volume"
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "jouer",
+      "titre": "Jouer un pattern",
+      "but": "Écouter un pattern déjà en mémoire.",
+      "etapes": [
+        "MODE sur PATTERN PLAY (conseillé : dans ce mode, CLEAR ne peut rien effacer).",
+        "TRACK / PATTERN GROUP sur un groupe I à IV.",
+        "Appuie sur FUNCTION (la LED NORMAL MODE s'allume).",
+        "Appuie sur une touche PATTERN 1 à 8 (sa LED clignote).",
+        "Appuie sur A ou B (la LED s'allume).",
+        "START / STOP.",
+        "Joue avec les potards et le TEMPO."
+      ],
+      "section": "TD-3 Operation · Playing patterns"
+    },
+    {
+      "id": "transposer",
+      "titre": "Transposer en jouant",
+      "but": "Changer la tonalité du pattern en direct.",
+      "etapes": [
+        "Pendant la lecture, maintiens PITCH MODE.",
+        "Appuie sur une des 13 touches : le pattern est transposé quand il recommence."
+      ],
+      "section": "TD-3 Operation · Playing patterns"
+    },
+    {
+      "id": "enchainer",
+      "titre": "Enchaîner des patterns",
+      "but": "Faire une boucle de plusieurs patterns (ex. 4 patterns = 4 mesures).",
+      "etapes": [
+        "En lecture, appuie sur un autre PATTERN 1-8 ou A/B : il partira après le pattern en cours.",
+        "Pour une chaîne : maintiens une touche PATTERN et appuie sur une autre. Les deux et tous ceux entre les deux jouent dans l'ordre (ex. maintiens 1, appuie sur 4 = 1, 2, 3, 4)."
+      ],
+      "section": "TD-3 Operation · Playing patterns"
+    },
+    {
+      "id": "nouveau",
+      "titre": "Préparer un pattern vide",
+      "but": "Choisir l'emplacement, l'effacer, régler sa longueur.",
+      "etapes": [
+        "MODE sur PATTERN WRITE.",
+        "PATTERN GROUP sur le groupe voulu (ex. I).",
+        "Appuie sur FUNCTION (LED NORMAL MODE allumée, une LED PATTERN clignote).",
+        "Appuie sur PATTERN 1 (la touche C), même si elle clignote déjà.",
+        "Appuie sur PATTERN A : tu es sur 1A.",
+        "Si 1A contient déjà quelque chose : maintiens PATTERN 1 et appuie sur CLEAR. START / STOP pour vérifier qu'il est muet, puis START / STOP pour arrêter.",
+        "Longueur : maintiens FUNCTION et appuie sur STEP autant de fois que de pas voulus. Sans ce réglage : 16 pas."
+      ],
+      "section": "TD-3 Operation · Writing patterns"
+    },
+    {
+      "id": "pitch",
+      "titre": "Entrer les notes (PITCH MODE)",
+      "but": "Donner la hauteur de chaque note, dans l'ordre.",
+      "etapes": [
+        "Appuie sur PITCH MODE (LED allumée).",
+        "Entre les notes une par une sur les 13 touches.",
+        "Octave : maintiens UP ou DOWN, puis appuie sur la note.",
+        "Vérifier : PITCH MODE revient au début, puis WRITE/NEXT joue les notes une par une.",
+        "Corriger : BACK jusqu'à la note, puis appuie sur la bonne touche.",
+        "FUNCTION pour sortir du PITCH MODE."
+      ],
+      "section": "TD-3 Operation · Writing patterns"
+    },
+    {
+      "id": "time",
+      "titre": "Placer le rythme (TIME MODE)",
+      "but": "Dire pour chaque pas : NOTE, TIE (tenue) ou REST (silence).",
+      "etapes": [
+        "Appuie sur TIME MODE (LED allumée). Aucun son dans ce mode.",
+        "Pour chaque pas, de gauche à droite : NOTE (touche DOWN/NOTE), TIE (touche UP/TIE) ou REST.",
+        "Chaque NOTE prend la note suivante de la liste du PITCH MODE ; TIE prolonge la note d'avant.",
+        "La machine sort seule du TIME MODE quand tous les pas sont remplis.",
+        "Vérifier : TIME MODE puis WRITE/NEXT, les LED montrent note, tie ou rest.",
+        "FUNCTION, puis START / STOP pour écouter."
+      ],
+      "attention": [
+        "Le guide ne nomme pas la touche REST : regarde l'inscription sur ta TD-3 et note-la dans « Mes observations »."
+      ],
+      "section": "TD-3 Operation · Writing patterns"
+    },
+    {
+      "id": "accslide",
+      "titre": "Ajouter accent et slide",
+      "but": "Faire chanter la ligne.",
+      "etapes": [
+        "En PATTERN WRITE, appuie sur PITCH MODE, puis WRITE/NEXT pour avancer note par note.",
+        "Sur la bonne note, maintiens WRITE/NEXT (BACK si tu l'as dépassée).",
+        "Appuie sur ACCENT et/ou SLIDE. Un second appui les retire.",
+        "Relâche WRITE/NEXT."
+      ],
+      "attention": [
+        "Un slide sur la dernière note glisse vers le début du pattern (pattern seul) ou vers le pattern suivant (chaîne ou track)."
+      ],
+      "section": "TD-3 Operation · Accent and slide"
+    },
+    {
+      "id": "tap",
+      "titre": "Rythme au tap",
+      "but": "Entrer le rythme en tapant en mesure.",
+      "etapes": [
+        "FUNCTION, puis START / STOP.",
+        "CLEAR : un métronome démarre (premier temps marqué).",
+        "Tape le rythme sur TAP. Pour tenir une note, garde TAP enfoncé."
+      ],
+      "section": "TD-3 Operation · Writing patterns"
+    },
+    {
+      "id": "trackwrite",
+      "titre": "Écrire une track",
+      "but": "Ranger une suite de patterns en morceau.",
+      "etapes": [
+        "MODE sur TRACK WRITE.",
+        "TRACK sur 1 à 7.",
+        "CLEAR.",
+        "START / STOP (une track ne s'écrit que pendant la lecture).",
+        "Choisis le premier pattern (ex. 2 puis A), puis WRITE/NEXT.",
+        "Pattern suivant (pour le transposer : maintiens PITCH MODE + une touche), puis WRITE/NEXT. Et ainsi de suite.",
+        "Au dernier pattern : CLEAR, puis WRITE/NEXT.",
+        "START / STOP pour finir."
+      ],
+      "section": "TD-3 Operation · Tracks"
+    },
+    {
+      "id": "trackplay",
+      "titre": "Jouer une track",
+      "but": "Lancer ton morceau.",
+      "etapes": [
+        "MODE sur TRACK PLAY.",
+        "TRACK sur la bonne track.",
+        "CLEAR (retour au début).",
+        "START / STOP."
+      ],
+      "section": "TD-3 Operation · Tracks"
+    },
+    {
+      "id": "trackedit",
+      "titre": "Retirer ou insérer un pattern dans une track",
+      "but": "Corriger une track sans tout réécrire.",
+      "etapes": [
+        "Retirer : MODE sur TRACK WRITE, choisis la track, maintiens FUNCTION + PATTERN (ex. 3), puis FUNCTION + DEL (touche C#).",
+        "Insérer avant le 5e : TRACK WRITE, maintiens FUNCTION + PATTERN 5, puis FUNCTION + INS (touche D#). START / STOP, choisis le pattern (1-8 et A/B), TAP pour l'enregistrer, START / STOP.",
+        "Réécouter : MODE sur TRACK PLAY, CLEAR, START / STOP."
+      ],
+      "section": "TD-3 Operation · Tracks"
+    },
+    {
+      "id": "sync",
+      "titre": "Régler la synchro (SYNC et CLOCK)",
+      "but": "Choisir qui donne le tempo : la TD-3 ou une autre machine.",
+      "etapes": [
+        "Appuie sur FUNCTION. Rien ne doit jouer.",
+        "Appuie ensemble sur BACK et WRITE/NEXT.",
+        "Les LED 1 à 8 s'allument ; la source et la cadence actuelles clignotent environ 3 secondes.",
+        "Source : touche 1 = INT (interne), 2 = MIDI, 3 = USB, 4 = TRIG (SYNC IN).",
+        "Cadence (pour TRIG) : 5 = 1PPS, 6 = 2PPQ, 7 = 24PPQ, 8 = 48PPQ. Le guide conseille 24 ou 48 PPQ.",
+        "Une autre touche, ou 3 secondes sans rien toucher : c'est enregistré."
+      ],
+      "attention": [
+        "Sans horloge extérieure, la source doit toujours être INT, sinon la TD-3 attend un tempo qui ne vient pas."
+      ],
+      "section": "System Mode · Setting Sync and Clock Type"
+    },
+    {
+      "id": "accorder",
+      "titre": "Accorder la TD-3",
+      "but": "Mettre la TD-3 juste avant de jouer avec d'autres machines.",
+      "etapes": [
+        "Baisse VOLUME. MODE sur PATTERN PLAY.",
+        "Maintiens PITCH MODE et appuie sur PATTERN 6 (la touche A).",
+        "Chaque WRITE/NEXT rejoue la note (une octave au-dessus dans ce mode).",
+        "Tourne TUNE jusqu'à 220 Hz exactement (accordeur).",
+        "Autres notes : maintiens PITCH MODE + la note."
+      ],
+      "attention": [
+        "Laisse chauffer 15 minutes ou plus avant d'accorder (conseil du guide)."
+      ],
+      "section": "TD-3 Operation · Tuning"
+    }
+  ],
+  "absent": [
+    "Plage du TEMPO en BPM (pas d'écran sur la TD-3).",
+    "Pente du filtre (en dB par octave), réglages de l'attaque et du relâchement de l'enveloppe.",
+    "Nom de la touche REST en TIME MODE.",
+    "Réglage du canal MIDI (le tableau MIDI indique le canal 1 en entrée).",
+    "Procédure du mode triolet (TRIPLET)."
+  ]
+}

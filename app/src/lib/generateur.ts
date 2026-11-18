@@ -7,9 +7,9 @@
 // `hasard` (0 = Sage … 100 = Expérimental) élargit les plages et les listes où le générateur pioche.
 // Kick a son profil écrit à la main ; les autres sous-catégories partent des recettes de l'app (même élément, même style)
 // comme modèles : mêmes familles d'oscillateurs, plages de potards prises sur ces recettes, rythmes remélangés.
-import { effects, oscillators } from "./data";
-import { pas, SONS_PERCU, type Pas } from "./seq";
-import { CATEGORIES, ELEMENTS, RECETTES, STYLE_NOM, type ElementId, type Recette, type Reglage, type Style } from "../content/recettes";
+import { effects, oscillators } from "./donnees/data";
+import { pas, SONS_PERCU, type Pas } from "./audio/seq";
+import { CATEGORIES, ELEMENTS, RECETTES, STYLE_NOM, type ElementId, type Recette, type Reglage, type Style } from "../content/recettes/recettes";
 import { FICHE, type ProfilKick } from "../content/styles";
 import { gammeByN } from "./music";
 

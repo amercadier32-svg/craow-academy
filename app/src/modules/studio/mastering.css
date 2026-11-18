@@ -1,0 +1,240 @@
+/* Module Mastering : même look que le reste (sombre, pixel, contours nets). */
+.ms { max-width: 1100px; margin: 0 auto; display: grid; gap: 14px; }
+.ms .rg { margin-bottom: 0; }
+.ms-approx { font-family: var(--px); color: #ffb020; font-size: 1.05em; cursor: help; }
+.ms-erreur { color: #ff8a8a; background: #3a1418; border: 1px solid var(--line); padding: 8px 12px; margin: 0; border-radius: var(--r-sm); }
+.ms-attention { color: #ffcf8a; }
+
+.ms-depot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 18px; border: 1px dashed #ffffff2a; background: var(--panel); box-shadow: none; border-radius: var(--r-sm); }
+.ms-depot.survol { border-color: #4fd18b; background: #17301f; }
+.ms-depot-txt { display: grid; gap: 2px; flex: 1; min-width: 180px; }
+.ms-depot-txt b { font-family: var(--px); font-size: 1.3rem; font-weight: 400; }
+.ms-depot-txt span { color: var(--muted); font-size: 0.9rem; }
+.ms-depot-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.ms-onde { width: 100%; height: 64px; display: block; background: var(--champ); border: 1px solid var(--line); cursor: crosshair; touch-action: none; }
+
+.ms-temps { font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; color: #cfd6e2; }
+
+.ms-ab { display: inline-flex; border: 1px solid var(--line); box-shadow: none; }
+.ms-ab-btn { font-family: var(--px); font-size: 1.05rem; padding: 6px 12px; background: var(--panel-3); color: #d7dbe4; border: 0; border-right: 1px solid var(--line); cursor: pointer; }
+.ms-ab-btn:last-child { border-right: 0; }
+.ms-ab-btn b { font-weight: 400; margin-right: 4px; padding: 0 5px; background: var(--champ); }
+.ms-ab-btn.on { background: #8a91a0; color: #0b0d12; }
+.ms-ab-btn.b.on { background: #4fd18b; }
+.ms-ab-btn.r.on { background: #ff6aa8; }
+.ms-ab-btn.on b { background: var(--champ); color: #fff; }
+.ms-check { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
+.ms-check small { color: var(--muted); }
+.ms-check input { width: 18px; height: 18px; accent-color: #4fd18b; }
+
+.ms-legende { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+.ms-legende span { display: inline-flex; align-items: center; gap: 5px; }
+.ms-legende i { width: 16px; height: 4px; border: 0 solid; display: inline-block; }
+.ms-legende i.pt { border-top-width: 3px; border-top-style: dashed; height: 0; }
+
+.ms-bloc { --cc: #6aa2ee; border: 1px solid var(--line); border-left: 3px solid var(--cc); background: var(--panel); padding: 10px 12px 14px; display: grid; gap: 8px; min-width: 0; border-radius: var(--r-sm); }
+.ms-bloc-tete { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.ms-bloc-tete h3 { margin: 0; color: var(--cc); font-size: 1.4rem; }
+
+.ms-ok { border: 1px solid var(--line); border-left: 3px solid #4fd18b; background: #15291d; padding: 6px 12px; border-radius: var(--r-sm); }
+.ms-ok p { margin: 4px 0; }
+
+.ms-ex { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.ms-ex-btn { display: grid; gap: 2px; text-align: left; padding: 10px 14px; border: 1px solid var(--line); box-shadow: none; color: #fff; cursor: pointer; min-width: 200px; flex: 1; }
+.ms-ex-btn b { font-family: var(--px); font-weight: 400; font-size: 1.2rem; }
+.ms-ex-btn span { font-size: 0.85rem; opacity: 0.9; }
+.ms-ex-btn.exa { background: #5a1f24; }
+.ms-ex-btn.bon { background: #1d4a2e; }
+.ms-ex-btn.on { outline: 3px solid #fff; outline-offset: 2px; }
+.ms-ecoute { margin: 0; padding: 8px 10px; background: var(--champ); border-left: 3px solid var(--cc); }
+
+@media (max-width: 760px) {
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  .ms-onde { height: 48px; }
+  
+  
+}
+
+/* Presets rapides */
+
+/* ===== Nouvelle page : 3 étapes, mode Simple / Avancé, barre de lecture fixe ===== */
+.ms2 { padding-bottom: calc(var(--ms-barre, 130px) + 24px); }
+
+.ms-etape { background: var(--panel); border: 1px solid var(--line); box-shadow: none; min-width: 0; transition: opacity 0.2s, filter 0.2s; scroll-margin-top: calc(var(--top-h) + 10px); border-radius: var(--r-sm); }
+.ms-etape.off { opacity: 0.42; filter: grayscale(0.8); }
+.ms-et-tete { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 14px; border-bottom: 1px solid var(--line); background: #191b21; }
+.ms-et-num { width: 38px; height: 38px; display: grid; place-items: center; font-family: var(--px); font-size: 1.7rem; line-height: 1; color: #0b0d12; background: #ffb020; border: 1px solid var(--line); box-shadow: none; flex: none; border-radius: var(--r-sm); }
+.ms-etape.off .ms-et-num { background: #6b7280; }
+.ms-et-tete h3 { margin: 0; font-size: 1.7rem; line-height: 1; }
+.ms-et-sous { color: var(--muted); font-size: 0.88rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.ms-et-outils { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ms-et-corps { padding: 14px; display: grid; gap: 12px; min-width: 0; }
+.ms-et-pied { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 6px; border-top: 2px dashed #ffffff12; }
+
+/* interrupteur Simple / Avancé */
+
+/* bouton « ? » */
+.ms-q { width: 24px; height: 24px; display: inline-grid; place-items: center; flex: none; font-family: var(--px); font-size: 1.1rem; line-height: 1; padding: 0; color: #0b0d12; background: #9cc4ff; border: 1px solid var(--line); box-shadow: none; cursor: pointer; border-radius: var(--r-sm); }
+.ms-q:hover { background: #fff; }
+
+/* étape 1 */
+.ms-depot-grand { flex-direction: column; justify-content: center; text-align: center; min-height: 210px; padding: 26px 18px; }
+.ms-depot-grand .ms-depot-txt { flex: none; justify-items: center; }
+.ms-depot-grand .ms-depot-txt b { font-size: 1.9rem; }
+.ms-depot-grand .ms-depot-btns { justify-content: center; }
+.ms-depot-grand.charge { flex-direction: row; min-height: 0; padding: 10px 14px; text-align: left; }
+.ms-depot-grand.charge .ms-depot-txt { justify-items: start; flex: 1; }
+.ms-depot-grand.charge .ms-depot-txt b { font-size: 1.25rem; }
+
+/* étape 2 : presets */
+
+/* étape 2 : mode Simple */
+.ms-simple { display: grid; gap: 10px; }
+
+.ms-gc { --cc: #fff; display: grid; gap: 6px; padding: 12px 14px 10px; background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--cc); min-width: 0; border-radius: var(--r-sm); }
+.ms-gc-tete { display: flex; align-items: center; gap: 8px; }
+.ms-gc-tete label { font-family: var(--px); font-size: 1.55rem; line-height: 1; color: var(--cc); }
+.ms-gc-val { margin-left: auto; display: inline-flex; align-items: baseline; gap: 4px; }
+.ms-gc-val input { width: 74px; padding: 2px 6px; font-family: var(--px); font-size: 1.6rem; line-height: 1.1; text-align: right; background: var(--champ); color: #fff; border: 1px solid var(--line); border-radius: var(--r-sm); }
+.ms-gc.actif .ms-gc-val input { color: var(--cc); }
+.ms-gc-val small { color: var(--muted); font-size: 0.85rem; min-width: 22px; }
+.ms-gc-range { -webkit-appearance: none; appearance: none; width: 100%; height: 34px; margin: 0; background: transparent; cursor: pointer; touch-action: pan-y; }
+.ms-gc-range::-webkit-slider-runnable-track { height: 14px; border: 1px solid var(--line); background: linear-gradient(90deg, #0b0d12 var(--a), var(--cc) var(--a), var(--cc) var(--b), #0b0d12 var(--b)); }
+.ms-gc-range::-moz-range-track { height: 10px; border: 1px solid var(--line); background: linear-gradient(90deg, #0b0d12 var(--a), var(--cc) var(--a), var(--cc) var(--b), #0b0d12 var(--b)); }
+.ms-gc-range::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 30px; margin-top: -10px; background: #e8ebf0; border: 1px solid var(--line); box-shadow: none; }
+.ms-gc-range::-moz-range-thumb { width: 16px; height: 24px; background: #e8ebf0; border: 1px solid var(--line); border-radius: var(--r-sm); box-shadow: none; }
+.ms-gc-range:focus-visible { outline: 2px solid var(--cc); outline-offset: 2px; }
+.ms-gc-bornes { display: flex; justify-content: space-between; font-family: ui-monospace, monospace; font-size: 0.7rem; color: #6b7280; margin-top: -4px; }
+.ms-gc-sous { color: var(--muted); font-size: 0.8rem; }
+.ms-gc-sous b { color: #ffb020; font-weight: 400; }
+
+/* étape 3 */
+.ms-export { display: grid; gap: 10px; }
+.ms-formats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ms-format { display: grid; gap: 3px; text-align: left; padding: 10px 12px; background: var(--panel-3); color: #fff; border: 1px solid var(--line); box-shadow: none; cursor: pointer; border-radius: var(--r-sm); }
+.ms-format b { font-family: var(--px); font-weight: 400; font-size: 1.35rem; }
+.ms-format span { font-size: 0.8rem; color: #c3c9d4; }
+.ms-format.on { background: #2f9a4f; outline: 3px solid #4fd18b; outline-offset: 2px; }
+.ms-format:disabled { opacity: 0.45; cursor: not-allowed; }
+.ms-export-ligne { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ms-export-btn { font-size: 1.25rem; padding: 10px 18px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+/* barre de lecture fixe */
+.ms-barre { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: #16181ef7; border-top: 1px solid var(--line); box-shadow: 0 -10px 24px #000a; padding: 8px max(12px, calc((100vw - 1180px) / 2)) calc(8px + env(safe-area-inset-bottom)); display: grid; gap: 8px; backdrop-filter: blur(6px); }
+.ms-b-l1, .ms-b-l2 { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; min-width: 0; }
+.ms-b-onde { flex: 1; min-width: 200px; position: relative; }
+.ms-barre .ms-onde { height: 46px; }
+.ms-onde-vide { display: grid; place-items: center; color: var(--muted); font-size: 0.85rem; cursor: default; }
+.ms-b-zone { position: absolute; right: 4px; top: 3px; font-family: ui-monospace, monospace; font-size: 0.72rem; background: #0b0d12dd; color: #ffd84d; padding: 1px 4px; border: 1px solid #ffd84d55; border-radius: var(--r-sm); }
+.ms-b-zone button { background: none; border: 0; color: #ffd84d; cursor: pointer; padding: 0 2px; }
+.ms-ab.grise { opacity: 0.5; }
+.ms-barre .ms-ab-btn { font-size: 1rem; padding: 4px 10px; }
+.ms-bypass.on { background: #e8484e !important; color: #fff; }
+.ms-bm { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+.ms-bm-cell { display: grid; gap: 1px; padding: 3px 8px; background: var(--champ); border: 1px solid var(--line); min-width: 132px; border-radius: var(--r-sm); }
+.ms-bm-cell.alerte { border-color: #e8484e; }
+.ms-bm-nom { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.ms-bm-vals { display: inline-flex; align-items: baseline; gap: 5px; font-family: var(--px); font-size: 1.3rem; line-height: 1; }
+.ms-bm-vals .av { color: #a3abba; }
+.ms-bm-vals .ap { color: #4fd18b; }
+.ms-bm-cell.alerte .ap { color: #ff8a8a; }
+.ms-bm-vals i { font-style: normal; color: #6b7280; font-size: 0.9rem; }
+.ms-bm-vals small { font-family: ui-monospace, monospace; font-size: 0.66rem; color: var(--muted); }
+.ms-bm-live { font-family: ui-monospace, monospace; font-size: 0.66rem; color: #6b7280; }
+
+/* panneau des mini-leçons */
+.ms-aide { --cc: #6aa2ee; position: fixed; z-index: 70; right: 0; top: var(--top-h); bottom: var(--ms-barre, 0px); width: min(440px, 100vw); background: var(--panel); border-left: 1px solid var(--line); box-shadow: -8px 0 24px #000a; display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.ms-aide header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.ms-aide header h3 { margin: 0; color: var(--cc); font-size: 1.6rem; }
+.ms-aide header .ms-aide-x { margin-left: auto; }
+.ms-aide-corps { overflow-y: auto; padding: 12px 16px 18px; display: grid; gap: 8px; align-content: start; }
+.ms-aide-corps p { margin: 0; }
+.ms-lecon { display: grid; gap: 8px; padding-top: 8px; border-top: 2px dashed #ffffff14; }
+.ms-lecon h4 { margin: 4px 0 0; }
+.ms-lecon .ms-ex-btn { min-width: 0; }
+
+@media (max-width: 900px) {
+  
+  .ms-formats { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  
+  .ms-et-tete { padding: 8px 10px; }
+  .ms-et-corps { padding: 10px; }
+  .ms-et-outils { margin-left: 0; width: 100%; }
+  .ms-depot-grand { min-height: 170px; }
+  .ms-barre { padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); gap: 6px; }
+  .ms-barre .ms-onde { height: 36px; }
+  .ms-b-l1 .ms-temps { display: none; }
+  .ms-b-onde { flex-basis: 100%; order: 3; min-width: 0; }
+  .ms-bm { margin-left: 0; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .ms-bm-cell { min-width: 0; padding: 2px 5px; }
+  .ms-bm-vals { font-size: 1.05rem; gap: 3px; }
+  .ms-bm-live { display: none; }
+  .ms-aide { top: auto; height: min(78vh, calc(100vh - var(--ms-barre, 0px) - 40px)); width: 100%; border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 520px) {
+  
+  .ms-gc-tete label { font-size: 1.4rem; }
+}
+
+.ms-cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.ms-carte { display: grid; justify-items: center; gap: 6px; padding: 14px 8px; background: var(--panel); color: inherit; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font: inherit; font-weight: 700; }
+.ms-carte:hover { border-color: #fff4; }
+.ms-carte.on { border-color: #5aa9ff; box-shadow: 0 0 0 2px #5aa9ff55; }
+.ms-carte-ico { font-size: 2rem; line-height: 1; }
+.ms-blocs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.ms-bloc { display: grid; gap: 10px; align-content: start; padding: 12px 14px; background: #101116; border: 1px solid var(--line); border-radius: 10px; }
+.ms-bloc h4 { margin: 0; font-size: 1.2rem; }
+.ms-bloc-eq h4 { color: #5aa9ff; }
+.ms-bloc-dyn h4 { color: #ffb020; }
+.ms-bloc .ms-gc { border: 0; border-top: 0; background: transparent; padding: 0; }
+.ms-gros { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.ms-gros-btn { padding: 16px; font: inherit; font-size: 1.15rem; font-weight: 800; color: #fff; border: 0; border-radius: 10px; cursor: pointer; }
+.ms-gros-btn.bleu { background: #2f7de1; }
+.ms-gros-btn.vert { background: #2fa866; }
+.ms-gros-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ---- Écran compact : import → presets → EQ/Dynamics → actions sans défilement ---- */
+.ms2 { gap: 8px; }
+.ms-et-tete { padding: 4px 10px; gap: 8px; }
+.ms-et-num { width: 26px; height: 26px; font-size: 1.2rem; }
+.ms-et-tete h3 { font-size: 1.2rem; }
+.ms-et-corps { padding: 8px 10px; gap: 8px; }
+.ms-depot-grand.charge { padding: 4px 10px; gap: 10px; border-width: 1px; }
+.ms-depot-grand.charge .ms-depot-txt { min-width: 0; }
+.ms-depot-grand.charge .ms-depot-txt b { font-size: 1.05rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-info { cursor: help; opacity: 0.7; font-size: 0.9em; }
+.ms-cartes { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+.ms-carte { grid-auto-flow: column; justify-content: center; align-items: center; gap: 6px; padding: 6px 4px; font-size: 0.9rem; }
+.ms-carte-ico { font-size: 1.3rem; }
+.ms-blocs { gap: 8px; }
+.ms-bloc { gap: 4px; padding: 6px 12px 8px; }
+.ms-bloc h4 { font-size: 1rem; }
+.ms-bloc .ms-gc { gap: 0; }
+.ms-bloc .ms-gc-tete label { font-size: 1.15rem; }
+.ms-bloc .ms-gc-val input { font-size: 1.15rem; width: 64px; padding: 0 6px; }
+.ms-bloc .ms-gc-range { height: 22px; }
+.ms-gros { margin-top: 8px; gap: 8px; }
+.ms-gros-btn { padding: 10px; font-size: 1.05rem; }
+.ms-et-pied { padding-top: 0; border-top: 0; }
+.ms-export-plie { border: 1px solid var(--line); background: var(--panel); border-radius: var(--r-sm); }
+.ms-export-plie > summary { cursor: pointer; padding: 4px 12px; font-weight: 700; }
+.ms-export-plie[open] > summary { border-bottom: 1px solid var(--line); }
+.ms-export-plie > :not(summary) { padding: 8px 12px; }
+@media (max-width: 700px) { .ms-cartes { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); } }
+
+/* Onglets Enregistrer, Visualiser, Analyser : barre réduite (lecture + A/B). Les mesures et réglages restent dans Masteriser.
+   Sans son en cours, la barre disparaît pour laisser la place à l'écran (surtout sur téléphone). */
+.ms-barre.mini .ms-check, .ms-barre.mini .ms-bypass, .ms-barre.mini .ms-bypass + .chipbtn, .ms-barre.mini .ms-bm, .ms-barre.mini .ms-q { display: none; }
+.ms-barre.mini.vide { display: none; }
+@media (min-width: 761px) { .ms-barre.mini { grid-template-columns: minmax(0, 1fr) auto; align-items: center; } }
